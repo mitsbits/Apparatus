@@ -15,7 +15,7 @@ namespace Test.Borg.Infrastructure.Core
         [Fact]
         public void RoundUp()
         {
-            new DateTime(2019, 1, 1, 0, 0, 0).RoundUp(TimeSpan.FromMinutes(30)).ShouldBe(new DateTime(2019, 1, 1, 0, 30, 0));
+            new DateTime(2019, 1, 1, 0, 0, 1).RoundUp(TimeSpan.FromMinutes(30)).ShouldBe(new DateTime(2019, 1, 1, 0, 30, 0));
         }
     }
 }

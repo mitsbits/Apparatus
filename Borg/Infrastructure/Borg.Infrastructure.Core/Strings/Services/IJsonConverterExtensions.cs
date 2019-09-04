@@ -14,7 +14,7 @@ namespace Borg
                 if (instanse.Equals(default(T))) return false;
                 return true;
             }
-            catch (Exception ex) //TODO: hmmmmmmm
+            catch (Exception) //TODO: hmmmmmmm
             {
                 return false;
             }

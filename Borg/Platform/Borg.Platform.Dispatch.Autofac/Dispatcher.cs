@@ -104,7 +104,7 @@ namespace Borg.Platform.Dispatch.Autofac
                 if (handlerType.IsSubclassOfRawGeneric(typeof(RequestHandler)))
                 {
                     logger.Trace($"Invoking request handler: {handlerType} for notification {requestType}");
-                    return (TResponse)(handler.AsDynamic()).Handle(request);
+                    return (TResponse)handler.AsDynamic().Handle(request);
                 }
 
                 if (handlerType.IsSubclassOfRawGeneric(typeof(AsyncRequestHandler)))

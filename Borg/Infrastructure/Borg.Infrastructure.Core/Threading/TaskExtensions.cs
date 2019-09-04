@@ -13,7 +13,7 @@ namespace Borg
         }
 
         [DebuggerStepThrough]
-        public static ConfiguredTaskAwaitable AnyContext(this System.Threading.Tasks.Task task)
+        public static ConfiguredTaskAwaitable AnyContext(this Task task)
         {
             return task.ConfigureAwait(false);
         }

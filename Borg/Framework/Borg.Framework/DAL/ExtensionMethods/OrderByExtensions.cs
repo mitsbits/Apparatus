@@ -1,8 +1,8 @@
-﻿using Borg.Infrastructure.Core;
+﻿using Borg.Framework.DAL.Ordering;
+using Borg.Infrastructure.Core;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Borg.Framework.DAL.Ordering;
 
 namespace Borg.Framework.DAL
 {
@@ -73,7 +73,7 @@ namespace Borg.Framework.DAL
                 else
                 {
                     if (orderedQueryable != null)
-                        orderedQueryable= info.Ascending
+                        orderedQueryable = info.Ascending
                             ? orderedQueryable.ThenBy(name)
                             : orderedQueryable.ThenByDescending(name);
                 }

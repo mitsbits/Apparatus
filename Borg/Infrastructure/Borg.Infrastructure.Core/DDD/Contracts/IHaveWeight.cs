@@ -5,4 +5,3 @@
         double Weight { get; set; }
     }
 }
-

@@ -1,4 +1,4 @@
-﻿namespace Borg.Infrastructure.Core.DDD.Contracts
+﻿namespace Borg.Infrastructure.Core.DDD.Contracts.DMS
 {
     public interface IHaveVersion
     {

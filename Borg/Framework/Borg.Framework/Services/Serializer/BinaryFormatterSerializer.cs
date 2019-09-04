@@ -31,7 +31,7 @@ namespace Borg.Framework.Services.Serializer
 
         public async Task<byte[]> Serialize(object value)
         {
-            if (value.GetType().Equals(typeof(string))) return await Serialize(value.ToString()); 
+            if (value.GetType().Equals(typeof(string))) return await Serialize(value.ToString());
             byte[] result;
             using (var stream = new MemoryStream())
             {

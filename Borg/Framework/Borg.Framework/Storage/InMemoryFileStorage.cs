@@ -150,7 +150,8 @@ namespace Borg.Framework.Storage
             }
         }
 
-        public IChangeToken Watch(string filter) {
+        public IChangeToken Watch(string filter)
+        {
             throw new NotImplementedException();
         }
 
@@ -167,7 +168,5 @@ namespace Borg.Framework.Storage
                 return ms.ToArray();
             }
         }
-
-
     }
 }

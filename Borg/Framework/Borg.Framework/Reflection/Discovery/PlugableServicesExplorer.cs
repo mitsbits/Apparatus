@@ -10,7 +10,6 @@ namespace Borg.Framework.Reflection.Discovery
 {
     public class PlugableServicesExplorer : AssemblyExplorer
     {
-        private readonly List<Assembly> assemblies = new List<Assembly>();
         private readonly List<AssemblyScanResult> results = new List<AssemblyScanResult>();
         private readonly ILoggerFactory loggerFactory;
 

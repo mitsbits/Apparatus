@@ -1,5 +1,4 @@
-﻿using Borg.Infrastructure.Core.Threading;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

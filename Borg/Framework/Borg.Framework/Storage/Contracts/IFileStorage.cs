@@ -23,6 +23,7 @@ namespace Borg.Framework.Storage.Contracts
 
         Task<IEnumerable<IFileSpec>> GetFileList(string searchPattern = null, int? limit = null, int? skip = null,
             CancellationToken cancellationToken = default);
+
         IChangeToken Watch(string filter);
     }
 

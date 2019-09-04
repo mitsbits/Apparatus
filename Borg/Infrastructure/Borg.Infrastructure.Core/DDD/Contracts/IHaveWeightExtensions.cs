@@ -15,7 +15,8 @@ namespace Borg
         {
             return source.OrderBy(x => x.Weight);
         }
-        public static IOrderedQueryable<T> HeavyToLight<T>(this IQueryable<T> source) where T: IHaveWeight
+
+        public static IOrderedQueryable<T> HeavyToLight<T>(this IQueryable<T> source) where T : IHaveWeight
         {
             return source.OrderByDescending(x => x.Weight);
         }

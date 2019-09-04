@@ -1,6 +1,5 @@
 ﻿using Borg.Framework.Modularity.Pipelines;
 using Borg.Infrastructure.Core;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;

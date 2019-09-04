@@ -1,5 +1,4 @@
-﻿using Borg.Infrastructure.Core.DDD.Contracts;
-using System;
+﻿using System;
 
 namespace Borg.Framework.Cms.BuildingBlocks
 {

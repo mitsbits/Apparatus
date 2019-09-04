@@ -11,3 +11,4 @@
 [assembly: InternalsVisibleTo("Borg.System.Backoffice.Core")]
 [assembly: InternalsVisibleTo("Borg.Platform.EF")]
 [assembly: InternalsVisibleTo("Borg.Platform.Redis")]
+[assembly: InternalsVisibleTo("Borg.Platform.Dispatch.Autofac")]

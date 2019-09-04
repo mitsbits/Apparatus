@@ -107,7 +107,6 @@ namespace Borg.Framework.EF.DAL.Inventories
                     }
                     exprBuilder.Append(" && ");
                 }
-
             }
 
             var exp = exprBuilder.ToString();

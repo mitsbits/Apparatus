@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Borg.Framework.EF.Instructions.Attributes.Schema
 {
@@ -11,6 +9,7 @@ namespace Borg.Framework.EF.Instructions.Attributes.Schema
         {
             IsUnicode = IsUnicode;
         }
+
         public bool IsUnicode { get; }
     }
 }

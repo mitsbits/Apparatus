@@ -6,6 +6,4 @@ namespace Borg.Framework.DAL
     {
         IQueryable<T> Query { get; }
     }
-
-
 }

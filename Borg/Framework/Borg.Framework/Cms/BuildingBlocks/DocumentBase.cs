@@ -1,6 +1,7 @@
 ﻿using Borg.Framework.Storage.Assets;
 using Borg.Framework.Storage.Assets.Contracts;
 using Borg.Infrastructure.Core.DDD.Contracts;
+using Borg.Infrastructure.Core.DDD.Contracts.DMS;
 using Borg.Infrastructure.Core.DDD.ValueObjects;
 using System;
 

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Borg.Infrastructure.Core.DDD.Contracts
 {
-  public  interface IHaveIdentity
+    public interface IHaveIdentity
     {
         IDictionary<string, object> Identity { get; }
     }

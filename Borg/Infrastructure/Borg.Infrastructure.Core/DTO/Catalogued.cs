@@ -1,7 +1,4 @@
 ﻿using Borg.Infrastructure.Core.DDD.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Borg.Infrastructure.Core.DTO
 {

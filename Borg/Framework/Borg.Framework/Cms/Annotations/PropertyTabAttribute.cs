@@ -11,11 +11,11 @@ namespace Borg.Framework.Cms
 
         public PropertyTabAttribute()
         {
-
         }
+
         public PropertyTabAttribute(string header)
         {
-            Header = Preconditions.NotEmpty( header, nameof(header));
+            Header = Preconditions.NotEmpty(header, nameof(header));
         }
     }
 }

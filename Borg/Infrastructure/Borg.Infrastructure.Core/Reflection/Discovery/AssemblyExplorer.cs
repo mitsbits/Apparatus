@@ -12,7 +12,7 @@ namespace Borg.Infrastructure.Core.Reflection.Discovery
     {
         protected ILogger Logger { get; }
         protected bool scanCompleted = false;
-        protected readonly Func<Assembly, bool> explorationPredicate ;
+        protected readonly Func<Assembly, bool> explorationPredicate;
         protected readonly List<Assembly> assemblies = new List<Assembly>();
 
         protected AssemblyExplorer(ILoggerFactory loggerFactory, Func<Assembly, bool> explorationPredicate = null)

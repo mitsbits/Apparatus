@@ -48,7 +48,7 @@ namespace Borg.Framework.Storage.Assets
                 size = Parse(flavorDescription);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 size = Undefined;
                 return false;

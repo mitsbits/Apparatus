@@ -17,8 +17,8 @@ namespace Borg.Framework.EF.DAL
     public class QueryRepository<T, TDbContext> : IQueryRepository<T>, IQuerableRepository<T>, IHaveDbContext<TDbContext> where T : class where TDbContext : DbContext
     {
         public QueryRepository(TDbContext dbContext)
-        {         
-            Context = Preconditions.NotNull( dbContext, nameof(dbContext));
+        {
+            Context = Preconditions.NotNull(dbContext, nameof(dbContext));
             if (!Context.EntityIsMapped<T, TDbContext>()) throw new EntityNotMappedException<TDbContext>(typeof(T));
         }
 

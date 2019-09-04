@@ -1,5 +1,4 @@
 ﻿using Borg.Framework;
-using Borg.Infrastructure.Core.Threading;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;

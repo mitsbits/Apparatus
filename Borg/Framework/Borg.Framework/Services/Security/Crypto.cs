@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 
 namespace Borg.Framework.Services.Security
 {
-
     /// <summary>
     /// Provides helper methods for hashing/salting and verifying passwords.
     /// </summary>

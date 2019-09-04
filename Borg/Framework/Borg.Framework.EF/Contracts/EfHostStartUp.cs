@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Borg.Framework.EF.Contracts
+﻿namespace Borg.Framework.EF.Contracts
 {
-    class EfHostStartUp
+    internal class EfHostStartUp
     {
     }
 }

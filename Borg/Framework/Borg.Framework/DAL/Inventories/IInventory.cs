@@ -33,6 +33,7 @@ namespace Borg.Framework.DAL.Inventories
     {
         Task<IPagedResult<T>> Read(Expression<Func<T, bool>> predicate, int page, int size,
                 IEnumerable<OrderByInfo<T>> orderByy, CancellationToken cancellationToken = default);
+
         Task<T> Get(CompositeKey compositeKey, CancellationToken cancellationToken = default);
     }
 

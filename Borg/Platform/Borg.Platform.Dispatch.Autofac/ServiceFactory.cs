@@ -1,7 +1,4 @@
 ﻿using Autofac;
-using Borg.Infrastructure.Core;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\Borg.Framework.Dispatch\Borg.Framework.Dispatch.csproj" />
     <ProjectReference Include="..\..\Framework\Borg.Framework\Borg.Framework.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Borg.Infrastructure.Core\Borg.Infrastructure.Core.csproj" />
   </ItemGroup>

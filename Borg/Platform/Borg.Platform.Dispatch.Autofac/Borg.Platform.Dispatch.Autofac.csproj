@@ -10,8 +10,4 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview9.19423.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Framework\Borg.Framework.Dispatch\Borg.Framework.Dispatch.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -1,8 +1,4 @@
-﻿using Borg.Framework.Dispatch.Contracts;
-using Borg.Infrastructure.Core;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace Borg.Platform.Dispatch.Autofac

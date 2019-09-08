@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Borg.Framework.Dispatch.Contracts;
 using Borg.Platform.Dispatch.Autofac;
 
 namespace Borg

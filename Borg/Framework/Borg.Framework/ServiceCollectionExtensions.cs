@@ -1,5 +1,6 @@
 ﻿using Borg.Framework;
-using Borg.Framework.Cache;
+
+//using Borg.Framework.Cache;
 using Borg.Framework.Reflection.Discovery;
 using Borg.Infrastructure.Core.Reflection.Discovery;
 using System;
@@ -18,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddCacheClient(this IServiceCollection services)
         {
-            services.AddSingleton<ICacheClient, CacheClient>();
+            // services.AddSingleton<ICacheClient, CacheClient>();
             return services;
         }
 

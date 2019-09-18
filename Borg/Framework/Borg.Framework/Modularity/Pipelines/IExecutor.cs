@@ -6,8 +6,10 @@ namespace Borg.Framework.Modularity.Pipelines
 {
     public interface IExecutor
     {
-        event EventHandler OnExecuting;
-        event EventHandler OnExecuted;
+        event EventHandler<ExecutorEventArgs> OnExecuting;
+
+        event EventHandler<ExecutorEventArgs> OnExecuted;
+
         Task Execute(CancellationToken cancelationToken);
     }
 }

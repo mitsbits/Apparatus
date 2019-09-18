@@ -10,18 +10,19 @@ namespace Borg.Framework.Modularity.Pipelines
     {
         protected readonly ICollection<IPipelineStep<IPipeline>> source = new HashSet<IPipelineStep<IPipeline>>();
 
-        public event EventHandler OnExecuting;
-        public event EventHandler OnExecuted;
+        public event EventHandler<ExecutorEventArgs> OnExecuting;
+
+        public event EventHandler<ExecutorEventArgs> OnExecuted;
 
         public async Task Execute(CancellationToken cancelationToken)
         {
             cancelationToken.ThrowIfCancellationRequested();
-            OnExecuting?.Invoke(this, EventArgs.Empty);
+            OnExecuting?.Invoke(this, ExecutorEventArgs.Empty);
             foreach (var step in this.LightToHeavy())
             {
                 await step.Execute(cancelationToken);
             }
-            OnExecuted?.Invoke(this, EventArgs.Empty);
+            OnExecuted?.Invoke(this, ExecutorEventArgs.Empty);
         }
 
         public IEnumerator<IPipelineStep<IPipeline>> GetEnumerator()
@@ -37,18 +38,19 @@ namespace Borg.Framework.Modularity.Pipelines
 
     public abstract class GenericPipelineStep<TPipeline> : IPipelineStep<TPipeline> where TPipeline : IPipeline
     {
-        public event EventHandler OnExecuting;
-        public event EventHandler OnExecuted;
+        public event EventHandler<ExecutorEventArgs> OnExecuting;
+
+        public event EventHandler<ExecutorEventArgs> OnExecuted;
 
         public virtual double Weight { get; set; } = 0;
+
         public async Task Execute(CancellationToken cancelationToken)
         {
-
-            OnExecuting?.Invoke(this, EventArgs.Empty);
+            OnExecuting?.Invoke(this, ExecutorEventArgs.Empty);
             await ExecuteInternal(cancelationToken);
-            OnExecuted?.Invoke(this, EventArgs.Empty);
+            OnExecuted?.Invoke(this, ExecutorEventArgs.Empty);
         }
-        protected abstract Task ExecuteInternal(CancellationToken cancellationToken);
 
+        protected abstract Task ExecuteInternal(CancellationToken cancelationToken);
     }
 }

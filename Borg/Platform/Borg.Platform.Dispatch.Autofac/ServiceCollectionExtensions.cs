@@ -1,4 +1,5 @@
-﻿using Borg.Platform.Dispatch.Autofac;
+﻿using Borg.Framework.Dispatch.Contracts;
+using Borg.Platform.Dispatch.Autofac;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

@@ -11,7 +11,7 @@ namespace Borg.Framework.Dispatch.Contracts
     {
         Task Send(object request, CancellationToken cancellationToken = default);
 
-        Task<TResponse> Send<TResponse, TRequest>(TRequest request, CancellationToken cancellationToken = default);
+        Task<TResponse> Send<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default);
     }
 
     public interface IDispatchePublishSender

@@ -87,7 +87,7 @@ namespace Borg.Framework.Dispatch
             return handler.Handle(request, cancellationToken, _serviceFactory);
         }
 
-        public Task<TResponse> Send<TResponse, TRequest>(TRequest request, CancellationToken cancellationToken = default)
+        public Task<TResponse> Send<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default)
         {
             if (request == null)
             {

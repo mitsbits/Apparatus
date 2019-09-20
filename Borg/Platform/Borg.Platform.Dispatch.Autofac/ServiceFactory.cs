@@ -1,4 +1,7 @@
 ﻿using Autofac;
+using Borg.Infrastructure.Core;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,10 +13,9 @@ namespace Borg.Platform.Dispatch.Autofac
         private readonly ILogger logger;
         private ILifetimeScope _scope;
 
-        public ServiceFactory(IContainer container)
+        public ServiceFactory(ILifetimeScope scope)
         {
-            container = Preconditions.NotNull(container, nameof(container));
-            _scope = container.BeginLifetimeScope();
+            _scope = Preconditions.NotNull(scope, nameof(scope));
             var loggerFactory = _scope.Resolve<ILoggerFactory>();
             logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
         }
@@ -41,7 +43,8 @@ namespace Borg.Platform.Dispatch.Autofac
             using (var scope = _scope.BeginLifetimeScope())
             {
                 logger.Trace($"{nameof(ServiceFactory)} requests service:{type}");
-                var service = Convert.ChangeType(scope.Resolve(type), type);
+                var service = scope.Resolve(type);
+
                 if (service != null)
                 {
                     return service;

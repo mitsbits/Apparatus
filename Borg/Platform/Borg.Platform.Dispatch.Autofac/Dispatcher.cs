@@ -1,4 +1,8 @@
-﻿using System.Threading;
+﻿using Borg.Framework.Dispatch.Contracts;
+using Borg.Infrastructure.Core;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Borg.Platform.Dispatch.Autofac
@@ -68,6 +72,7 @@ namespace Borg.Platform.Dispatch.Autofac
         public async Task Send(object request, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
             var requestType = request.GetType();
             var serviceType = typeof(IRequestHandler<>).MakeGenericType(requestType);
             var handler = serviceFactory.GetInstance(serviceType);
@@ -88,7 +93,7 @@ namespace Borg.Platform.Dispatch.Autofac
             }
         }
 
-        public async Task<TResponse> Send<TResponse, TRequest>(TRequest request, CancellationToken cancellationToken = default)
+        public async Task<TResponse> Send<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var requestType = request.GetType();

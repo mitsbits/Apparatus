@@ -51,6 +51,7 @@ namespace Borg.Platform.Dispatch.Autofac.Tests
         {
             base.RegisterSpecificServices(builder);
             builder.RegisterType<RaiseTheTargetRequestHandler>().As<IRequestHandler<RaiseTheTargetRequest>>();
+            builder.RegisterType<GreetingCommandHandler>().As<IRequestHandler<GreetingCommand, GreetingCommandResponse>>();
         }
 
         #region test_a_simple_request

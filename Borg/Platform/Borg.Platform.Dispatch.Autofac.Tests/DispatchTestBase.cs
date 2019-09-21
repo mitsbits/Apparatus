@@ -13,19 +13,22 @@ namespace Borg.Platform.Dispatch.Autofac.Tests
         {
             Container = BuildContainer(_moqLoggerFactory);
         }
-        protected  IContainer Container { get; set; }
 
-        protected  IContainer BuildContainer(ILoggerFactory loggerFactory)
+        protected IContainer Container { get; set; }
+
+        protected IContainer BuildContainer(ILoggerFactory loggerFactory)
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<Dispatcher>().As<IDispatcher>().SingleInstance();
             builder.RegisterType<ServiceFactory>().SingleInstance();
-          
+
             builder.RegisterInstance(loggerFactory).As<ILoggerFactory>();
             RegisterSpecificServices(builder);
             return builder.Build();
         }
 
-        protected virtual void RegisterSpecificServices(ContainerBuilder builder) { }
+        protected virtual void RegisterSpecificServices(ContainerBuilder builder)
+        {
+        }
     }
 }

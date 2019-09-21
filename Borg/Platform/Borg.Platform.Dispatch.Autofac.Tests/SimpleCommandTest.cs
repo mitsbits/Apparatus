@@ -1,30 +1,24 @@
 using Autofac;
 using Borg.Framework.Dispatch.Contracts;
 using Borg.Infrastructure.Core.DDD.ValueObjects;
-using Microsoft.Extensions.Logging;
 using Shouldly;
 using System;
 using System.Threading.Tasks;
-using Test.Borg;
 using Xunit;
 using Xunit.Abstractions;
-using IContainer = Autofac.IContainer;
 
 namespace Borg.Platform.Dispatch.Autofac.Tests
 {
-    public class SimpleCommandTest : TestBase
+    public class SimpleCommandTest : DispatchTestBase
     {
-        private static IContainer Container { get; set; }
-
         private static int Target { get; set; } = 1;
 
         public SimpleCommandTest(ITestOutputHelper output) : base(output)
         {
-            Container = BuildContainer();
         }
 
         [Fact]
-        public async Task test_a_simplle_command()
+        public async Task test_a_simple_request()
         {
             var before = Target;
 
@@ -37,15 +31,29 @@ namespace Borg.Platform.Dispatch.Autofac.Tests
             after.ShouldBe(before + 1);
         }
 
-        private IContainer BuildContainer()
+        [Fact]
+        public async Task test_a_simple_command()
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<Dispatcher>().As<IDispatcher>().SingleInstance();
-            builder.RegisterType<ServiceFactory>().SingleInstance();
-            builder.RegisterType<RaiseTheTargetRequestHandler>().As<IRequestHandler<RaiseTheTargetRequest>>();
-            builder.RegisterInstance(_moqLoggerFactory).As<ILoggerFactory>();
-            return builder.Build();
+            var message = Guid.NewGuid().ToString();
+            var greeting = string.Empty;
+
+            using (var scope = Container.BeginLifetimeScope())
+            {
+                var dispatcher = scope.Resolve<IDispatcher>();
+                var response = await dispatcher.Send<GreetingCommand, GreetingCommandResponse>(new GreetingCommand(message));
+                greeting = response.Greeting;
+            }
+
+            message.ShouldBe(greeting);
         }
+
+        protected override void RegisterSpecificServices(ContainerBuilder builder)
+        {
+            base.RegisterSpecificServices(builder);
+            builder.RegisterType<RaiseTheTargetRequestHandler>().As<IRequestHandler<RaiseTheTargetRequest>>();
+        }
+
+        #region test_a_simple_request
 
         public class RaiseTheTargetRequest
         {
@@ -65,5 +73,41 @@ namespace Borg.Platform.Dispatch.Autofac.Tests
                 return Unit.Value;
             }
         }
+
+        #endregion test_a_simple_request
+
+        #region test_a_simple_command
+
+        public class GreetingCommand
+        {
+            public GreetingCommand(string greeting)
+            {
+                Greeting = greeting;
+            }
+
+            public string Greeting { get; }
+        }
+
+        public class GreetingCommandResponse
+        {
+            public GreetingCommandResponse(string greeting)
+            {
+                Greeting = greeting;
+            }
+
+            public string Greeting { get; }
+        }
+
+        public class GreetingCommandHandler : RequestHandler<GreetingCommand, GreetingCommandResponse>
+        {
+            public override object Handle(object request)
+            {
+                var command = request as GreetingCommand;
+                if (command == null) throw new InvalidOperationException($"Requested {nameof(RaiseTheTargetRequest)} but {request.GetType().Name} was provided");
+                return new GreetingCommandResponse(command.Greeting);
+            }
+        }
+
+        #endregion test_a_simple_command
     }
 }

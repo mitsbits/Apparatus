@@ -20,8 +20,9 @@ namespace Borg.Framework.EF.Initializers
             Logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
         }
 
-        public override async Task Execute(CancellationToken cancelationToken)
 
+
+        protected override async Task ExecuteInternal(CancellationToken cancelationToken)
         {
             cancelationToken.ThrowIfCancellationRequested();
             var watch = Stopwatch.StartNew();
@@ -41,7 +42,5 @@ namespace Borg.Framework.EF.Initializers
                 watch.Stop();
             }
         }
-
-        protected abstract Task ExecuteInternal(CancellationToken cancelationToken);
     }
 }

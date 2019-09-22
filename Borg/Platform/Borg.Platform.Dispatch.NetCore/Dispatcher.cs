@@ -92,7 +92,7 @@ namespace Borg.Platform.Dispatch.NetCore
             }
         }
 
-        public async Task<TResponse> Send<TResponse, TRequest>(TRequest request, CancellationToken cancellationToken = default)
+        public async Task<TResponse> Send<TRequest,TResponse >(TRequest request, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var requestType = request.GetType();

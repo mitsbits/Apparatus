@@ -1,8 +1,10 @@
 using Autofac;
 using Borg.Framework.Dispatch.Contracts;
 using Borg.Infrastructure.Core.DDD.ValueObjects;
+using Borg.Infrastructure.Core.Threading;
 using Shouldly;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -18,7 +20,7 @@ namespace Borg.Platform.Dispatch.Autofac.Tests
         }
 
         [Fact]
-        public async Task test_a_simple_request()
+        public async Task a_simple_request()
         {
             var before = Target;
 
@@ -32,7 +34,7 @@ namespace Borg.Platform.Dispatch.Autofac.Tests
         }
 
         [Fact]
-        public async Task test_a_simple_command()
+        public async Task a_simple_command()
         {
             var message = Guid.NewGuid().ToString();
             var greeting = string.Empty;
@@ -45,6 +47,42 @@ namespace Borg.Platform.Dispatch.Autofac.Tests
             }
 
             message.ShouldBe(greeting);
+        }
+
+        [Fact]
+        public void fire_and_forget()
+        {
+            var before = Target;
+            using (var scope = Container.BeginLifetimeScope())
+            {
+                var dispatcher = scope.Resolve<IDispatcher>();
+                dispatcher.Send(new RaiseTheTargetRequest());
+            }
+            Thread.Sleep(500);
+            var after = Target;
+            after.ShouldBe(before + 1);
+        }
+
+        [Fact]
+        public async Task fire_and_forget_parallel()
+        {
+            var before = Target;
+            using (var scope = Container.BeginLifetimeScope())
+            {
+                var dispatcher = scope.Resolve<IDispatcher>();
+                var tasks = new Task[]
+                {
+                    dispatcher.Send(new RaiseTheTargetRequest()),
+                    dispatcher.Send(new RaiseTheTargetRequest()),
+                    dispatcher.Send(new RaiseTheTargetRequest()),
+                    dispatcher.Send(new RaiseTheTargetRequest()),
+                    dispatcher.Send(new RaiseTheTargetRequest())
+                };
+                await Task.WhenAll(tasks);
+            }
+
+            var after = Target;
+            after.ShouldBe(before + 5);
         }
 
         protected override void RegisterSpecificServices(ContainerBuilder builder)
@@ -62,15 +100,21 @@ namespace Borg.Platform.Dispatch.Autofac.Tests
 
         public class RaiseTheTargetRequestHandler : RequestHandler<RaiseTheTargetRequest>
         {
+            private AsyncLock _lock;
+
             public RaiseTheTargetRequestHandler()
             {
+                _lock = new AsyncLock();
             }
 
             public override object Handle(object request)
             {
-                var simple = request as RaiseTheTargetRequest;
-                if (simple == null) throw new InvalidOperationException($"Requested {nameof(RaiseTheTargetRequest)} but {request.GetType().Name} was provided");
-                Target++;
+                using (_lock.LockAsync())
+                {
+                    var simple = request as RaiseTheTargetRequest;
+                    if (simple == null) throw new InvalidOperationException($"Requested {nameof(RaiseTheTargetRequest)} but {request.GetType().Name} was provided");
+                    Target++;
+                }
                 return Unit.Value;
             }
         }

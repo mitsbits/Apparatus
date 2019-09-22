@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Borg.Platform.Dispatch.Autofac.Tests
+namespace Borg.Platform.Dispatch.Tests.Autofac
 {
     public class SimpleCommandTest : DispatchTestBase
     {

@@ -1,11 +1,12 @@
 ﻿using Autofac;
 using Borg.Framework.Dispatch.Contracts;
+using Borg.Platform.Dispatch.Autofac;
 using Microsoft.Extensions.Logging;
 using Test.Borg;
 using Xunit.Abstractions;
 using IContainer = Autofac.IContainer;
 
-namespace Borg.Platform.Dispatch.Autofac.Tests
+namespace Borg.Platform.Dispatch.Tests.Autofac
 {
     public class DispatchTestBase : TestBase
     {

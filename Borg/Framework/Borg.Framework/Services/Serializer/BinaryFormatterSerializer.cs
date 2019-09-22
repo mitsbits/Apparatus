@@ -1,9 +1,7 @@
 ﻿using Borg.Infrastructure.Core.DI;
 using Borg.Infrastructure.Core.Services.Serializer;
-using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Borg.Framework.Services.Serializer
@@ -15,18 +13,12 @@ namespace Borg.Framework.Services.Serializer
         {
         }
 
-        public async Task<object> Deserialize(byte[] value, Type objectType)
+        public Task<object> Deserialize(byte[] value)
         {
-            if (objectType.Equals(typeof(string))) return await Deserialize(value);
             var formater = new BinaryFormatter();
             Stream stream = new MemoryStream(value);
             var result = formater.Deserialize(stream);
             return Task.FromResult(result);
-        }
-
-        public Task<string> Deserialize(byte[] data)
-        {
-            return Task.FromResult(Encoding.UTF8.GetString(data));
         }
 
         public async Task<byte[]> Serialize(object value)
@@ -40,11 +32,6 @@ namespace Borg.Framework.Services.Serializer
                 result = stream.ToArray();
             }
             return result;
-        }
-
-        public Task<byte[]> Serialize(string value)
-        {
-            return Task.FromResult(Encoding.UTF8.GetBytes(value));
         }
     }
 }

@@ -27,14 +27,11 @@ namespace Borg
             return value == null ? null : AsyncHelpers.RunSync(() => serializer.Serialize(value));
         }
 
-        public static Task<object> DeserializeAsync(this ISerializer serializer, string data, Type objectType)
-        {
-            return serializer.Deserialize(Encoding.UTF8.GetBytes(data ?? string.Empty), objectType);
-        }
+ 
 
         public static async Task<T> DeserializeAsync<T>(this ISerializer serializer, byte[] data)
         {
-            return (T)await serializer.Deserialize(data, typeof(T)).AnyContext();
+            return (T)await serializer.Deserialize(data);
         }
 
         public static Task<T> DeserializeAsync<T>(this ISerializer serializer, string data)
@@ -42,21 +39,9 @@ namespace Borg
             return DeserializeAsync<T>(serializer, Encoding.UTF8.GetBytes(data ?? string.Empty));
         }
 
-        public static object Deserialize(this ISerializer serializer, string data, Type objectType)
-        {
-            return AsyncHelpers.RunSync(() =>
-                serializer.Deserialize(Encoding.UTF8.GetBytes(data ?? string.Empty), objectType));
-        }
 
-        public static T Deserialize<T>(this ISerializer serializer, byte[] data)
-        {
-            var output = default(T);
 
-            var task = Task.Run(async () => { output = (T)await serializer.Deserialize(data, typeof(T)); });
 
-            Task.WaitAll(task);
-            return output;
-        }
 
         public static T Deserialize<T>(this ISerializer serializer, string data)
         {

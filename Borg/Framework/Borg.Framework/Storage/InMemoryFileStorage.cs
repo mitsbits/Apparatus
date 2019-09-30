@@ -38,7 +38,7 @@ namespace Borg.Framework.Storage
             if (string.IsNullOrWhiteSpace(path))
                 throw new ArgumentNullException(nameof(path));
 
-            using (await _lock.LockAsync())
+            using (await _lock.Lock())
             {
                 return !_storage.ContainsKey(path) ? null : new MemoryStream(_storage[path].Item2);
             }
@@ -50,7 +50,7 @@ namespace Borg.Framework.Storage
             cancellationToken.ThrowIfCancellationRequested();
             var exists = await Exists(path, cancellationToken);
             if (!exists) return null;
-            using (await _lock.LockAsync())
+            using (await _lock.Lock())
             {
                 return _storage[path].Item1;
             }
@@ -59,7 +59,7 @@ namespace Borg.Framework.Storage
         public async Task<bool> Exists(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            using (await _lock.LockAsync())
+            using (await _lock.Lock())
             {
                 return _storage.ContainsKey(path);
             }
@@ -77,7 +77,7 @@ namespace Borg.Framework.Storage
                 throw new ArgumentException(
                     $"File size {contents.Length.SizeDisplay()} exceeds the maximum size of {MaxFileSize.SizeDisplay()}.");
 
-            using (await _lock.LockAsync())
+            using (await _lock.Lock())
             {
                 _storage[path] =
                     Tuple.Create(
@@ -101,7 +101,7 @@ namespace Borg.Framework.Storage
             if (string.IsNullOrWhiteSpace(targetpath))
                 throw new ArgumentNullException(nameof(targetpath));
 
-            using (await _lock.LockAsync())
+            using (await _lock.Lock())
             {
                 if (!_storage.ContainsKey(path))
                     return false;
@@ -121,7 +121,7 @@ namespace Borg.Framework.Storage
             if (string.IsNullOrWhiteSpace(path))
                 throw new ArgumentNullException(nameof(path));
 
-            using (await _lock.LockAsync())
+            using (await _lock.Lock())
             {
                 if (!_storage.ContainsKey(path))
                     return false;
@@ -143,7 +143,7 @@ namespace Borg.Framework.Storage
                 searchPattern = "*";
 
             var regex = new Regex("^" + Regex.Escape(searchPattern).Replace("\\*", ".*?") + "$");
-            using (await _lock.LockAsync())
+            using (await _lock.Lock())
             {
                 return _storage.Keys.Where(k => regex.IsMatch(k))
                     .Select(k => _storage[k].Item1).Skip(skip ?? 0).Take(limit ?? int.MaxValue).ToList();

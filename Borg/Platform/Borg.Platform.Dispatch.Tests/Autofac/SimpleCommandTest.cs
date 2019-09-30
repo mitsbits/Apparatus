@@ -109,7 +109,7 @@ namespace Borg.Platform.Dispatch.Tests.Autofac
 
             public override object Handle(object request)
             {
-                using (_lock.LockAsync())
+                using (_lock.Lock())
                 {
                     var simple = request as RaiseTheTargetRequest;
                     if (simple == null) throw new InvalidOperationException($"Requested {nameof(RaiseTheTargetRequest)} but {request.GetType().Name} was provided");

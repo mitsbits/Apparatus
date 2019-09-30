@@ -150,7 +150,7 @@ namespace Borg.Framework.Storage
 
             try
             {
-                using (await _lock.LockAsync())
+                using (await _lock.Lock())
                 {
                     var directory = Path.GetDirectoryName(targetpath);
                     if (directory != null && !Directory.Exists(Path.Combine(Folder, directory)))

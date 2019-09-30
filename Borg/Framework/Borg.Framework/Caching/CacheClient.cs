@@ -51,7 +51,7 @@ namespace Borg.Framework.Caching
             if (data != null)
             {
                 var opts = MapOptions(options);
-                using (AsyncLock.LockAsync())
+                using (AsyncLock.Lock())
                 {
                     if (opts == null)
                     {

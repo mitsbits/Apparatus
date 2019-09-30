@@ -14,7 +14,7 @@ namespace Borg.Infrastructure.Core.Threading
             _releaser = Task.FromResult((IDisposable)new Releaser(this));
         }
 
-        public Task<IDisposable> LockAsync()
+        public Task<IDisposable> Lock()
         {
             var wait = _semaphore.WaitAsync();
             return wait.IsCompleted

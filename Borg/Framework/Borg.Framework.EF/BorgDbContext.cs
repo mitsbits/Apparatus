@@ -102,7 +102,7 @@ namespace Borg.Framework.EF
             MapEntities(builder);
             foreach (var entityType in builder.Model.GetEntityTypes())
             {
-                entityType.Relational().Schema = GetContextName(GetType());
+                entityType.SetSchema(GetContextName(GetType()));
             };
         }
 

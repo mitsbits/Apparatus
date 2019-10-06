@@ -1,6 +1,7 @@
 ﻿using Borg.Infrastructure.Core;
 using Borg.Infrastructure.Core.Reflection.Discovery;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Apparatus.System.Api.Controllers
 {
@@ -15,9 +16,9 @@ namespace Apparatus.System.Api.Controllers
             this.explorerResult = Preconditions.NotNull(explorerResult, nameof(explorerResult));
         }
 
-        public IAssemblyExplorerResult Get()
+        public IEnumerable<AssemblyScanResult> Get()
         {
-            return explorerResult;
+            return explorerResult.Results;
         }
     }
 }

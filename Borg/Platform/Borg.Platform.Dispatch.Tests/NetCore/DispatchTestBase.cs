@@ -1,4 +1,5 @@
-﻿using Borg.Framework.Dispatch.Contracts;
+﻿using Borg.Framework;
+using Borg.Framework.Dispatch.Contracts;
 
 using Borg.Platform.Dispatch.NetCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,13 +21,13 @@ namespace Borg.Platform.Dispatch.Tests.NetCore
 
         protected ServiceProvider BuildProvider(ILoggerFactory loggerFactory)
         {
-            var serviceProviderBuilfer = new ServiceCollection()
+            var serviceProviderBuilder = new ServiceCollection()
                  .AddSingleton<IDispatcher, Dispatcher>()
                  .AddSingleton<ServiceFactory>()
                  .AddSingleton<ILoggerFactory>(loggerFactory);
-            RegisterSpecificServices(serviceProviderBuilfer);
-            var provider = serviceProviderBuilfer.BuildServiceProvider();
-
+            RegisterSpecificServices(serviceProviderBuilder);
+            var provider = serviceProviderBuilder.BuildServiceProvider();
+            ServiceLocator.SetLocatorProvider(provider);
             return provider;
         }
 

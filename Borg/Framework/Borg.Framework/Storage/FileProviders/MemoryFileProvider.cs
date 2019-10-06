@@ -5,11 +5,13 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace Borg.Framework.Storage.FileProviders
 {
-    public class MemotyFileProvider : IFileProvider
+    public class MemoryFileProvider : IFileProvider
     {
         private readonly Lazy<ConcurrentDictionary<string, IFileInfo>> _source = new Lazy<ConcurrentDictionary<string, IFileInfo>>(() =>
         {
@@ -26,7 +28,7 @@ namespace Borg.Framework.Storage.FileProviders
             var bucket = new List<IFileInfo>();
             foreach (var key in Source.Keys)
             {
-                if (key.StartsWith(subpath))
+                if (key.StartsWith(subpath, true, CultureInfo.InvariantCulture))
                 {
                     bucket.Add(Source[key]);
                 }
@@ -36,7 +38,11 @@ namespace Borg.Framework.Storage.FileProviders
 
         public IFileInfo GetFileInfo(string subpath)
         {
-            throw new NotImplementedException();
+            if (Source.TryGetValue(subpath, out var fileInfo))
+            {
+                return fileInfo;
+            }
+            return null; //TODO: get explicit not found class
         }
 
         public IChangeToken Watch(string filter)
@@ -103,14 +109,12 @@ namespace Borg.Framework.Storage.FileProviders
 
         public bool Exists { get; private set; }
 
-        public IEnumerator<IFileInfo> GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        public IEnumerator<IFileInfo> GetEnumerator() => _data.GetEnumerator();
+
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
     }
 }

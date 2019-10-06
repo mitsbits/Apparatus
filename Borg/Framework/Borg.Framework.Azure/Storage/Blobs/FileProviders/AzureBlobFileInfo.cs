@@ -58,4 +58,3 @@ namespace Borg.Framework.Azure.Storage.Blobs.FileProviders
         public bool IsDirectory { get; }
     }
 }
-

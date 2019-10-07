@@ -28,8 +28,8 @@ namespace Borg.Framework.Storage
             MaxFiles = maxFiles;
         }
 
-        public long MaxFileSize { get; set; }
-        public long MaxFiles { get; set; }
+        public long MaxFileSize { get; private set; }
+        public long MaxFiles { get; private set; }
 
         public async Task<Stream> GetFileStream(string path,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -65,7 +65,7 @@ namespace Borg.Framework.Storage
             }
         }
 
-        public async Task<bool> SaveFile(string path, Stream stream,
+        public async Task<bool> Save(string path, Stream stream,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -108,13 +108,13 @@ namespace Borg.Framework.Storage
 
                 var stream = await this.GetFileStream(path, cancellationToken);
 
-                await SaveFile(targetpath, stream);
+                await Save(targetpath, stream);
             }
 
             return true;
         }
 
-        public async Task<bool> DeleteFile(string path,
+        public async Task<bool> Delete(string path,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();

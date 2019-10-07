@@ -17,14 +17,21 @@ namespace Borg.Framework.Storage.FileProviders
         {
             var source = new ConcurrentDictionary<string, IFileInfo>();
             source.TryAdd("/", new MemoryDirectoryInfo());
+            return source;
         });
 
         private ConcurrentDictionary<string, IFileInfo> Source => _source.Value;
 
+        private static string SanitizePath(string source)
+        {
+            var output = source.ToLower().Trim();
+            if (string.IsNullOrWhiteSpace(output)) output = "/";
+            return output;
+        }
+
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
-            subpath = subpath.Trim();
-            if (string.IsNullOrWhiteSpace(subpath)) subpath = "/";
+            subpath = SanitizePath(subpath);
             var bucket = new List<IFileInfo>();
             foreach (var key in Source.Keys)
             {
@@ -38,11 +45,12 @@ namespace Borg.Framework.Storage.FileProviders
 
         public IFileInfo GetFileInfo(string subpath)
         {
+            subpath = SanitizePath(subpath);
             if (Source.TryGetValue(subpath, out var fileInfo))
             {
                 return fileInfo;
             }
-            return null; //TODO: get explicit not found class
+            return new NotFoundFileInfo(subpath);
         }
 
         public IChangeToken Watch(string filter)
@@ -74,6 +82,8 @@ namespace Borg.Framework.Storage.FileProviders
         }
     }
 
+
+
     public class MemoryDirectoryInfo : MemoryInfo
     {
         public override bool IsDirectory => true;
@@ -87,6 +97,19 @@ namespace Borg.Framework.Storage.FileProviders
     public class MemoryFileInfo : MemoryInfo
     {
         public override bool IsDirectory => false;
+    }
+
+    public class NotFoundInfo : MemoryInfo
+    {
+        public NotFoundInfo(string pathRequested)
+        {
+            PhysicalPath = pathRequested;
+        }
+        public override Stream CreateReadStream()
+        {
+
+            throw new InvalidOperationException($"Can not create stream because path {PhysicalPath} was not found");
+        }
     }
 
     public class MemoryDirectoryContents : IDirectoryContents

@@ -41,10 +41,10 @@ namespace Borg.Framework.Storage
             return UnscopedStorage.Exists(string.Concat(_pathPrefix, path));
         }
 
-        public Task<bool> SaveFile(string path, Stream stream,
+        public Task<bool> Save(string path, Stream stream,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return UnscopedStorage.SaveFile(string.Concat(_pathPrefix, path), stream, cancellationToken);
+            return UnscopedStorage.Save(string.Concat(_pathPrefix, path), stream, cancellationToken);
         }
 
         public Task<bool> CopyFile(string path, string targetpath,
@@ -54,9 +54,9 @@ namespace Borg.Framework.Storage
                 cancellationToken);
         }
 
-        public Task<bool> DeleteFile(string path, CancellationToken cancellationToken = new CancellationToken())
+        public Task<bool> Delete(string path, CancellationToken cancellationToken = new CancellationToken())
         {
-            return UnscopedStorage.DeleteFile(string.Concat(_pathPrefix, path), cancellationToken);
+            return UnscopedStorage.Delete(string.Concat(_pathPrefix, path), cancellationToken);
         }
 
         public async Task<IEnumerable<IFileSpec>> GetFileList(string searchPattern = null, int? limit = null,

@@ -78,7 +78,7 @@ namespace Borg.Framework.Storage
             return Task.FromResult(File.Exists(Path.Combine(Folder, path)));
         }
 
-        public Task<bool> SaveFile(string path, Stream stream,
+        public Task<bool> Save(string path, Stream stream,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -168,7 +168,7 @@ namespace Borg.Framework.Storage
             return true;
         }
 
-        public Task<bool> DeleteFile(string path, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> Delete(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 

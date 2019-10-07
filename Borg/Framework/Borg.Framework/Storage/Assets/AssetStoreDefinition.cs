@@ -136,7 +136,7 @@ namespace Borg.Framework.Storage.Assets
                     if (exists) fileName = await _conflictingNamesResolver.Resolve(fileName);
                     using (var stream = new MemoryStream(content))
                     {
-                        await scoped.SaveFile(fileName, stream, CancellationToken.None);
+                        await scoped.Save(fileName, stream, CancellationToken.None);
                         uploaded = await scoped.GetFileInfo(fileName, CancellationToken.None);
                     }
                 }
@@ -265,7 +265,7 @@ namespace Borg.Framework.Storage.Assets
                 if (exists) fileName = await _conflictingNamesResolver.Resolve(fileName);
                 using (var stream = new MemoryStream(content))
                 {
-                    await scoped.SaveFile(fileName, stream, CancellationToken.None);
+                    await scoped.Save(fileName, stream, CancellationToken.None);
                     uploaded = await scoped.GetFileInfo(fileName, CancellationToken.None);
                 }
             }
@@ -307,7 +307,7 @@ namespace Borg.Framework.Storage.Assets
                 if (exists) fileName = await _conflictingNamesResolver.Resolve(fileName);
                 using (var stream = new MemoryStream(content))
                 {
-                    await scoped.SaveFile(fileName, stream, CancellationToken.None);
+                    await scoped.Save(fileName, stream, CancellationToken.None);
                     uploaded = await scoped.GetFileInfo(fileName, CancellationToken.None);
                 }
             }

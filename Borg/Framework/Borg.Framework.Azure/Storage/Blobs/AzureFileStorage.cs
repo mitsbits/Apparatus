@@ -62,7 +62,7 @@ namespace Borg.Framework.Azure.Storage.Blobs
             return blockBlob.ExistsAsync();
         }
 
-        public async Task<bool> SaveFile(string path, Stream stream, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<bool> Save(string path, Stream stream, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             var blockBlob = _container.GetBlockBlobReference(path);
@@ -85,7 +85,7 @@ namespace Borg.Framework.Azure.Storage.Blobs
             return newBlob.CopyState.Status == CopyStatus.Success;
         }
 
-        public Task<bool> DeleteFile(string path, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> Delete(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
             var blockBlob = _container.GetBlockBlobReference(path);
             return blockBlob.DeleteIfExistsAsync();

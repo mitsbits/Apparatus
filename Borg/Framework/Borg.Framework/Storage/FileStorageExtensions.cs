@@ -11,6 +11,13 @@ using System.Threading.Tasks;
 
 namespace Borg
 {
+    public static class FileStoreExtensions
+    {
+        public static Task<bool> Copy(this IFileStore store, string path, string targetpath, CancellationToken cancellationToken = default)
+        {
+            var original = string.
+        }
+    }
     public static class FileStorageExtensions
     {
         internal static readonly string mimesPath = "Borg.Infra.Storage.mimes.json";
@@ -46,7 +53,7 @@ namespace Borg
 
         public static bool SaveFile(this IFileStorage storage, string path, Stream stream)
         {
-            return AsyncHelpers.RunSync(() => storage.SaveFile(path, stream));
+            return AsyncHelpers.RunSync(() => storage.Save(path, stream));
         }
 
         public static bool RenameFile(this IFileStorage storage, string path, string newpath)
@@ -61,7 +68,7 @@ namespace Borg
 
         public static bool DeleteFile(this IFileStorage storage, string path)
         {
-            return AsyncHelpers.RunSync(() => storage.DeleteFile(path));
+            return AsyncHelpers.RunSync(() => storage.Delete(path));
         }
 
         public static IEnumerable<IFileSpec> GetFileList(this IFileStorage storage, string searchPattern = null,
@@ -119,13 +126,13 @@ namespace Borg
         public static async Task<bool> RenameFile(this IFileStorage fileStorage, string path, string newpath,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await fileStorage.CopyFile(path, newpath, cancellationToken) && await fileStorage.DeleteFile(path, cancellationToken);
+            return await fileStorage.CopyFile(path, newpath, cancellationToken) && await fileStorage.Delete(path, cancellationToken);
         }
 
         public static async Task<bool> SaveFile(this IFileStorage fileStorage, string path, string content, CancellationToken cancellationToken = default(CancellationToken))
         {
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(content ?? ""));
-            return await fileStorage.SaveFile(path, stream, cancellationToken);
+            return await fileStorage.Save(path, stream, cancellationToken);
         }
     }
 

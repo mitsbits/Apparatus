@@ -11,13 +11,16 @@ using System.Threading.Tasks;
 
 namespace Borg
 {
-    public static class FileStoreExtensions
+    public static class IFileDepotExtensions
     {
-        public static Task<bool> Copy(this IFileStore store, string path, string targetpath, CancellationToken cancellationToken = default)
+        public async static Task<bool> Copy(this IFileDepot store, string path, string targetpath, CancellationToken cancellationToken = default)
         {
-            var original = string.
+            cancellationToken.ThrowIfCancellationRequested();
+            var original = store.GetFileInfo(path);
+            return await store.Save(targetpath, original.CreateReadStream(), cancellationToken);
         }
     }
+
     public static class FileStorageExtensions
     {
         internal static readonly string mimesPath = "Borg.Infra.Storage.mimes.json";

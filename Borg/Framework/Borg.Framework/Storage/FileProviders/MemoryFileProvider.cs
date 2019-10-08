@@ -1,13 +1,9 @@
-﻿using Borg.Infrastructure.Core;
-using Microsoft.Extensions.FileProviders;
+﻿using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 
 namespace Borg.Framework.Storage.FileProviders
 {
@@ -50,94 +46,12 @@ namespace Borg.Framework.Storage.FileProviders
             {
                 return fileInfo;
             }
-            return new NotFoundFileInfo(subpath);
+            return null;
         }
 
         public IChangeToken Watch(string filter)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public abstract class MemoryInfo : IFileInfo
-    {
-        private readonly byte[] _data;
-        public bool Exists { get; protected set; }
-
-        public long Length { get; protected set; }
-
-        public string PhysicalPath { get; protected set; }
-
-        public string Name { get; protected set; }
-
-        public DateTimeOffset LastModified { get; protected set; }
-
-        public virtual bool IsDirectory { get; protected set; }
-
-        public virtual Stream CreateReadStream()
-        {
-            var stream = new MemoryStream(_data);
-            stream.Position = 0;
-            return stream;
-        }
-    }
-
-
-
-    public class MemoryDirectoryInfo : MemoryInfo
-    {
-        public override bool IsDirectory => true;
-
-        public override Stream CreateReadStream()
-        {
-            return new MemoryStream();
-        }
-    }
-
-    public class MemoryFileInfo : MemoryInfo
-    {
-        public override bool IsDirectory => false;
-    }
-
-    public class NotFoundInfo : MemoryInfo
-    {
-        public NotFoundInfo(string pathRequested)
-        {
-            PhysicalPath = pathRequested;
-        }
-        public override Stream CreateReadStream()
-        {
-
-            throw new InvalidOperationException($"Can not create stream because path {PhysicalPath} was not found");
-        }
-    }
-
-    public class MemoryDirectoryContents : IDirectoryContents
-    {
-        private readonly List<IFileInfo> _data;
-
-        public MemoryDirectoryContents(IEnumerable<IFileInfo> data)
-        {
-            _data = new List<IFileInfo>(Preconditions.NotNull(data, nameof(data)));
-        }
-
-        private MemoryDirectoryContents()
-        {
-        }
-
-        public static IDirectoryContents NotFound()
-        {
-            return new MemoryDirectoryContents() { Exists = false };
-        }
-
-        public bool Exists { get; private set; }
-
-        public IEnumerator<IFileInfo> GetEnumerator() => _data.GetEnumerator();
-
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

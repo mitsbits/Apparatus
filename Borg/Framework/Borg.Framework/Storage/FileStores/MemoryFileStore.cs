@@ -31,6 +31,7 @@ namespace Borg.Framework.Storage.FileStores
             }
             return output;
         }
+
         public MemoryFileStore() : this(1024 * 1024 * 256, 100)
         {
         }
@@ -43,9 +44,6 @@ namespace Borg.Framework.Storage.FileStores
 
         public long MaxFileSize { get; private set; }
         public long MaxFiles { get; private set; }
-
-
-
 
         public Task<bool> Delete(string path, CancellationToken cancellationToken = default)
         {
@@ -74,10 +72,9 @@ namespace Borg.Framework.Storage.FileStores
             return Task.FromResult(Source.TryAdd(path, CreateFromInput(path, stream)));
         }
 
-
         private static IFileInfo CreateFromInput(string path, Stream stream)
         {
-
+            return null;
         }
     }
 }

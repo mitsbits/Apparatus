@@ -1,6 +1,8 @@
 ﻿using Borg.Framework.Azure.Storage.Blobs.FileProviders;
 using Borg.Framework.Storage.Contracts;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Primitives;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
@@ -12,11 +14,13 @@ namespace Borg.Framework.Azure.Storage.Blobs.FileDepots
 {
     public class AzureBlobFileDepot : IFileDepot
     {
+        protected readonly ILogger _logger;
         protected readonly IBlobContainerFactory _blobContainerFactory;
         protected readonly CloudBlobContainer _cloudBlobContainer;
 
-        public AzureBlobFileDepot(IBlobContainerFactory blobContainerFactory)
+        public AzureBlobFileDepot(ILoggerFactory loggerFactory, IBlobContainerFactory blobContainerFactory)
         {
+            _logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
             _blobContainerFactory = blobContainerFactory;
             _cloudBlobContainer = _blobContainerFactory.GetContainer();
         }

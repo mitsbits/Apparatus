@@ -28,7 +28,7 @@ namespace Borg.Framework.Azure.Storage.Blobs.FileProviders
             _container = blobClient.GetContainerReference(azureBlobOptions.DocumentContainer);
         }
 
-        public CloudBlobContainer GetContainer(string subpath)
+        public CloudBlobContainer GetContainer()
         {
             return _container;
         }

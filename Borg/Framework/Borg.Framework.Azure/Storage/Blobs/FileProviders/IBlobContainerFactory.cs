@@ -4,7 +4,7 @@ namespace Borg.Framework.Azure.Storage.Blobs
 {
     public interface IBlobContainerFactory
     {
-        CloudBlobContainer GetContainer(string subpath);
+        CloudBlobContainer GetContainer();
         string TransformPath(string subpath);
     }
 }

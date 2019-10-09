@@ -21,7 +21,7 @@ namespace Borg.Framework.Azure.Storage.Blobs
             var account = CloudStorageAccount.Parse(connectionString);
             var client = account.CreateCloudBlobClient();
             _container = client.GetContainerReference(containerName);
-            Task.WaitAll(_container.CreateIfNotExistsAsync());
+            AsyncHelpers.RunSync(async () => await _container.CreateIfNotExistsAsync());
         }
 
         public async Task<Stream> GetFileStream(string path, CancellationToken cancellationToken = default(CancellationToken))

@@ -61,12 +61,13 @@ namespace Borg
 
         public static bool RenameFile(this IFileStorage storage, string path, string newpath)
         {
-            return AsyncHelpers.RunSync(() => storage.RenameFile(path, newpath, default(CancellationToken)));
+            //return AsyncHelpers.RunSync(() => storage.RenameFile(path, newpath, default(CancellationToken)));
+            return false;
         }
 
         public static bool CopyFile(this IFileStorage storage, string path, string targetpath)
         {
-            return AsyncHelpers.RunSync(() => storage.CopyFile(path, targetpath));
+            return storage.CopyFile(path, targetpath);
         }
 
         public static bool DeleteFile(this IFileStorage storage, string path)
@@ -126,11 +127,11 @@ namespace Borg
             return new ScopedFileStorage(fileStorage, scope);
         }
 
-        public static async Task<bool> RenameFile(this IFileStorage fileStorage, string path, string newpath,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return await fileStorage.CopyFile(path, newpath, cancellationToken) && await fileStorage.Delete(path, cancellationToken);
-        }
+        //public static async Task<bool> RenameFile(this IFileStorage fileStorage, string path, string newpath,
+        //    CancellationToken cancellationToken = default(CancellationToken))
+        //{
+        //   // return await fileStorage.CopyFile(path, newpath, cancellationToken) && await fileStorage.Delete(path, cancellationToken);
+        //}
 
         public static async Task<bool> SaveFile(this IFileStorage fileStorage, string path, string content, CancellationToken cancellationToken = default(CancellationToken))
         {

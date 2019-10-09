@@ -20,14 +20,14 @@ namespace Borg.Framework.Azure.Storage.Blobs.FileProviders
 
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
-            var container = _blobContainerFactory.GetContainer(subpath);
+            var container = _blobContainerFactory.GetContainer();
             var blob = container.GetDirectoryReference(_blobContainerFactory.TransformPath(subpath));
             return new AzureBlobDirectoryContents(blob);
         }
 
         public IFileInfo GetFileInfo(string subpath)
         {
-            var container = _blobContainerFactory.GetContainer(subpath);
+            var container = _blobContainerFactory.GetContainer();
             var blob = container.GetBlockBlobReference(_blobContainerFactory.TransformPath(subpath));
             return new AzureBlobFileInfo(blob);
         }

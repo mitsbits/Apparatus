@@ -50,8 +50,9 @@ namespace Borg.Framework.Storage
         public Task<bool> CopyFile(string path, string targetpath,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return UnscopedStorage.CopyFile(string.Concat(_pathPrefix, path), string.Concat(_pathPrefix, targetpath),
-                cancellationToken);
+            //return UnscopedStorage.CopyFile(string.Concat(_pathPrefix, path), string.Concat(_pathPrefix, targetpath),
+            //    cancellationToken);
+            return Task.FromResult(false);
         }
 
         public Task<bool> Delete(string path, CancellationToken cancellationToken = new CancellationToken())

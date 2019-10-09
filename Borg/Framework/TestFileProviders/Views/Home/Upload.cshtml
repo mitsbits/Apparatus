@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Upload";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Upload a file.</p>
+
+<div class="row">
+    <form action="/home/upload/" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <input type="file" class="form-control-file "  name="files" multiple/>
+        </div>
+        <div class="form-group">
+            <button type ="submit" class="btn btn-outline-success">Upload</button>
+        </div>
+    </form>
+</div>

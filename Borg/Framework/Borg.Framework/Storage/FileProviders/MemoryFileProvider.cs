@@ -12,7 +12,7 @@ namespace Borg.Framework.Storage.FileProviders
         private readonly Lazy<ConcurrentDictionary<string, IFileInfo>> _source = new Lazy<ConcurrentDictionary<string, IFileInfo>>(() =>
         {
             var source = new ConcurrentDictionary<string, IFileInfo>();
-            source.TryAdd("/", new MemoryDirectoryInfo());
+            source.TryAdd("/", new MemoryDirectoryInfo("/"));
             return source;
         });
 

@@ -46,10 +46,7 @@ namespace TestFileProviders
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = app.ApplicationServices.GetRequiredService<IFileDepot>()
-            });
+            app.UseStaticFiles();
 
             app.UseRouting();
 

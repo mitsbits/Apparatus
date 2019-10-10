@@ -14,6 +14,7 @@ namespace Borg.Framework.Storage.FileProviders
             LastModified = DateTimeOffset.Now;
             using (var memoryStream = new MemoryStream())
             {
+                stream.Position = 0;
                 stream.CopyTo(memoryStream);
                 _data = memoryStream.ToArray();
             }

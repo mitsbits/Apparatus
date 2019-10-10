@@ -1,5 +1,8 @@
-﻿@{
+﻿@using Borg
+@model Microsoft.Extensions.FileProviders.IDirectoryContents
+@{
     ViewData["Title"] = "Upload";
+
 }
 <h1>@ViewData["Title"]</h1>
 
@@ -8,10 +11,32 @@
 <div class="row">
     <form action="/home/upload/" method="post" enctype="multipart/form-data">
         <div class="form-group">
-            <input type="file" class="form-control-file "  name="files" multiple/>
+            <input type="file" class="form-control-file " name="Files" multiple />
         </div>
         <div class="form-group">
-            <button type ="submit" class="btn btn-outline-success">Upload</button>
+            <input type"text" name="Path" class="form-control" />
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-outline-success">Upload</button>
         </div>
     </form>
 </div>
+@if (Model != null)
+{
+    <div class="row">
+        <table class="table table-dark">
+            <tr>
+                <th>Path</th>
+                <th>Name</th>
+                <th>Size</th>
+            </tr>
+            @foreach (var info in Model)
+            {
+                <tr>
+                    <td>@info.PhysicalPath</td>
+                    <td>@info.Name</td>
+                    <td>@info.Length.SizeDisplay()</td>
+                </tr>
+            }
+        </table>
+    </div>}

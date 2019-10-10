@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Framework.Azure", "Bor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Platform.Dispatch.Tests", "Borg\Platform\Borg.Platform.Dispatch.Tests\Borg.Platform.Dispatch.Tests.csproj", "{655BA890-84B9-46B2-9812-D9307957CCE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestFileProviders", "Borg\Framework\TestFileProviders\TestFileProviders.csproj", "{BE7A855B-CBFB-4275-B0DB-6BEDCB4FBF10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestFileProviders", "Borg\Framework\TestFileProviders\TestFileProviders.csproj", "{BE7A855B-CBFB-4275-B0DB-6BEDCB4FBF10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

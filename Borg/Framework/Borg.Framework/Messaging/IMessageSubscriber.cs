@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,7 +17,7 @@ namespace Borg.Infra.Messaging
         Func<T, CancellationToken, Task> Handler { get; }
     }
 
-    public interface IJasonQueSubscriber : IQueSubscriber<JObject>
+    public interface IJasonQueSubscriber : IQueSubscriber<JsonDocument>
     {
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Borg.Framework.Storage;
 using Borg.Framework.Storage.Contracts;
-using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,7 +35,7 @@ namespace Borg
                 using (var reader = new StreamReader(resource))
                 {
                     var context = reader.ReadToEnd();
-                    _mappings = JsonConvert.DeserializeObject<Dictionary<string, string>>(context);
+                    _mappings = JsonSerializer.Deserialize<Dictionary<string, string>>(context);
                 }
             }
         }
@@ -152,7 +153,7 @@ namespace Borg
                 using (var reader = new StreamReader(resource))
                 {
                     var context = reader.ReadToEnd();
-                    _mappings = JsonConvert.DeserializeObject<Dictionary<string, string>>(context);
+                    _mappings = JsonSerializer.Deserialize<Dictionary<string, string>>(context);
                 }
             }
         }

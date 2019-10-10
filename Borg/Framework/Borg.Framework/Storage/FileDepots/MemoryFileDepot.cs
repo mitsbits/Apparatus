@@ -47,7 +47,7 @@ namespace Borg.Framework.Storage.FileDepots
             {
                 output = $"{output}/";
             }
-            return output.MakeValidFileName();
+            return output;
         }
 
         public IDirectoryContents GetDirectoryContents(string subpath)

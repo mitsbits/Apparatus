@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\Borg.Infrastructure.Core\Borg.Infrastructure.Core.csproj" />
     <ProjectReference Include="..\Borg.Framework.Azure\Borg.Framework.Azure.csproj" />
     <ProjectReference Include="..\Borg.Framework\Borg.Framework.csproj" />
   </ItemGroup>

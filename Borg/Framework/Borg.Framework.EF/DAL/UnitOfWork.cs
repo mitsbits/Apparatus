@@ -6,8 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Newtonsoft.Json;
+
 using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -47,14 +48,14 @@ namespace Borg.Framework.EF.DAL
         private void OnTracked(object sender, EntityTrackedEventArgs e)
         {
             var collection = new object[] { sender, e };
-            var data = JsonConvert.SerializeObject(collection);
+            var data = JsonSerializer.Serialize(collection);
             Log.LogTrace(data);
         }
 
         private void OnStateChanged(object sender, EntityStateChangedEventArgs e)
         {
             var collection = new object[] { sender, e };
-            var data = JsonConvert.SerializeObject(collection);
+            var data = JsonSerializer.Serialize(collection);
             Log.LogTrace(data);
         }
 

@@ -18,10 +18,10 @@ namespace Borg.Framework.Storage.FileProviders
         private MemoryDirectoryContents()
         {
         }
+
         public bool Exists { get; private set; }
 
         public IEnumerator<IFileInfo> GetEnumerator() => _data.GetEnumerator();
-
 
         IEnumerator IEnumerable.GetEnumerator()
         {

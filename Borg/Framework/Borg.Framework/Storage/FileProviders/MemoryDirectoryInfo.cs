@@ -14,6 +14,7 @@ namespace Borg.Framework.Storage.FileProviders
             PhysicalPath = path;
             var parts = path.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             Name = parts.Length == 0 ? string.Empty : parts.Last();
+            Exists = true;
         }
 
         public override long Length => 0;

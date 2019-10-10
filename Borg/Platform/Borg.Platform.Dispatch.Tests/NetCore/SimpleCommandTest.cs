@@ -1,14 +1,13 @@
-using Autofac;
 using Borg.Framework.Dispatch.Contracts;
 using Borg.Infrastructure.Core.DDD.ValueObjects;
 using Borg.Infrastructure.Core.Threading;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Borg.Platform.Dispatch.Tests.NetCore
 {
@@ -91,7 +90,6 @@ namespace Borg.Platform.Dispatch.Tests.NetCore
             base.RegisterSpecificServices(services);
             services.AddScoped<IRequestHandler<RaiseTheTargetRequest>, RaiseTheTargetRequestHandler>();
             services.AddScoped<IRequestHandler<GreetingCommand, GreetingCommandResponse>, GreetingCommandHandler>();
-
         }
 
         #region test_a_simple_request

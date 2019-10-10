@@ -38,18 +38,6 @@ namespace Borg.Framework.Storage.FileDepots
         private long MaxFileSize { get; }
         private long MaxFiles { get; }
 
-        private static string SanitizePath(string source)
-        {
-            var output = source.ToLower().Trim();
-            if (string.IsNullOrWhiteSpace(output)) { return "/"; };
-            output = output.Replace(@"\", "/").Replace(@"\\", "/").Replace("//", "/").TrimEnd('/');
-            if (Path.GetExtension(output).Length == 0)
-            {
-                output = $"{output}/";
-            }
-            return output;
-        }
-
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
             subpath = SanitizePath(subpath);
@@ -79,15 +67,14 @@ namespace Borg.Framework.Storage.FileDepots
             throw new NotImplementedException();
         }
 
-        public Task<bool> Delete(string path, CancellationToken cancellationToken = default)
+        public Task Delete(string path, CancellationToken cancellationToken = default)
         {
             path = SanitizePath(path);
             if (Source.ContainsKey(path))
             {
-                var result = Source.TryRemove(path, out var value);
-                return Task.FromResult(result);
+                Source.TryRemove(path, out var value);
             }
-            return Task.FromResult(false);
+            return Task.CompletedTask;
         }
 
         public Task<bool> Exists(string path, CancellationToken cancellationToken = default)
@@ -95,15 +82,20 @@ namespace Borg.Framework.Storage.FileDepots
             return Task.FromResult(Source.ContainsKey(SanitizePath(path)));
         }
 
-        public Task<bool> Save(string path, Stream stream, CancellationToken cancellationToken = default)
+        public Task<IFileInfo> Save(string path, Stream stream, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             path = SanitizePath(path);
+            var info = CreateFromInput(path, stream);
             if (Source.TryGetValue(path, out var retrieved))
             {
-                return Task.FromResult(Source.TryUpdate(path, CreateFromInput(path, stream), retrieved));
+                Source.TryUpdate(path, info, retrieved);
             }
-            return Task.FromResult(Source.TryAdd(path, CreateFromInput(path, stream)));
+            else
+            {
+                Source.TryAdd(path, info);
+            }
+            return Task.FromResult(info);
         }
 
         private IFileInfo CreateFromInput(string path, Stream stream, [CallerMemberName] string callerName = "")
@@ -111,7 +103,10 @@ namespace Borg.Framework.Storage.FileDepots
             byte[] data;
             using (var memoryStream = new MemoryStream())
             {
-                stream.CopyTo(memoryStream);
+                if (stream != null)
+                {
+                    stream.CopyTo(memoryStream);
+                }
                 data = memoryStream.ToArray();
             }
             path = SanitizePath(path);
@@ -146,7 +141,20 @@ namespace Borg.Framework.Storage.FileDepots
             return Source[tree];
         }
 
+        private static string SanitizePath(string source)
+        {
+            var output = source.ToLower().Trim();
+            if (string.IsNullOrWhiteSpace(output)) { return "/"; };
+            output = output.Replace(@"\", "/").Replace(@"\\", "/").Replace("//", "/").TrimEnd('/');
+            if (Path.GetExtension(output).Length == 0)
+            {
+                output = $"{output}/";
+            }
+            return $"/{output.TrimStart('/')}";
+        }
+
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -155,7 +163,6 @@ namespace Borg.Framework.Storage.FileDepots
             {
                 if (disposing)
                 {
-           
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
@@ -180,6 +187,7 @@ namespace Borg.Framework.Storage.FileDepots
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
-        #endregion
+
+        #endregion IDisposable Support
     }
 }

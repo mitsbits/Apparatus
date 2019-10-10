@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Microsoft.Extensions.FileProviders;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,10 +9,8 @@ namespace Borg.Framework.Storage.Contracts
     {
         Task<bool> Exists(string path, CancellationToken cancellationToken = default);
 
-        Task<bool> Save(string path, Stream stream, CancellationToken cancellationToken = default);
+        Task<IFileInfo> Save(string path, Stream stream, CancellationToken cancellationToken = default);
 
-        
-
-        Task<bool> Delete(string path, CancellationToken cancellationToken = default);
+        Task Delete(string path, CancellationToken cancellationToken = default);
     }
 }

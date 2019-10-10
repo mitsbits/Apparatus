@@ -12,17 +12,12 @@ namespace Borg.Framework.Storage.FileProviders
         public MemoryDirectoryContents(IEnumerable<IFileInfo> data)
         {
             _data = new List<IFileInfo>(Preconditions.NotNull(data, nameof(data)));
+            Exists = true;
         }
 
         private MemoryDirectoryContents()
         {
         }
-
-        public static IDirectoryContents NotFound()
-        {
-            return new MemoryDirectoryContents() { Exists = false };
-        }
-
         public bool Exists { get; private set; }
 
         public IEnumerator<IFileInfo> GetEnumerator() => _data.GetEnumerator();

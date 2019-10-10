@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Platform.Dispatch.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestFileProviders", "Borg\Framework\TestFileProviders\TestFileProviders.csproj", "{BE7A855B-CBFB-4275-B0DB-6BEDCB4FBF10}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Borg.Framework.Tests", "Borg\Framework\Borg.Framework.Tests\Borg.Framework.Tests.csproj", "{632AA6DC-7A4F-4BB0-8996-9AB528E49DAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{BE7A855B-CBFB-4275-B0DB-6BEDCB4FBF10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE7A855B-CBFB-4275-B0DB-6BEDCB4FBF10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE7A855B-CBFB-4275-B0DB-6BEDCB4FBF10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{632AA6DC-7A4F-4BB0-8996-9AB528E49DAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{632AA6DC-7A4F-4BB0-8996-9AB528E49DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{632AA6DC-7A4F-4BB0-8996-9AB528E49DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{632AA6DC-7A4F-4BB0-8996-9AB528E49DAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +109,7 @@ Global
 		{B1E48ED1-9F74-43FC-94DC-4B3202DD078A} = {467B140E-EF57-4CB1-BDC2-A032E760CE50}
 		{655BA890-84B9-46B2-9812-D9307957CCE5} = {41EEE61C-CA95-4DBA-8699-CD436BA8CF89}
 		{BE7A855B-CBFB-4275-B0DB-6BEDCB4FBF10} = {467B140E-EF57-4CB1-BDC2-A032E760CE50}
+		{632AA6DC-7A4F-4BB0-8996-9AB528E49DAB} = {467B140E-EF57-4CB1-BDC2-A032E760CE50}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B83D8B06-63F3-4B4F-957A-063BEE172667}

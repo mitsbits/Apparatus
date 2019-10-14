@@ -41,10 +41,14 @@ namespace Borg.Framework.Storage.FileDepots
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
             subpath = SanitizePath(subpath);
+            var length = subpath.Length ;
             var bucket = new List<IFileInfo>();
-            foreach (var key in Source.Keys)
+            foreach (var key in Source.Keys.OrderBy(x=>x).ToList())
             {
-                if (key.StartsWith(subpath, true, CultureInfo.InvariantCulture))
+                var keypart = key.Length >= length ? key.Substring(0, length) : key;
+
+                var check = keypart.Equals(subpath);
+                if (check)
                 {
                     bucket.Add(Source[key]);
                 }
@@ -59,7 +63,7 @@ namespace Borg.Framework.Storage.FileDepots
             {
                 return fileInfo;
             }
-            return null;
+            return new MemoryFileNotFounfInfo(subpath);
         }
 
         public IChangeToken Watch(string filter)
@@ -131,9 +135,14 @@ namespace Borg.Framework.Storage.FileDepots
 
             var lastEntryIsFile = !Path.GetExtension(parts.Last()).Trim().IsNullOrWhiteSpace();
             filename = lastEntryIsFile ? parts.Last() : string.Empty;
+            if (parts.Length == 1 && lastEntryIsFile)
+            {
+                return Source["/"];
+            }
             var tree = string.Empty;
             foreach (var part in parts.Take(parts.Length - (lastEntryIsFile ? 1 : 0)))
             {
+
                 tree = SanitizePath($"{tree}/{part}/");
                 var directory = new MemoryDirectoryInfo(tree);
                 Source.TryAdd(tree, directory);

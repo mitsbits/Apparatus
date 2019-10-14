@@ -1,6 +1,6 @@
 ﻿using Borg.Framework.Storage;
 using Borg.Framework.Storage.Contracts;
-
+using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +14,7 @@ namespace Borg
 {
     public static class IFileDepotExtensions
     {
-        public async static Task<bool> Copy(this IFileDepot store, string path, string targetpath, CancellationToken cancellationToken = default)
+        public async static Task<IFileInfo> Copy(this IFileDepot store, string path, string targetpath, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var original = store.GetFileInfo(path);
@@ -55,7 +55,7 @@ namespace Borg
             return AsyncHelpers.RunSync(() => storage.Exists(path));
         }
 
-        public static bool SaveFile(this IFileStorage storage, string path, Stream stream)
+        public static IFileInfo SaveFile(this IFileStorage storage, string path, Stream stream)
         {
             return AsyncHelpers.RunSync(() => storage.Save(path, stream));
         }
@@ -71,9 +71,9 @@ namespace Borg
             return storage.CopyFile(path, targetpath);
         }
 
-        public static bool DeleteFile(this IFileStorage storage, string path)
+        public static void DeleteFile(this IFileStorage storage, string path)
         {
-            return AsyncHelpers.RunSync(() => storage.Delete(path));
+             AsyncHelpers.RunSync(() => storage.Delete(path));
         }
 
         public static IEnumerable<IFileSpec> GetFileList(this IFileStorage storage, string searchPattern = null,
@@ -125,7 +125,8 @@ namespace Borg
         {
             if (fileStorage == null) throw new ArgumentNullException(nameof(fileStorage));
             if (string.IsNullOrWhiteSpace(scope)) throw new ArgumentNullException(nameof(scope));
-            return new ScopedFileStorage(fileStorage, scope);
+            //return new ScopedFileStorage(fileStorage, scope);
+            throw new NotImplementedException();
         }
 
         //public static async Task<bool> RenameFile(this IFileStorage fileStorage, string path, string newpath,
@@ -134,7 +135,7 @@ namespace Borg
         //   // return await fileStorage.CopyFile(path, newpath, cancellationToken) && await fileStorage.Delete(path, cancellationToken);
         //}
 
-        public static async Task<bool> SaveFile(this IFileStorage fileStorage, string path, string content, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task<IFileInfo> SaveFile(this IFileStorage fileStorage, string path, string content, CancellationToken cancellationToken = default(CancellationToken))
         {
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(content ?? ""));
             return await fileStorage.Save(path, stream, cancellationToken);

@@ -7,7 +7,7 @@ namespace Borg.Framework.Storage.FileProviders
     public abstract class MemoryInfo : IFileInfo
     {
         protected byte[] _data;
-        public bool Exists { get; protected set; }
+        public virtual bool Exists { get; protected set; }
 
         public virtual long Length { get; protected set; }
 

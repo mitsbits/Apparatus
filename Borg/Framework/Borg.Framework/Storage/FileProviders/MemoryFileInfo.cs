@@ -18,8 +18,9 @@ namespace Borg.Framework.Storage.FileProviders
                 stream.CopyTo(memoryStream);
                 _data = memoryStream.ToArray();
             }
+            Exists = true;
         }
-
+        public string Extension => Path.GetExtension(PhysicalPath);
         public override long Length => _data.Length;
         public override bool IsDirectory => false;
     }

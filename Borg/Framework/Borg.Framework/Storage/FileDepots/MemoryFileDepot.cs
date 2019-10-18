@@ -29,7 +29,7 @@ namespace Borg.Framework.Storage.FileDepots
             return source;
         });
 
-        protected virtual void OnFileChanged(MemoryFileChanedEventArgs e)
+        internal virtual void OnFileChanged(MemoryFileChanedEventArgs e)
         {
             EventHandler<MemoryFileChanedEventArgs> handler = FileChanged;
             handler?.Invoke(this, e);
@@ -103,7 +103,7 @@ namespace Borg.Framework.Storage.FileDepots
                 _filePathTokenLookup.TryAdd(fileInfo.PhysicalPath, token);
                 return token;
             }
-            return NullChangeToken.Singleton;
+            return new MemoryFileChangeToken(new MemoryFileInfo(filter, null));
         }
 
         public Task Delete(string path, CancellationToken cancellationToken = default)
@@ -136,7 +136,7 @@ namespace Borg.Framework.Storage.FileDepots
             {
                 Source.TryAdd(path, info);
             }
-            OnFileChanged(new MemoryFileChanedEventArgs(FileOperation.Delete, info.PhysicalPath));
+            OnFileChanged(new MemoryFileChanedEventArgs(FileOperation.Save, info.PhysicalPath));
             return Task.FromResult(info);
         }
 

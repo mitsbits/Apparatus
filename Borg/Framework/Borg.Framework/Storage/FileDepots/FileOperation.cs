@@ -2,7 +2,7 @@
 {
     public partial class MemoryFileDepot
     {
-        #endregion IDisposable Support
+
 
         public enum FileOperation
         {
@@ -10,3 +10,4 @@
             Delete = 2
         }
     }
+}

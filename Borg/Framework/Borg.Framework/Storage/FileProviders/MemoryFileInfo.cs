@@ -12,11 +12,18 @@ namespace Borg.Framework.Storage.FileProviders
             PhysicalPath = path;
             Name = Path.GetFileNameWithoutExtension(path);
             LastModified = DateTimeOffset.Now;
-            using (var memoryStream = new MemoryStream())
+            if (stream == null || stream.Length == 0)
             {
-                stream.Position = 0;
-                stream.CopyTo(memoryStream);
-                _data = memoryStream.ToArray();
+                _data = new byte[0];
+            }
+            else
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    stream.Position = 0;
+                    stream.CopyTo(memoryStream);
+                    _data = memoryStream.ToArray();
+                }
             }
             Exists = true;
         }

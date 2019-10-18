@@ -4,7 +4,7 @@ namespace Borg.Framework.Storage.FileDepots
 {
     public partial class MemoryFileDepot
     {
-        public class MemoryFileChanedEventArgs : EventArgs
+        internal class MemoryFileChanedEventArgs : EventArgs
         {
             internal MemoryFileChanedEventArgs(FileOperation fileOperation, string path)
             {
@@ -16,3 +16,4 @@ namespace Borg.Framework.Storage.FileDepots
             internal string Path { get; }
         }
     }
+}

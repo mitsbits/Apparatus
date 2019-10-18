@@ -31,6 +31,7 @@ namespace Borg.Framework.Storage.FileDepots
                 }
             }
 
+
             public MemoryFileChangeToken(MemoryFileInfo fileInfo)
             {
                 _fileInfo = Preconditions.NotNull(fileInfo, nameof(fileInfo));
@@ -70,3 +71,4 @@ namespace Borg.Framework.Storage.FileDepots
             public bool ActiveChangeCallbacks => false;
         }
     }
+}

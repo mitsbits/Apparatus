@@ -11,11 +11,11 @@ namespace Borg.Framework.Storage.FileProviders
 
         public virtual long Length { get; protected set; }
 
-        public string PhysicalPath { get; protected set; }
+        public virtual string PhysicalPath { get; protected set; }
 
-        public string Name { get; protected set; }
+        public virtual string Name { get; protected set; }
 
-        public DateTimeOffset LastModified { get; protected set; }
+        public virtual DateTimeOffset LastModified { get; protected set; }
 
         public virtual bool IsDirectory { get; protected set; }
 

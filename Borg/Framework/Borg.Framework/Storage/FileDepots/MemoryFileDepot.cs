@@ -5,7 +5,6 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,14 +13,40 @@ using System.Threading.Tasks;
 
 namespace Borg.Framework.Storage.FileDepots
 {
-    public class MemoryFileDepot : IFileDepot, IDisposable
+    public partial class MemoryFileDepot : IFileDepot, IDisposable
     {
+        private static readonly Action<object> _cancelTokenSource = state => ((CancellationTokenSource)state).Cancel();
+
+        private readonly ConcurrentDictionary<string, MemoryFileChangeToken> _filePathTokenLookup =
+           new ConcurrentDictionary<string, MemoryFileChangeToken>(StringComparer.OrdinalIgnoreCase);
+
+        private EventHandler<MemoryFileChanedEventArgs> FileChanged;
+
         private readonly Lazy<ConcurrentDictionary<string, IFileInfo>> _source = new Lazy<ConcurrentDictionary<string, IFileInfo>>(() =>
         {
             var source = new ConcurrentDictionary<string, IFileInfo>();
             source.TryAdd("/", new MemoryDirectoryInfo("/"));
             return source;
         });
+
+        protected virtual void OnFileChanged(MemoryFileChanedEventArgs e)
+        {
+            EventHandler<MemoryFileChanedEventArgs> handler = FileChanged;
+            handler?.Invoke(this, e);
+        }
+
+        private void DoFileChanged(object sender, MemoryFileChanedEventArgs e)
+        {
+            _filePathTokenLookup.TryGetValue(e.Path, out var token);
+            if (token != null)
+            {
+                if (!token.HasChanged)
+                {
+                    token.Change(e.FileOperation);
+                }
+                _filePathTokenLookup.TryRemove(e.Path, out token);
+            }
+        }
 
         private ConcurrentDictionary<string, IFileInfo> Source => _source.Value;
 
@@ -33,6 +58,7 @@ namespace Borg.Framework.Storage.FileDepots
         {
             MaxFileSize = maxFileSize;
             MaxFiles = maxFiles;
+            FileChanged += DoFileChanged;
         }
 
         private long MaxFileSize { get; }
@@ -41,9 +67,9 @@ namespace Borg.Framework.Storage.FileDepots
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
             subpath = SanitizePath(subpath);
-            var length = subpath.Length ;
+            var length = subpath.Length;
             var bucket = new List<IFileInfo>();
-            foreach (var key in Source.Keys.OrderBy(x=>x).ToList())
+            foreach (var key in Source.Keys.OrderBy(x => x).ToList())
             {
                 var keypart = key.Length >= length ? key.Substring(0, length) : key;
 
@@ -68,7 +94,16 @@ namespace Borg.Framework.Storage.FileDepots
 
         public IChangeToken Watch(string filter)
         {
-            throw new NotImplementedException();
+            MemoryFileChangeToken token;
+            var info = this.GetFileInfo(filter);
+            if (info.Exists && !info.IsDirectory)
+            {
+                var fileInfo = info as MemoryFileInfo;
+                token = new MemoryFileChangeToken(fileInfo);
+                _filePathTokenLookup.TryAdd(fileInfo.PhysicalPath, token);
+                return token;
+            }
+            return NullChangeToken.Singleton;
         }
 
         public Task Delete(string path, CancellationToken cancellationToken = default)
@@ -77,7 +112,9 @@ namespace Borg.Framework.Storage.FileDepots
             if (Source.ContainsKey(path))
             {
                 Source.TryRemove(path, out var value);
+                OnFileChanged(new MemoryFileChanedEventArgs(FileOperation.Delete, value.PhysicalPath));
             }
+
             return Task.CompletedTask;
         }
 
@@ -99,6 +136,7 @@ namespace Borg.Framework.Storage.FileDepots
             {
                 Source.TryAdd(path, info);
             }
+            OnFileChanged(new MemoryFileChanedEventArgs(FileOperation.Delete, info.PhysicalPath));
             return Task.FromResult(info);
         }
 
@@ -142,7 +180,6 @@ namespace Borg.Framework.Storage.FileDepots
             var tree = string.Empty;
             foreach (var part in parts.Take(parts.Length - (lastEntryIsFile ? 1 : 0)))
             {
-
                 tree = SanitizePath($"{tree}/{part}/");
                 var directory = new MemoryDirectoryInfo(tree);
                 Source.TryAdd(tree, directory);
@@ -172,6 +209,7 @@ namespace Borg.Framework.Storage.FileDepots
             {
                 if (disposing)
                 {
+                    FileChanged -= DoFileChanged;
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

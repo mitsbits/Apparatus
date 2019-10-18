@@ -20,6 +20,7 @@ namespace Borg.Framework.Storage.FileProviders
             }
             Exists = true;
         }
+        public DateTime LastWriteTimeUtc => LastModified.ToUniversalTime().DateTime;
         public string Extension => Path.GetExtension(PhysicalPath);
         public override long Length => _data.Length;
         public override bool IsDirectory => false;

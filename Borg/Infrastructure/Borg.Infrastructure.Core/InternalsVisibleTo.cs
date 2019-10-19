@@ -13,3 +13,5 @@
 [assembly: InternalsVisibleTo("Borg.Platform.Redis")]
 [assembly: InternalsVisibleTo("Borg.Platform.Dispatch.Autofac")]
 [assembly: InternalsVisibleTo("Apparatus.System.Api")]
+[assembly: InternalsVisibleTo("Borg.Framework.SQLServer")]
+

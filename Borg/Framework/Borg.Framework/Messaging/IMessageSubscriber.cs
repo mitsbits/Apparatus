@@ -11,13 +11,18 @@ namespace Borg.Infra.Messaging
             CancellationToken cancellationToken = default) where T : class;
     }
 
-    public interface IQueSubscriber<in T>
+    public interface IQueSubscriber<in T> : IQueueClient
     {
-        string QueName { get; }
+
         Func<T, CancellationToken, Task> Handler { get; }
     }
 
     public interface IJasonQueSubscriber : IQueSubscriber<JsonDocument>
     {
+    }
+
+    public interface IQueueClient
+    {
+        string QueueName { get; }
     }
 }

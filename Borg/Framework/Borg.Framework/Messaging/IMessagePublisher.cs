@@ -10,4 +10,9 @@ namespace Borg.Infra.Messaging
 
         Task PublishAsync(Type messageType, object message, TimeSpan? delay = null, CancellationToken cancellationToken = default);
     }
+
+    public interface IQueuePublisher : IQueueClient
+    {
+        Task Publish(Type messageType, object message, CancellationToken cancellationToken = default);
+    }
 }

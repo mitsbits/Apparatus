@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Borg.Framework.SQLServer.Broadcast
 {
-    internal class SQLServerQueuePublisher : SQLServerQueuePublisherBase, IQueuePublisher, IDisposable
+    internal sealed class SQLServerQueuePublisher : SQLServerQueuePublisherBase, IQueuePublisher, IDisposable
     {
         public SQLServerQueuePublisher(string connectionString, string queueName) : base(connectionString, queueName)
         {

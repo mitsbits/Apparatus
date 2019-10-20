@@ -1,6 +1,8 @@
-﻿namespace Borg.Framework.Caching
+﻿using MediatR;
+
+namespace Borg.Framework.Caching
 {
-    public class EvictionRequest
+    public class EvictionRequest : IRequest
     {
         public string Key { get; }
     }

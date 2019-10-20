@@ -2,6 +2,6 @@
 {
     public interface IHaveWeight
     {
-        double Weight { get; set; }
+        double Weight { get; }
     }
 }

@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Borg;
+using Borg.Framework.Modularity.Pipelines;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace TestFileProviders
 {
@@ -13,7 +10,18 @@ namespace TestFileProviders
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            Seed(host);
+            host.Run();
+        }
+
+        public static void Seed(IHost host)
+        {
+            var jobs = host.Services.GetServices<IHostStartUpJob>();
+            foreach (var job in jobs)
+            {
+                AsyncHelpers.RunSync(() => job.Execute());
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

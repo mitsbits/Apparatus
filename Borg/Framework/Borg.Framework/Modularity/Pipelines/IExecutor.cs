@@ -10,6 +10,6 @@ namespace Borg.Framework.Modularity.Pipelines
 
         event EventHandler<ExecutorEventArgs> OnExecuted;
 
-        Task Execute(CancellationToken cancelationToken);
+        Task Execute(CancellationToken cancelationToken = default);
     }
 }

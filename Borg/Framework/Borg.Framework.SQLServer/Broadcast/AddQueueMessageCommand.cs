@@ -1,8 +1,9 @@
 ﻿using Borg.Infrastructure.Core;
+using MediatR;
 
 namespace Borg.Framework.SQLServer.Broadcast
 {
-    public class AddQueueMessageCommand
+    public class AddQueueMessageCommand : IRequest
     {
         public AddQueueMessageCommand(string queueName, object message)
         {

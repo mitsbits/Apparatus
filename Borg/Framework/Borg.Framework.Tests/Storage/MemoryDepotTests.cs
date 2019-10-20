@@ -139,66 +139,63 @@ namespace Borg.Framework.Tests.Storage
             }
         }
 
-
         [Fact]
         private async Task change_token_gets_canceled()
         {
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = "Borg.Framework.Tests.Storage.Files.n.jpg";
-            
+
             using (var depot = new MemoryFileDepot())
             {
-           
-                    IChangeToken token;
-                    var path = "apath/asubpath/anothersubpath/n.jpg";
-                    IFileInfo info;
-                    MemoryFileInfo fileInfo;
-                    using (var stream = assembly.GetManifestResourceStream(resourceName))
-                    {
-                        
-                         info = await depot.Save(path, stream);
-                        info.Name.ShouldBe("n");
-                        info.Exists.ShouldBeTrue();
-                        info.IsDirectory.ShouldBeFalse();
-                        info.Length.ShouldBeGreaterThan(0);
+                IChangeToken token;
+                var path = "apath/asubpath/anothersubpath/n.jpg";
+                IFileInfo info;
+                MemoryFileInfo fileInfo;
+                using (var stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    info = await depot.Save(path, stream);
+                    info.Name.ShouldBe("n");
+                    info.Exists.ShouldBeTrue();
+                    info.IsDirectory.ShouldBeFalse();
+                    info.Length.ShouldBeGreaterThan(0);
 
-                         fileInfo = info as MemoryFileInfo;
-                        fileInfo.ShouldNotBeNull();
-                        fileInfo.Extension.ShouldBe(".jpg");
+                    fileInfo = info as MemoryFileInfo;
+                    fileInfo.ShouldNotBeNull();
+                    fileInfo.Extension.ShouldBe(".jpg");
 
-                        var first = depot.GetDirectoryContents("apath");
-                        first.Exists.ShouldBeTrue();
-                        var directory = first.First();
-                        directory.Name.ShouldBe("apath");
-                        directory.PhysicalPath.ShouldBe("/apath/");
-                        directory = first.Skip(1).Take(1).Single();
-                        directory.Name.ShouldBe("asubpath");
-                        directory.PhysicalPath.ShouldBe("/apath/asubpath/");
+                    var first = depot.GetDirectoryContents("apath");
+                    first.Exists.ShouldBeTrue();
+                    var directory = first.First();
+                    directory.Name.ShouldBe("apath");
+                    directory.PhysicalPath.ShouldBe("/apath/");
+                    directory = first.Skip(1).Take(1).Single();
+                    directory.Name.ShouldBe("asubpath");
+                    directory.PhysicalPath.ShouldBe("/apath/asubpath/");
 
-                        var directoyContents = depot.GetDirectoryContents("apath/asubpath/anothersubpath/");
-                        var fileinfo = directoyContents.Skip(1).Take(1).Single() as MemoryFileInfo;
-                        fileInfo.ShouldNotBeNull();
-                        fileInfo.Exists.ShouldBeTrue();
-                        fileInfo.PhysicalPath.ShouldBe("/apath/asubpath/anothersubpath/n.jpg");
-                        fileInfo.Name.ShouldBe("n");
-                        fileInfo.Extension.ShouldBe(".jpg");
-                        fileInfo.Length.ShouldBeGreaterThan(0);
-                    }
-                    token = depot.Watch(path);
-                    token.HasChanged.ShouldBeFalse();
-                    await depot.Delete(path);
-                    token.HasChanged.ShouldBeTrue();
-                    
-                    token = depot.Watch("apath/asubpath/anothersubpath/n.jpg");
-                    token.HasChanged.ShouldBeFalse();
-                    using (var stream = assembly.GetManifestResourceStream(resourceName))
-                    {
-                        info = await depot.Save(path, stream);
-                    }
-                    token.HasChanged.ShouldBeTrue();
-               
+                    var directoyContents = depot.GetDirectoryContents("apath/asubpath/anothersubpath/");
+                    var fileinfo = directoyContents.Skip(1).Take(1).Single() as MemoryFileInfo;
+                    fileInfo.ShouldNotBeNull();
+                    fileInfo.Exists.ShouldBeTrue();
+                    fileInfo.PhysicalPath.ShouldBe("/apath/asubpath/anothersubpath/n.jpg");
+                    fileInfo.Name.ShouldBe("n");
+                    fileInfo.Extension.ShouldBe(".jpg");
+                    fileInfo.Length.ShouldBeGreaterThan(0);
+                }
+                token = depot.Watch(path);
+                token.HasChanged.ShouldBeFalse();
+                await depot.Delete(path);
+                token.HasChanged.ShouldBeTrue();
+
+                token = depot.Watch("apath/asubpath/anothersubpath/n.jpg");
+                token.HasChanged.ShouldBeFalse();
+                using (var stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    info = await depot.Save(path, stream);
+                }
+                token.HasChanged.ShouldBeTrue();
             }
         }
+
         [Fact]
         private void test_that_an_invalid_path_returns_not_found_result()
         {

@@ -1,5 +1,5 @@
-﻿using Borg.Framework.Dispatch.Contracts;
-using Borg.Infrastructure.Core;
+﻿using Borg.Infrastructure.Core;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Threading;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Borg.Framework.Caching
 {
-    public class EvictionRequestHandler : AsyncNotificationHandler<EvictionRequest>
+    public class EvictionRequestHandler : IRequestHandler<EvictionRequest>
     {
         protected readonly ICacheClient cache;
         private readonly ILogger logger;
@@ -18,18 +18,19 @@ namespace Borg.Framework.Caching
             this.logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
         }
 
-        public override async Task Handle(object notification, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(EvictionRequest request, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var message = notification as EvictionRequest;
-            if (message != null)
+
+            if (request != null)
             {
-                await cache.Evict(message.Key, cancellationToken);
+                await cache.Evict(request.Key, cancellationToken);
             }
             else
             {
                 logger.Trace($"Eviction request is null");
             }
+            return Unit.Value;
         }
     }
 }

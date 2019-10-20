@@ -15,9 +15,9 @@ namespace Borg.Framework.SQLServer.Broadcast
             Payload = payload;
         }
 
-        private DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
 
-        private string PayloadType { get; set; }
-        private string Payload { get; set; }
+        public string PayloadType { get; set; }
+        public string Payload { get; set; }
     }
 }

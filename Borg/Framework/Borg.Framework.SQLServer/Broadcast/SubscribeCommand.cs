@@ -1,10 +1,11 @@
 ﻿using Borg.Infrastructure.Core;
+using MediatR;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Borg.Framework.SQLServer.Broadcast
 {
-    public class SubscribeCommand
+    public class SubscribeCommand : IRequest
     {
         public SubscribeCommand(string subscriberName, IEnumerable<string> queueNames)
         {

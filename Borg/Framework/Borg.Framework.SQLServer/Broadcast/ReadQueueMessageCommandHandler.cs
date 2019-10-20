@@ -1,5 +1,9 @@
-﻿using Borg.Framework.Dispatch.Contracts;
+﻿using Borg.Framework.Services.Configuration;
 using Borg.Infrastructure.Core;
+using MediatR;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Data.SqlClient;
 using System.Threading;
@@ -10,10 +14,13 @@ namespace Borg.Framework.SQLServer.Broadcast
     public class ReadQueueMessageCommandHandler : IRequestHandler<ReadQueueMessageCommand, ReadQueueMessageCommandResult>, IDisposable
     {
         protected readonly SqlConnection sqlConnection;
+        protected readonly ILogger logger;
 
-        protected ReadQueueMessageCommandHandler(string connectionString)
+        public ReadQueueMessageCommandHandler(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
-            sqlConnection = new SqlConnection(Preconditions.NotEmpty(connectionString, nameof(connectionString)));
+            logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
+            var options = Configurator<SqlBroadcastBusConfig>.Build(logger, configuration, SqlBroadcastBusConfig.Key);
+            sqlConnection = new SqlConnection(Preconditions.NotEmpty(options.SqlConnectionString, nameof(options.SqlConnectionString)));
         }
 
         public async Task<ReadQueueMessageCommandResult> Handle(ReadQueueMessageCommand request, CancellationToken cancellationToken)

@@ -18,7 +18,7 @@ namespace Borg.Framework.Services.Serializer
 
         public Task<object> Deserialize(byte[] value)
         {
-            return Task.FromResult(JsonSerializer.Deserialize<object>(Encoding.UTF8.GetString(value),options: _settings));
+            return Task.FromResult(JsonSerializer.Deserialize<object>(Encoding.UTF8.GetString(value), options: _settings));
         }
 
         public Task<byte[]> Serialize(object value)

@@ -1,8 +1,11 @@
 ﻿using Borg;
+using Borg.Framework.SQLServer.Broadcast;
 using Borg.Framework.Storage.Contracts;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,15 +18,18 @@ namespace TestFileProviders.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IFileDepot _depot;
+        private readonly ISqlBroadcastBus _sqlBroadcastBus;
 
-        public HomeController(ILogger<HomeController> logger, IFileDepot depot)
+        public HomeController(ILogger<HomeController> logger, IFileDepot depot, ISqlBroadcastBus sqlBroadcastBus)
         {
             _logger = logger;
             _depot = depot;
+            _sqlBroadcastBus = sqlBroadcastBus;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            await _sqlBroadcastBus.Publish("a queue", new AMessage { Id = 5, Message = "Hello there!" });
             return View();
         }
 
@@ -67,5 +73,12 @@ namespace TestFileProviders.Controllers
             public List<IFormFile> Files { get; set; }
             public string Path { get; set; }
         }
+    }
+
+    public class AMessage : INotification
+    {
+        public int Id { get; set; }
+        public string Message { get; set; }
+        public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
     }
 }

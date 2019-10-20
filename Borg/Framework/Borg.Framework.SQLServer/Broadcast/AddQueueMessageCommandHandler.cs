@@ -1,6 +1,9 @@
-﻿using Borg.Framework.Dispatch.Contracts;
+﻿using Borg.Framework.Services.Configuration;
 using Borg.Infrastructure.Core;
-using Borg.Infrastructure.Core.DDD.ValueObjects;
+using MediatR;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Data.SqlClient;
 using System.IO;
@@ -14,13 +17,16 @@ namespace Borg.Framework.SQLServer.Broadcast
     public class AddQueueMessageCommandHandler : IRequestHandler<AddQueueMessageCommand>, IDisposable
     {
         protected readonly SqlConnection sqlConnection;
+        protected readonly ILogger logger;
 
-        protected AddQueueMessageCommandHandler(string connectionString)
+        public AddQueueMessageCommandHandler(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
-            sqlConnection = new SqlConnection(Preconditions.NotEmpty(connectionString, nameof(connectionString)));
+            logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
+            var options = Configurator<SqlBroadcastBusConfig>.Build(logger, configuration, SqlBroadcastBusConfig.Key);
+            sqlConnection = new SqlConnection(Preconditions.NotEmpty(options.SqlConnectionString, nameof(options.SqlConnectionString)));
         }
 
-        public async Task<Unit> Handle(AddQueueMessageCommand request, CancellationToken cancellationToken = default)
+        public async Task<MediatR.Unit> Handle(AddQueueMessageCommand request, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var args = request;

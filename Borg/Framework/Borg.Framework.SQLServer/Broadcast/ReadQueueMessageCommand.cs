@@ -1,8 +1,9 @@
 ﻿using Borg.Infrastructure.Core;
+using MediatR;
 
 namespace Borg.Framework.SQLServer.Broadcast
 {
-    public class ReadQueueMessageCommand
+    public class ReadQueueMessageCommand : IRequest<ReadQueueMessageCommandResult>
     {
         public ReadQueueMessageCommand(string queueName, string subscriberName)
         {

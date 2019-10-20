@@ -89,6 +89,23 @@ namespace Borg.Infrastructure.Core
         }
 
         [ContractAnnotation("value:null => halt")]
+        public static int Positive([NoEnumeration] int value, [InvokerParameterName, NotNull] string parameterName, [CallerMemberName] string callerName = "")
+        {
+            parameterName = NotEmpty(parameterName, nameof(parameterName));
+            if (ReferenceEquals(value, null))
+            {
+                throw new IndexOutOfRangeException(parameterName);
+            }
+
+            if (value <= 0)
+            {
+                throw new IndexOutOfRangeException($"Int value cannot be less or equal to zero. {parameterName}");
+            }
+
+            return value;
+        }
+
+        [ContractAnnotation("value:null => halt")]
         public static int NegativeOrZero([NoEnumeration] int value, [InvokerParameterName, NotNull] string parameterName, [CallerMemberName] string callerName = "")
         {
             parameterName = NotEmpty(parameterName, nameof(parameterName));

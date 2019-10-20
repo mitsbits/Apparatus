@@ -2,7 +2,8 @@
 
 namespace Borg.Framework.Modularity.Pipelines
 {
-    public interface IPipeline : IEnumerable<IPipelineStep<IPipeline>>
+    public interface IPipeline
     {
+        IEnumerable<IPipelineStep<IPipeline>> Steps { get; }
     }
 }

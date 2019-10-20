@@ -10,7 +10,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Borg.Framework.SQLServer.Broadcast.Migration
+namespace Borg.Framework.SQLServer.ApplicationSettings.Migration
 {
     public class CheckForSchemaCommandHandler : IRequestHandler<CheckForSchemaCommand, CheckForSchemaCommandResult>, IDisposable
     {
@@ -21,12 +21,21 @@ namespace Borg.Framework.SQLServer.Broadcast.Migration
         public CheckForSchemaCommandHandler(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
-            var options = Configurator<SqlBroadcastBusConfig>.Build(logger, configuration, SqlBroadcastBusConfig.Key);
+            var options = Configurator<SqlApplicationSettingConfig>.Build(logger, configuration, SqlApplicationSettingsConstants.ConfigKey);
             sqlConnection = new SqlConnection(Preconditions.NotEmpty(options.SqlConnectionString, nameof(options.SqlConnectionString)));
-            using (var stream = GetType().Assembly.GetManifestResourceStream(MigrationPipeline.checkVersionResourcePath))
+            using (var stream = GetType().Assembly.GetManifestResourceStream(SqlApplicationSettingsConstants.CheckForVersionResourcePath))
             using (var reader = new StreamReader(stream))
             {
-                sqlCommandText = Preconditions.NotEmpty(reader.ReadToEnd(), MigrationPipeline.checkVersionResourcePath);
+                sqlCommandText = Preconditions.NotEmpty(reader.ReadToEnd(), SqlApplicationSettingsConstants.CheckForVersionResourcePath);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (sqlConnection != null)
+            {
+                if (sqlConnection.State == System.Data.ConnectionState.Open) sqlConnection.Close();
+                sqlConnection.Dispose();
             }
         }
 
@@ -34,9 +43,11 @@ namespace Borg.Framework.SQLServer.Broadcast.Migration
         {
             CheckForSchemaCommandResult result = default;
 
+            sqlCommandText = sqlCommandText
+                .Replace("{schema}", SqlApplicationSettingsConstants.Schema)
+                .Replace("{version}", request.CurrnetSchemaVersion.ToString());
             using (var command = new SqlCommand(sqlCommandText, sqlConnection))
             {
-                command.Parameters.AddWithValue("@version", request.CurrnetSchemaVersion);
                 command.CommandType = System.Data.CommandType.Text;
                 if (command.Connection.State == System.Data.ConnectionState.Closed) await command.Connection.OpenAsync();
                 using (var reader = await command.ExecuteReaderAsync())
@@ -53,15 +64,6 @@ namespace Borg.Framework.SQLServer.Broadcast.Migration
                 }
             }
             return result;
-        }
-
-        public void Dispose()
-        {
-            if (sqlConnection != null)
-            {
-                if (sqlConnection.State == System.Data.ConnectionState.Open) sqlConnection.Close();
-                sqlConnection.Dispose();
-            }
         }
     }
 }

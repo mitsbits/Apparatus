@@ -5,11 +5,15 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <None Remove="ApplicationSettings\Data\CheckForVersion.sql" />
+    <None Remove="ApplicationSettings\Data\CreateDatabaseSchema.sql" />
     <None Remove="Broadcast\Data\CheckForVersion.sql" />
     <None Remove="Broadcast\Data\CreateDatabaseSchema.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="ApplicationSettings\Data\CheckForVersion.sql" />
+    <EmbeddedResource Include="ApplicationSettings\Data\CreateDatabaseSchema.sql" />
     <EmbeddedResource Include="Broadcast\Data\CheckForVersion.sql" />
     <EmbeddedResource Include="Broadcast\Data\CreateDatabaseSchema.sql" />
     <EmbeddedResource Include="Cache\CacheTableSql.sql" />

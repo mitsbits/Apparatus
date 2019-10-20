@@ -6,37 +6,34 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Data.SqlClient;
-using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Borg.Framework.SQLServer.Broadcast.Migration
+namespace Borg.Framework.SQLServer.ApplicationSettings
 {
-    public class CheckForSchemaCommandHandler : IRequestHandler<CheckForSchemaCommand, CheckForSchemaCommandResult>, IDisposable
+    public class GetSettingCommandHandler : IRequestHandler<GetSettingCommand, PaylodCommandResult>, IDisposable
+
     {
         protected readonly SqlConnection sqlConnection;
-        private string sqlCommandText;
-        private readonly ILogger logger;
+        protected readonly ILogger logger;
+        protected readonly SqlApplicationSettingConfig options;
 
-        public CheckForSchemaCommandHandler(ILoggerFactory loggerFactory, IConfiguration configuration)
+        public GetSettingCommandHandler(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
-            var options = Configurator<SqlBroadcastBusConfig>.Build(logger, configuration, SqlBroadcastBusConfig.Key);
+            options = Configurator<SqlApplicationSettingConfig>.Build(logger, configuration, SqlApplicationSettingsConstants.ConfigKey);
             sqlConnection = new SqlConnection(Preconditions.NotEmpty(options.SqlConnectionString, nameof(options.SqlConnectionString)));
-            using (var stream = GetType().Assembly.GetManifestResourceStream(MigrationPipeline.checkVersionResourcePath))
-            using (var reader = new StreamReader(stream))
-            {
-                sqlCommandText = Preconditions.NotEmpty(reader.ReadToEnd(), MigrationPipeline.checkVersionResourcePath);
-            }
         }
 
-        public async Task<CheckForSchemaCommandResult> Handle(CheckForSchemaCommand request, CancellationToken cancellationToken)
+        public async Task<PaylodCommandResult> Handle(GetSettingCommand request, CancellationToken cancellationToken)
         {
-            CheckForSchemaCommandResult result = default;
+            string statement = PrepareStatement();
+            string jsonData = "{}";
 
-            using (var command = new SqlCommand(sqlCommandText, sqlConnection))
+            using (var command = new SqlCommand(statement, sqlConnection))
             {
-                command.Parameters.AddWithValue("@version", request.CurrnetSchemaVersion);
+                command.Parameters.AddWithValue("@typeName", request.SettingType.FullName);
                 command.CommandType = System.Data.CommandType.Text;
                 if (command.Connection.State == System.Data.ConnectionState.Closed) await command.Connection.OpenAsync();
                 using (var reader = await command.ExecuteReaderAsync())
@@ -45,14 +42,18 @@ namespace Borg.Framework.SQLServer.Broadcast.Migration
                     {
                         if (await reader.ReadAsync())
                         {
-                            result = new CheckForSchemaCommandResult(
-                                   reader.GetInt32(0),
-                                   reader.GetInt32(1));
+                            jsonData = reader.GetString(0);
                         }
                     }
                 }
             }
-            return result;
+            var payload = JsonSerializer.Deserialize(jsonData, request.SettingType);
+            return new PaylodCommandResult(request.SettingType, payload);
+        }
+
+        private string PrepareStatement()
+        {
+            return $"SELECT TOP 1 [Payload] FROM [{options.Schema}].[{options.Table}] WHERE [TypeName] = @typeName";
         }
 
         public void Dispose()

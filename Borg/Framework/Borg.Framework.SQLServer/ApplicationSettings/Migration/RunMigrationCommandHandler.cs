@@ -12,33 +12,25 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Borg.Framework.SQLServer.Broadcast.Migration
+namespace Borg.Framework.SQLServer.ApplicationSettings.Migration
 {
     public class RunMigrationCommandHandler : IRequestHandler<RunMigrationCommand>, IDisposable
     {
         protected readonly SqlConnection sqlConnection;
         private string sqlCommandText;
         private readonly ILogger logger;
+        private SqlApplicationSettingConfig options;
 
         public RunMigrationCommandHandler(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
-            var options = Configurator<SqlBroadcastBusConfig>.Build(logger, configuration, SqlBroadcastBusConfig.Key);
+            options = Configurator<SqlApplicationSettingConfig>.Build(logger, configuration, SqlApplicationSettingsConstants.ConfigKey);
             sqlConnection = new SqlConnection(Preconditions.NotEmpty(options.SqlConnectionString, nameof(options.SqlConnectionString)));
-            using (var stream = GetType().Assembly.GetManifestResourceStream(MigrationPipeline.migrationResourcePath))
+            using (var stream = GetType().Assembly.GetManifestResourceStream(SqlApplicationSettingsConstants.CreateDatabaseSchemaResourcePath))
             using (var reader = new StreamReader(stream))
             {
-                sqlCommandText = Preconditions.NotEmpty(reader.ReadToEnd(), MigrationPipeline.migrationResourcePath);
+                sqlCommandText = Preconditions.NotEmpty(reader.ReadToEnd(), SqlApplicationSettingsConstants.CreateDatabaseSchemaResourcePath);
             }
-        }
-
-        public Task<Unit> Handle(RunMigrationCommand request, CancellationToken cancellationToken)
-        {
-            sqlCommandText = sqlCommandText.Replace("@version", request.CurrnetSchemaVersion.ToString());
-            var server = new Server(new ServerConnection(sqlConnection));
-            server.ConnectionContext.ExecuteNonQuery(sqlCommandText);
-
-            return Unit.Task;
         }
 
         public void Dispose()
@@ -48,6 +40,18 @@ namespace Borg.Framework.SQLServer.Broadcast.Migration
                 if (sqlConnection.State == System.Data.ConnectionState.Open) sqlConnection.Close();
                 sqlConnection.Dispose();
             }
+        }
+
+        public Task<Unit> Handle(RunMigrationCommand request, CancellationToken cancellationToken)
+        {
+            sqlCommandText = sqlCommandText
+                .Replace("{schema}", options.Schema)
+                .Replace("{table}", options.Schema)
+                .Replace("{version}", request.CurrnetSchemaVersion.ToString());
+            var server = new Server(new ServerConnection(sqlConnection));
+            server.ConnectionContext.ExecuteNonQuery(sqlCommandText);
+
+            return Unit.Task;
         }
     }
 }

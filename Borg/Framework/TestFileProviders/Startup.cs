@@ -3,7 +3,7 @@ using Borg.Framework.Modularity.Pipelines;
 using Borg.Framework.Reflection.Services;
 using Borg.Framework.Services.Serializer;
 using Borg.Framework.SQLServer.Broadcast;
-using Borg.Framework.SQLServer.Broadcast.Migration;
+
 using Borg.Framework.Storage.Contracts;
 using Borg.Framework.Storage.FileDepots;
 using Borg.Infrastructure.Core.Services.Serializer;
@@ -36,8 +36,9 @@ namespace TestFileProviders
         public void ConfigureServices(IServiceCollection services)
         {
             var asmmb = new DepedencyAssemblyProvider(LoggerFactory);
-            services.AddMediatR(asmmb.GetAssemblies().ToArray());
-            services.AddTransient<IHostStartUpJob, MigrationPipeline>();
+            services.AddMediatR((configuration) => { configuration.AsScoped(); }, asmmb.GetAssemblies().ToArray());
+            services.AddTransient<IHostStartUpJob, Borg.Framework.SQLServer.Broadcast.Migration.MigrationPipeline>();
+            services.AddTransient<IHostStartUpJob, Borg.Framework.SQLServer.ApplicationSettings.Migration.MigrationPipeline>();
             services.AddSingleton<ISqlBroadcastBus, SqlBroadcastBus>();
             var path = Path.Combine(Environment.WebRootPath, "static");
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);

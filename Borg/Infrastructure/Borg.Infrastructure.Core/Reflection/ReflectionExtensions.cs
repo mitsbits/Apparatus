@@ -193,6 +193,11 @@ namespace Borg
             return false;
         }
 
+        public static bool ImplementsInterface<T>(this Type thisType) 
+        {
+            return thisType.ImplementsInterface(typeof(T));
+        }
+
         public static bool IsDerivedFrom(this Type thisType, Type genericTypeToCheck)
         {
             Type typeToCheck = genericTypeToCheck.IsGenericType ? genericTypeToCheck.GetGenericTypeDefinition() : genericTypeToCheck;

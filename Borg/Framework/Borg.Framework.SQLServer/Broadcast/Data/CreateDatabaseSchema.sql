@@ -180,5 +180,5 @@ BEGIN
 		  output deleted.CreatedOn, deleted.PayloadType, deleted.Payload;
 END
 GO
-INSERT INTO [broadcast].[SchemaVersion] ([Version]) VALUES (@version);
+INSERT INTO [broadcast].[SchemaVersion] ([Version]) VALUES ({version});
 GO

@@ -28,15 +28,16 @@ namespace Borg.Framework.SQLServer.Broadcast.Migration
             {
                 sqlCommandText = Preconditions.NotEmpty(reader.ReadToEnd(), MigrationPipeline.checkVersionResourcePath);
             }
+
         }
 
         public async Task<CheckForSchemaCommandResult> Handle(CheckForSchemaCommand request, CancellationToken cancellationToken)
         {
+            var sqltext = sqlCommandText.Replace("{version}", request.CurrnetSchemaVersion.ToString());
             CheckForSchemaCommandResult result = default;
 
-            using (var command = new SqlCommand(sqlCommandText, sqlConnection))
+            using (var command = new SqlCommand(sqltext, sqlConnection))
             {
-                command.Parameters.AddWithValue("@version", request.CurrnetSchemaVersion);
                 command.CommandType = System.Data.CommandType.Text;
                 if (command.Connection.State == System.Data.ConnectionState.Closed) await command.Connection.OpenAsync();
                 using (var reader = await command.ExecuteReaderAsync())

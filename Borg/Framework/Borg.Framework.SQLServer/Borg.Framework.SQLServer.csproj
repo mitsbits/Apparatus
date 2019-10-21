@@ -12,8 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ApplicationSettings\Data\CheckForVersion.sql" />
-    <EmbeddedResource Include="ApplicationSettings\Data\CreateDatabaseSchema.sql" />
+    <EmbeddedResource Include="ApplicationSettings\Data\CheckForVersion.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationSettings\Data\CreateDatabaseSchema.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Broadcast\Data\CheckForVersion.sql" />
     <EmbeddedResource Include="Broadcast\Data\CreateDatabaseSchema.sql" />
     <EmbeddedResource Include="Cache\CacheTableSql.sql" />
@@ -21,6 +25,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="150.18178.0" />
+    <PackageReference Include="System.Collections" Version="4.3.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>

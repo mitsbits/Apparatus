@@ -54,5 +54,7 @@ namespace Borg.Framework.SQLServer.Broadcast.Migration
                 sqlConnection.Dispose();
             }
         }
+
+
     }
 }

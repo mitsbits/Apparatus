@@ -52,7 +52,7 @@ namespace Borg.Framework.SQLServer.ApplicationSettings.Migration
             var replacements = new Dictionary<string, string>() {
                 { "{schema}", options.Schema } ,
                 { "{table}", options.Table },
-                { "{version}", request.CurrnetSchemaVersion.ToString() }
+                { "{versionNumber}", request.CurrnetSchemaVersion.ToString() }
             };
 
             await sqlConnection.RunBatch(sqlCommandText, replacements, true);

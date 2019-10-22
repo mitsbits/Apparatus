@@ -20,7 +20,7 @@ namespace TestFileProviders
             var jobs = host.Services.GetServices<IHostStartUpJob>();
             foreach (var job in jobs)
             {
-                AsyncHelpers.RunSync(() => job.Execute());
+                AsyncHelpers.RunSync(async() => await job.Execute());
             }
         }
 

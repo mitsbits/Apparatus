@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Apparatus.System.Backoffice
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{7E4BC30F-6B6E-4808-A1E0-96FC370AC0D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apparatus.Application.Server", "Apparatus\Application\Apparatus.Application.Server\Apparatus.Application.Server.csproj", "{4F1BF0CF-C6D8-4876-8511-37E13F9C7003}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Apparatus.Application.Server", "Apparatus\Application\Apparatus.Application.Server\Apparatus.Application.Server.csproj", "{4F1BF0CF-C6D8-4876-8511-37E13F9C7003}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apparatus.System.Api", "Apparatus\System\Apparatus.System.Api\Apparatus.System.Api.csproj", "{1EFBC701-0720-4318-8EE2-B55DF823E5EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Apparatus.System.Api", "Apparatus\System\Apparatus.System.Api\Apparatus.System.Api.csproj", "{1EFBC701-0720-4318-8EE2-B55DF823E5EC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Borg", "Borg", "{F4F3D244-D49D-404A-A524-903F93540AE6}"
 EndProject
@@ -33,11 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Infrastructure.Core", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Infrastructure.Core.Tests", "Borg\Infrastructure\Borg.Infrastructure.Core.Tests\Borg.Infrastructure.Core.Tests.csproj", "{81FEB35A-9F4A-49F9-8556-936D7ECB378E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Platform.Dispatch.Autofac", "Borg\Platform\Borg.Platform.Dispatch.Autofac\Borg.Platform.Dispatch.Autofac.csproj", "{5E03760E-71DB-4165-AD0D-444BDAFEE1A7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Platform.Dispatch.NetCore", "Borg\Platform\Borg.Platform.Dispatch.NetCore\Borg.Platform.Dispatch.NetCore.csproj", "{D0BCFDD0-33ED-46CD-8F84-8C0E9CE644F9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Platform.Dispatch.Tests", "Borg\Platform\Borg.Platform.Dispatch.Tests\Borg.Platform.Dispatch.Tests.csproj", "{9482F49B-3ABB-4292-8E84-DEE39C1C99FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Framework.SQLServer", "Borg\Framework\Borg.Framework.SQLServer\Borg.Framework.SQLServer.csproj", "{7C7A0817-C061-4E28-B874-B7A4363229A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,18 +85,10 @@ Global
 		{81FEB35A-9F4A-49F9-8556-936D7ECB378E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81FEB35A-9F4A-49F9-8556-936D7ECB378E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81FEB35A-9F4A-49F9-8556-936D7ECB378E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E03760E-71DB-4165-AD0D-444BDAFEE1A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E03760E-71DB-4165-AD0D-444BDAFEE1A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E03760E-71DB-4165-AD0D-444BDAFEE1A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E03760E-71DB-4165-AD0D-444BDAFEE1A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D0BCFDD0-33ED-46CD-8F84-8C0E9CE644F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D0BCFDD0-33ED-46CD-8F84-8C0E9CE644F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0BCFDD0-33ED-46CD-8F84-8C0E9CE644F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0BCFDD0-33ED-46CD-8F84-8C0E9CE644F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9482F49B-3ABB-4292-8E84-DEE39C1C99FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9482F49B-3ABB-4292-8E84-DEE39C1C99FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9482F49B-3ABB-4292-8E84-DEE39C1C99FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9482F49B-3ABB-4292-8E84-DEE39C1C99FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C7A0817-C061-4E28-B874-B7A4363229A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C7A0817-C061-4E28-B874-B7A4363229A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C7A0817-C061-4E28-B874-B7A4363229A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C7A0817-C061-4E28-B874-B7A4363229A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,9 +107,7 @@ Global
 		{6D300298-55B3-4E2C-A440-90CDE2CD6386} = {F4F3D244-D49D-404A-A524-903F93540AE6}
 		{C63DF339-AA9E-4DC8-9646-49EB220D6915} = {F4F3D244-D49D-404A-A524-903F93540AE6}
 		{81FEB35A-9F4A-49F9-8556-936D7ECB378E} = {F4F3D244-D49D-404A-A524-903F93540AE6}
-		{5E03760E-71DB-4165-AD0D-444BDAFEE1A7} = {F4F3D244-D49D-404A-A524-903F93540AE6}
-		{D0BCFDD0-33ED-46CD-8F84-8C0E9CE644F9} = {F4F3D244-D49D-404A-A524-903F93540AE6}
-		{9482F49B-3ABB-4292-8E84-DEE39C1C99FC} = {F4F3D244-D49D-404A-A524-903F93540AE6}
+		{7C7A0817-C061-4E28-B874-B7A4363229A0} = {F4F3D244-D49D-404A-A524-903F93540AE6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1532DD30-AFF2-46C7-BD8F-86371FD48BFE}

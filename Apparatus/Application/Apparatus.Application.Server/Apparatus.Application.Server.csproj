@@ -14,4 +14,9 @@
     <ProjectReference Include="..\..\System\Apparatus.System.Api\Apparatus.System.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\apparatus\" />
+    <Folder Include="Areas\default\" />
+  </ItemGroup>
+
 </Project>

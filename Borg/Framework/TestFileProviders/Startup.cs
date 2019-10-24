@@ -1,5 +1,6 @@
 using Borg.Framework.Caching;
 using Borg.Framework.Modularity.Pipelines;
+using Borg.Framework.MVC;
 using Borg.Framework.Reflection.Services;
 using Borg.Framework.Services.Serializer;
 using Borg.Framework.SQLServer.Broadcast;
@@ -64,6 +65,7 @@ namespace TestFileProviders
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseMiddleware<RedirectionMiddleware>();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

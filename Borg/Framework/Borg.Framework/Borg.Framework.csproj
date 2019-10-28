@@ -19,4 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\Borg.Infrastructure.Core\Borg.Infrastructure.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Cms\Security\" />
+  </ItemGroup>
 </Project>

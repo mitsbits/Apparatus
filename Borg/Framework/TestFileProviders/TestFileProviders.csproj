@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Borg.Framework\Borg.Framework.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Apparatus\" />
+  </ItemGroup>
+
 </Project>

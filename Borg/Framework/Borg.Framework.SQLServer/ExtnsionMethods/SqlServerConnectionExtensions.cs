@@ -14,10 +14,8 @@ namespace Borg
     public static class SqlServerConnectionExtensions
 
     {
+        private const string sqlFindDBQuery = "SELECT * FROM master.dbo.sysdatabases where name = @dbName";
 
-
-
-        const string sqlFindDBQuery = "SELECT * FROM master.dbo.sysdatabases where name = @dbName";
         /// <summary>
         /// Run a batch script against sql server
         /// </summary>
@@ -26,7 +24,7 @@ namespace Borg
         /// <param name="relacements"></param>
         /// <param name="disposedepedencies"></param>
         /// <returns ><see cref="Task"/></returns>
-        /// <exception cref="ArgumenNullException"></exception>  
+        /// <exception cref="ArgumenNullException"></exception>
         /// <exception cref="TimeoutException" >the commands run later than the timeout </exception>
         /// <exception cref="SqlException "></exception>
         public static async Task RunBatch(this SqlConnection sqlConnection, string sqltext, IDictionary<string, string> relacements, bool disposedepedencies = false)
@@ -38,7 +36,7 @@ namespace Borg
             {
                 sqltext = sqltext.Replace(replacement.Key, replacement.Value);
             }
- 
+
             var server = new Server(new ServerConnection(sqlConnection));
             server.ConnectionContext.ExecuteNonQuery(sqltext);
             server.ConnectionContext.Disconnect();
@@ -48,6 +46,7 @@ namespace Borg
                 sqlConnection.Dispose();
             }
         }
+
         /// <summary>
         /// Run a batch script against sql server
         /// </summary>
@@ -56,7 +55,7 @@ namespace Borg
         /// <param name="relacements"></param>
         /// <param name="disposedepedencies"></param>
         /// <returns><see cref="Task"/></returns>
-        /// <exception cref="ArgumenNullException"></exception>  
+        /// <exception cref="ArgumenNullException"></exception>
         /// <exception cref="TimeoutException" >the commands run later than the timeout </exception>
         /// <exception cref="SqlException "></exception>
         public static async Task RunBatch(this SqlConnection sqlConnection, Stream sqltext, IDictionary<string, string> relacements, bool disposedepedencies = false)
@@ -72,7 +71,6 @@ namespace Borg
             var sql = payload.ToString();
 
             await sqlConnection.RunBatch(sql, relacements, disposedepedencies);
-
         }
 
         private static Task CreateDbIfNotExists(SqlConnection sqlConnection)
@@ -87,10 +85,8 @@ namespace Borg
 
                 if (exists <= 0)
                 {
-                    string script = $"CREATE DATABASE [{dbName}] CONTAINMENT = NONE";
-                    sqlCmd.CommandText = script;
+                    sqlCmd.CommandText = $"CREATE DATABASE [{dbName}] CONTAINMENT = NONE";
                     sqlCmd.ExecuteNonQuery();
-
                 }
                 return Unit.Task;
             }

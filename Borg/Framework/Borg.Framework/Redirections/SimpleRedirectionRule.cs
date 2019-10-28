@@ -7,7 +7,7 @@ namespace Borg.Framework.Redirections
     public class SimpleRedirectionRule : RedirectionRuleBase
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="pattern">the string to match</param>
         /// <param name="statusCode"></param>
@@ -21,8 +21,9 @@ namespace Borg.Framework.Redirections
 
         protected Uri UriIn { get; }
         protected Uri UriOut { get; }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -33,12 +34,10 @@ namespace Borg.Framework.Redirections
             var toMatch = new Uri(Preconditions.NotEmpty(input, nameof(input)));
             if (UriIn.Equals(toMatch))
             {
-                var result = new RedirectEvaluation(UriOut.AbsoluteUri,  StatusCode);
+                var result = new RedirectEvaluation(UriOut.AbsoluteUri, StatusCode);
                 return Task.FromResult(result);
             }
             return Task.FromResult(RedirectEvaluation.Negative);
         }
     }
-
-
 }

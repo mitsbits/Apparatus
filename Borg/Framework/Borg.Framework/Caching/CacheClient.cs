@@ -1,6 +1,7 @@
 ﻿using Borg.Infrastructure.Core;
 using Borg.Infrastructure.Core.Services.Serializer;
 using Borg.Infrastructure.Core.Threading;
+using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Borg.Framework.Caching
 {
-    public class CacheClient : ICacheClient
+    public class CacheClient : ICacheClient,  IRequestHandler<EvictionRequest>
     {
         private readonly ILogger logger;
         private readonly ISerializer serializer;
@@ -76,6 +77,21 @@ namespace Borg.Framework.Caching
             }
 
             return result;
+        }
+
+        public async Task<Unit> Handle(EvictionRequest request, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (request != null)
+            {
+                await Evict(request.Key, cancellationToken);
+            }
+            else
+            {
+                logger.Trace($"Eviction request is null");
+            }
+            return Unit.Value;
         }
     }
 }

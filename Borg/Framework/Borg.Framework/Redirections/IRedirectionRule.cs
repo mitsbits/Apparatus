@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Borg.Framework.Redirections
 {
@@ -10,8 +8,7 @@ namespace Borg.Framework.Redirections
         RedirectStatusCode StatusCode { get; }
         PatternTestType PatternTest { get; }
         string Target { get; }
+
         Task<RedirectEvaluation> Evaluate(string input);
     }
-
-
 }

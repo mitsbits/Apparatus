@@ -1,6 +1,7 @@
 using Borg.Framework.Caching;
 using Borg.Framework.Modularity.Pipelines;
 using Borg.Framework.MVC;
+using Borg.Framework.MVC.Tenancy.Security;
 using Borg.Framework.Reflection.Services;
 using Borg.Framework.Services.Serializer;
 using Borg.Framework.SQLServer.Broadcast;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.IO;
 using System.Linq;
 
@@ -37,7 +39,7 @@ namespace TestFileProviders
         public void ConfigureServices(IServiceCollection services)
         {
             var asmmb = new DepedencyAssemblyProvider(LoggerFactory);
-            services.AddMediatR((configuration) => { configuration.AsSingleton() ; }, asmmb.GetAssemblies().ToArray());
+            services.AddMediatR((configuration) => { configuration.AsSingleton(); }, asmmb.GetAssemblies().ToArray());
             services.AddTransient<IHostStartUpJob, Borg.Framework.SQLServer.Broadcast.Migration.MigrationPipeline>();
             services.AddTransient<IHostStartUpJob, Borg.Framework.SQLServer.ApplicationSettings.Migration.MigrationPipeline>();
             services.AddSingleton<ISqlBroadcastBus, SqlBroadcastBus>();
@@ -50,11 +52,33 @@ namespace TestFileProviders
             services.AddDistributedMemoryCache();
             services.AddSingleton<ICacheClient, CacheClient>();
             services.AddSingleton<ISerializer, JsonNetSerializer>();
+            services.AddSingleton<IPostConfigureOptions<TenantAuthenticationOptions>, TenantAuthenticationPostConfigureOptions>();
+            services.AddAuthentication("Borg")
+                .AddScheme<TenantAuthenticationOptions, TenantAuthenticationHandler>("Borg", null);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseBranchWithServices("/apparatus",
+                services =>
+                {
+                    // set up any services needed on this branch
+                    services.AddControllersWithViews();
+                },
+                appBuilder =>
+                {
+                    app.UseRouting();
+                    app.UseAuthorization();
+                    app.UseEndpoints(endpoints =>
+                    {
+                        endpoints.MapAreaControllerRoute(
+                             "{area}",
+                             "{area}",
+                             "{area}/{controller=Home}/{action=Index}/{id?}");
+                    });
+                });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -75,6 +99,10 @@ namespace TestFileProviders
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapAreaControllerRoute(
+                     "{area}",
+                     "{area}",
+                     "{area}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

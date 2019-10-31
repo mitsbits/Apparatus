@@ -1,26 +1,23 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Borg.Infrastructure.Core;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
-using Borg.Infrastructure.Core;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
+using System;
 
 namespace Borg.Framework.MVC
 {
     public abstract class ModuleUiPostConfigure : IPostConfigureOptions<StaticFileOptions>
     {
-
         private static readonly string basePath = "wwwroot";
 
-        public ModuleUiPostConfigure(IHostingEnvironment environment)
+        public ModuleUiPostConfigure(IWebHostEnvironment environment)
         {
             Environment = environment;
         }
 
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment Environment { get; }
 
         public void PostConfigure(string name, StaticFileOptions options)
         {

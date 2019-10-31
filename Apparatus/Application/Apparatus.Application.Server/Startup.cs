@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Apparatus.System.Backoffice;
 using Borg.Framework.EF.Discovery;
 using Borg.Framework.Reflection.Services;
 using Borg.Infrastructure.Core.Reflection.Discovery;
@@ -35,6 +36,7 @@ namespace Apparatus.Application.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var b = new WebHostBuilder();
             var depAsmblPrv = new DepedencyAssemblyProvider(loggerFactory);
             var refAsmblPrv = new ReferenceAssemblyProvider(loggerFactory, null, GetType().Assembly);
             var explorer = new EntitiesExplorer(loggerFactory,
@@ -46,6 +48,7 @@ namespace Apparatus.Application.Server
 
             entitiesExplorerResult = new AssemblyExplorerResult(loggerFactory, new[] { explorer });
             services.AddSingleton<IAssemblyExplorerResult>(entitiesExplorerResult);
+            services.ConfigureOptions(typeof(UiConfigureOptions));
             services.AddControllers();
         }
 

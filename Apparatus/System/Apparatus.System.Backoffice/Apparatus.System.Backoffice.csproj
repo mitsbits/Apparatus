@@ -11,11 +11,12 @@
 
   <ItemGroup>
     <Folder Include="Areas\Apparatus\Views\Shared\" />
-    <Folder Include="wwwroot\apparatus\" />
   </ItemGroup>
 
+
+
   <ItemGroup>
-    <PackageReference Include="Borg.Infrastructure.Core" Version="0.0.0.1-beta" />
+    <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework.MVC\Borg.Framework.MVC.csproj" />
   </ItemGroup>
 
 

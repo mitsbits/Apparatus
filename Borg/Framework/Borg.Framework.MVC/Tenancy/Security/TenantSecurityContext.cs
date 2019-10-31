@@ -1,20 +1,20 @@
 ﻿using Borg.Infrastructure.Core;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Borg.Framework.MVC.Tenancy.Security
 {
     public class TenantSecurityContext : IDisposable
     {
         private readonly HttpContext context;
+
         public TenantSecurityContext(HttpContext context)
         {
             this.context = Preconditions.NotNull(context, nameof(context));
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -48,6 +48,7 @@ namespace Borg.Framework.MVC.Tenancy.Security
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
-        #endregion
+
+        #endregion IDisposable Support
     }
 }

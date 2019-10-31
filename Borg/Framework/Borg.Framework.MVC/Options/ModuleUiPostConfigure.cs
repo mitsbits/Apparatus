@@ -6,7 +6,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using System;
 
-namespace Borg.Framework.MVC
+namespace Borg.Framework.MVC.Options
 {
     public abstract class ModuleUiPostConfigure : IPostConfigureOptions<StaticFileOptions>
     {

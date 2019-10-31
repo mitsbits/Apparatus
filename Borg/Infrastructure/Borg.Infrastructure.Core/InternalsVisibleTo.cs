@@ -14,4 +14,4 @@
 [assembly: InternalsVisibleTo("Borg.Platform.Dispatch.Autofac")]
 [assembly: InternalsVisibleTo("Apparatus.System.Api")]
 [assembly: InternalsVisibleTo("Borg.Framework.SQLServer")]
-
+[assembly: InternalsVisibleTo("Borg.Platform.Web")]

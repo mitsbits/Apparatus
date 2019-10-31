@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.4.0-beta2-final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.4.0-beta1-final" />
   </ItemGroup>
 
 
@@ -16,6 +16,13 @@
     <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework\Borg.Framework.csproj" />
     <ProjectReference Include="..\..\System\Apparatus.System.Api\Apparatus.System.Api.csproj" />
     <ProjectReference Include="..\..\System\Apparatus.System.Backoffice\Apparatus.System.Backoffice.csproj" />
+  </ItemGroup>
+
+
+
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

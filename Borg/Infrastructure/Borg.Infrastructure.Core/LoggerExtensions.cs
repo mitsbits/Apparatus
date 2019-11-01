@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Diagnostics;
 
@@ -40,6 +41,11 @@ namespace Borg
         public static void Error(this ILogger logger, Exception exception)
         {
             logger.LogError(default(EventId), exception, "");
+        }
+
+        public static ILogger CreateForType(this ILoggerFactory factory, Type type)
+        {
+            return factory == null ? NullLogger.Instance : factory.CreateLogger(type);
         }
     }
 }

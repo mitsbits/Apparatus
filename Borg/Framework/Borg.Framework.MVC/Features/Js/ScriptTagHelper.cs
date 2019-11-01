@@ -21,12 +21,18 @@ namespace Borg.Framework.MVC.Features.Js
 
         public string Key { get; set; }
 
-        public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            return base.ProcessAsync(context, output);
+            var src = output.Attributes["src"];
+            if (src != null)
+            {
+
+            }
+            var c = (await output.GetChildContentAsync()).GetContent();
+            output.SuppressOutput();
         }
     }
-
+    [HtmlTargetElement("script-render")]
     public class ScriptRenderTagHelper : ScriptTagHelperBase
     {
         public ScriptRenderTagHelper(IScriptStore store) : base(store)
@@ -35,6 +41,7 @@ namespace Borg.Framework.MVC.Features.Js
 
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
+
             return base.ProcessAsync(context, output);
         }
     }
@@ -130,7 +137,7 @@ namespace Borg.Framework.MVC.Features.Js
 
         public Task<IEnumerable<ScriptInfo>> GetForPosition(ScriptPosition position)
         {
-            var local = new List<ScriptInfo>(Bucket.Where(x => x.ScriptPosition == position);
+            var local = new List<ScriptInfo>(Bucket.Where(x => x.Position == position));
             return Task.FromResult(local.AsEnumerable());
         }
     }

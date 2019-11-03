@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Borg.Samples.TagHelpers</title>
     <script-render borg borg-position="Head" />
+    <style-render borg borg-position="Head" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <style-render borg borg-position="HeadBeforeEnd" />
     <script-render borg borg-position="HeadBeforeEnd" />
+
 </head>
 <body>
     <script-render borg borg-position="BodyAfterStart" />
+    <style-render borg borg-position="BodyAfterStart" />
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -45,5 +49,6 @@
 
     @RenderSection("Scripts", required: false)
     <script-render borg borg-position="BodyBeforeEnd" />
+    <style-render borg borg-position="BodyBeforeEnd" />
 </body>
 </html>

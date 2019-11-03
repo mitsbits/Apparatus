@@ -12,37 +12,69 @@ using System.Threading.Tasks;
 
 namespace Borg.Framework.MVC.Features.Js
 {
-    [HtmlTargetElement("script")]
+    [HtmlTargetElement("script", Attributes = "borg")]
     public class ScriptTagHelper : ScriptTagHelperBase
     {
         public ScriptTagHelper(IScriptStore store) : base(store)
         {
         }
 
-        public string Key { get; set; }
+        [HtmlAttributeName("borg-key")]
+        public string BorgKey { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            var src = output.Attributes["src"];
-            if (src != null)
-            {
+            var key = output.Attributes["key"];
+            var hasKey = key != null;
 
+            var src = output.Attributes["src"];
+            var hasSrc = src != null;
+
+            var info = new ScriptInfo
+            {
+                Key = hasKey ? key.Value.ToString() : string.Empty,
+                Src = hasSrc ? src.Value.ToString() : string.Empty
+            };
+            if (info.Src.IsNullOrWhiteSpace())
+            {
+                info.InlineContent = new HtmlString((await output.GetChildContentAsync()).GetContent());
             }
-            var c = (await output.GetChildContentAsync()).GetContent();
+
+            info.Position = BorgScriptPosition;
+
+            if (info.Key.IsNullOrWhiteSpace())
+            {
+                await store.Add(info);
+            }
+            else
+            {
+                await store.AddOnce(info);
+            }
+
             output.SuppressOutput();
         }
     }
-    [HtmlTargetElement("script-render")]
+
+    [HtmlTargetElement("script-render", Attributes = "borg")]
     public class ScriptRenderTagHelper : ScriptTagHelperBase
     {
         public ScriptRenderTagHelper(IScriptStore store) : base(store)
         {
         }
 
-        public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-
-            return base.ProcessAsync(context, output);
+            var infos = await store.GetForPosition(BorgScriptPosition);
+            output.TagName = null;
+            if (!infos.Any())
+            {
+                output.SuppressOutput();
+                return;
+            }
+            foreach (var info in infos)
+            {
+                output.PostContent.AppendHtmlLine(info.ToHtml());
+            }
         }
     }
 
@@ -55,7 +87,8 @@ namespace Borg.Framework.MVC.Features.Js
             this.store = Preconditions.NotNull(store, nameof(store));
         }
 
-        public ScriptPosition ScriptPosition { get; set; } = ScriptPosition.BodyBeforeEnd;
+        [HtmlAttributeName("borg-position")]
+        public ScriptPosition BorgScriptPosition { get; set; } = ScriptPosition.BodyBeforeEnd;
     }
 
     public enum ScriptPosition
@@ -73,6 +106,7 @@ namespace Borg.Framework.MVC.Features.Js
         internal string Key { get; set; }
         internal HtmlString InlineContent { get; set; }
         internal ScriptPosition Position { get; set; } = ScriptPosition.BodyBeforeEnd;
+
         public override string ToString()
         {
             var builder = new StringBuilder();
@@ -139,6 +173,33 @@ namespace Borg.Framework.MVC.Features.Js
         {
             var local = new List<ScriptInfo>(Bucket.Where(x => x.Position == position));
             return Task.FromResult(local.AsEnumerable());
+        }
+    }
+
+    internal static class ScriptInfoExtensions
+    {
+        public static string ToHtml(this ScriptInfo info)
+        {
+            var builder = new StringBuilder("<script ");
+            if (!info.Key.IsNullOrWhiteSpace())
+            {
+                builder.Append($" borg-key='{info.Key}'");
+            }
+            else
+            {
+                builder.Append($" borg");
+            }
+            if (!info.Src.IsNullOrWhiteSpace())
+            {
+                builder.Append($" src='{info.Src}'");
+            }
+            builder.Append(" >");
+            if (!info.InlineContent.Value.IsNullOrWhiteSpace())
+            {
+                builder.AppendLine(info.InlineContent.Value);
+            }
+            builder.AppendLine("</script>");
+            return builder.ToString();
         }
     }
 }

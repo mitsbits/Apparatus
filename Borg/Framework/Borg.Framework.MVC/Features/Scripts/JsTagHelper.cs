@@ -68,10 +68,11 @@ namespace Borg.Framework.MVC.Features.Scripts
                 output.SuppressOutput();
                 return;
             }
-            foreach (var info in infos)
+            foreach (var info in infos.Where(x => !x.Src.IsNullOrWhiteSpace()))
             {
                 output.PostContent.AppendHtmlLine(info.ToHtml());
             }
+            output.PostContent.AppendHtmlLine(infos.Where(x => !x.InlineContent.Value.IsNullOrWhiteSpace()).BundleJsToHtml());
         }
     }
 }

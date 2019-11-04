@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Yahoo.Yui.Compressor;
 
 namespace Borg.Framework.MVC.Features.Scripts
 {
@@ -35,13 +38,14 @@ namespace Borg.Framework.MVC.Features.Scripts
             builder.Append(" >");
             if (!info.InlineContent.Value.IsNullOrWhiteSpace())
             {
-                builder.AppendLine(info.InlineContent.Value);
+                var jsCompressor = new JavaScriptCompressor();
+                builder.AppendLine(jsCompressor.Compress(info.InlineContent.Value));
             }
             builder.AppendLine("</script>");
             return builder.ToString();
         }
 
-        private static string CssToHtml(ScriptInfo info)
+        public static string CssToHtml(ScriptInfo info)
         {
             var cssFileLink = !info.Src.IsNullOrWhiteSpace();
             if (cssFileLink)
@@ -61,10 +65,40 @@ namespace Borg.Framework.MVC.Features.Scripts
             else
             {
                 var builder = new StringBuilder("<style>");
-                builder.AppendLine(info.InlineContent.Value);
+                var cssCompressor = new CssCompressor();
+                builder.AppendLine(cssCompressor.Compress(info.InlineContent.Value));
                 builder.AppendLine("</style>");
                 return builder.ToString();
             }
+        }
+
+        public static string BundleCssToHtml(this IEnumerable<ScriptInfo> infos)
+        {
+            if (infos == null || !infos.Any() || !infos.All(x => x.InfoType == ScriptInfoType.Css)) return string.Empty;
+
+
+            var comporessor = new CssCompressor();
+            var builder = new StringBuilder("<style borg>");
+            foreach (var info in infos)
+            {
+                builder.AppendLine(comporessor.Compress(info.InlineContent.Value));
+            }
+            builder.AppendLine("</style>");
+            return builder.ToString();
+        }
+        public static string BundleJsToHtml(this IEnumerable<ScriptInfo> infos)
+        {
+            if (infos == null || !infos.Any() || !infos.All(x => x.InfoType == ScriptInfoType.Js)) return string.Empty;
+
+
+            var comporessor = new JavaScriptCompressor();
+            var builder = new StringBuilder("<script borg>");
+            foreach (var info in infos)
+            {
+                builder.AppendLine(comporessor.Compress(info.InlineContent.Value));
+            }
+            builder.AppendLine("</script>");
+            return builder.ToString();
         }
     }
 }

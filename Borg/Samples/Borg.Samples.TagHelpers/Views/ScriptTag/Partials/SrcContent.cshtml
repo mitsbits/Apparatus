@@ -1,8 +1,21 @@
 ﻿
 @{
 
-    var pathtocss = "~/Views/ScriptTag/Partials/scripttaghelpercss.css";
+    var pathtocss = Url.Content("~/css/scripttaghelpercss.css");
 }
 <p class="src">
-    yhis text is styked from external css file
+    this text is styled from external css file
 </p>
+<p id="mes" style="display:none;">the above text wil have not style when i appear</p>
+
+<style borg borg-position="HeadBeforeEnd" src="@pathtocss">
+</style>
+<script borg borg-key="akey" borg-position="BodyBeforeEnd">
+    $(function () {
+
+        $('p#mes').fadeIn(5000, function ()
+        {
+            $('p.src').removeClass('src');
+        });
+    });
+</script>

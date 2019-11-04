@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\css\scripttaghelpercss.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Framework\Borg.Framework.MVC\Borg.Framework.MVC.csproj" />
   </ItemGroup>
 

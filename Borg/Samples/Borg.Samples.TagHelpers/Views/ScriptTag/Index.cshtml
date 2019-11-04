@@ -3,7 +3,8 @@
     Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Script Tags</h1>
-    @(await Html.PartialAsync("Partials/DefaultContent"))
-</div>
+    <div class="text-center">
+        <h1 class="display-4">Script Tags</h1>
+        @(await Html.PartialAsync("Partials/DefaultContent"))
+        @(await Html.PartialAsync("Partials/SrcContent"))
+    </div>

@@ -14,7 +14,7 @@ namespace Borg.Framework.MVC.Features.Scripts
 
         [HtmlAttributeName("borg-key")]
         public string BorgKey { get; set; }
-
+        [HtmlAttributeName("borg-position")]
         public override ScriptPosition BorgScriptPosition { get; set; } = ScriptPosition.BodyBeforeEnd;
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -56,7 +56,7 @@ namespace Borg.Framework.MVC.Features.Scripts
         public JsRenderTagHelper(IScriptStore store) : base(store)
         {
         }
-
+        [HtmlAttributeName("borg-position")]
         public override ScriptPosition BorgScriptPosition { get; set; } = ScriptPosition.BodyBeforeEnd;
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)

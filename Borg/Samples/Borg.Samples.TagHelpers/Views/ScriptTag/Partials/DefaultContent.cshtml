@@ -1,9 +1,28 @@
-﻿<p>
-    This partial view will invoce a method placed before the bodys end.
+﻿@{
+    var serverVariable = "This is a server varable manipulted by inline js that rendered in the bottom.";
+}
+<p class="scripttag">
+    This partial view has style defined for int, but it rebders o=in the head.<br />
+
+    <span style="display:none;"></span>
 </p>
 <script borg borg-position="BodyBeforeEnd">
-    //alert('koko');
+
+    $(function() {
+        var $el =  $('p.scripttag').find('span').first();
+        $el.html('@serverVariable').show(500);
+        });
+
+   
 </script>
 <style borg borg-script-position="HeadBeforeEnd">
-    html{ background-color:aliceblue;}
+    p.scripttag {
+        color: blue;
+        font-size: larger
+    }
+
+        p.scripttag span {
+            color: red;
+            font-style: italic;
+        }
 </style>

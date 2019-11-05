@@ -3,18 +3,12 @@
     var pathtocss = Url.Content("~/css/scripttaghelpercss.css");
 }
 <p class="src">
-    this text is styled from external css file
+    This text is styled from adhoc external css file 
 </p>
-<p id="mes" style="display:none;">the above text wil have not style when i appear</p>
+<p id="mes" style="display:none;">the above text wil have not style when i appear because i come from an adhoc external script</p>
 
 <style borg borg-position="HeadBeforeEnd" src="@pathtocss" />
 
-<script borg borg-key="akey" borg-position="BodyBeforeEnd">
-    $(function () {
+<script borg borg-key="akey" borg-position="BodyBeforeEnd" src="~/js/scripttaghelpercss.js" />
 
-        $('p#mes').fadeIn(5000, function ()
-        {
-            $('p.src').removeClass('src');
-        });
-    });
-</script>
+

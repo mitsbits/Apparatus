@@ -16,19 +16,20 @@ namespace Borg.Framework.MVC.Features.Scripts
         public string BorgKey { get; set; }
         [HtmlAttributeName("borg-position")]
         public override ScriptPosition BorgScriptPosition { get; set; } = ScriptPosition.BodyBeforeEnd;
+        [HtmlAttributeName("src")]
+        public string Src { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            var key = output.Attributes["key"];
-            var hasKey = key != null;
+ 
+            var hasKey = !BorgKey.IsNullOrWhiteSpace();
 
-            var src = output.Attributes["src"];
-            var hasSrc = src != null;
+            var hasSrc = !Src.IsNullOrWhiteSpace();
 
             var info = new JsInfo
             {
-                Key = hasKey ? key.Value.ToString() : string.Empty,
-                Src = hasSrc ? src.Value.ToString() : string.Empty
+                Key = hasKey ? BorgKey : string.Empty,
+                Src = hasSrc ? Src.StartsWith("~/") ? Src.Replace("~/", "") : Src : string.Empty
             };
             if (info.Src.IsNullOrWhiteSpace())
             {
@@ -72,7 +73,7 @@ namespace Borg.Framework.MVC.Features.Scripts
             {
                 output.PostContent.AppendHtmlLine(info.ToHtml());
             }
-            output.PostContent.AppendHtmlLine(infos.Where(x => !x.InlineContent.Value.IsNullOrWhiteSpace()).BundleJsToHtml());
+            output.PostContent.AppendHtmlLine(infos.Where(x => !x.InlineContent.IsNullOrWhiteSpace()).BundleJsToHtml());
         }
     }
 }

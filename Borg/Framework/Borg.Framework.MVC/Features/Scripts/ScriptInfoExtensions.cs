@@ -36,7 +36,7 @@ namespace Borg.Framework.MVC.Features.Scripts
                 builder.Append($" src='{info.Src}'");
             }
             builder.Append(" >");
-            if (!info.InlineContent.Value.IsNullOrWhiteSpace())
+            if (!info.InlineContent.IsNullOrWhiteSpace())
             {
                 var jsCompressor = new JavaScriptCompressor();
                 builder.AppendLine(jsCompressor.Compress(info.InlineContent.Value));
@@ -79,7 +79,7 @@ namespace Borg.Framework.MVC.Features.Scripts
 
             var comporessor = new CssCompressor();
             var builder = new StringBuilder("<style borg>");
-            foreach (var info in infos)
+            foreach (var info in infos.Where(x => !x.InlineContent.IsNullOrWhiteSpace()))
             {
                 builder.AppendLine(comporessor.Compress(info.InlineContent.Value));
             }
@@ -93,7 +93,7 @@ namespace Borg.Framework.MVC.Features.Scripts
 
             var comporessor = new JavaScriptCompressor();
             var builder = new StringBuilder("<script borg>");
-            foreach (var info in infos)
+            foreach (var info in infos.Where(x => !x.InlineContent.IsNullOrWhiteSpace()))
             {
                 builder.AppendLine(comporessor.Compress(info.InlineContent.Value));
             }

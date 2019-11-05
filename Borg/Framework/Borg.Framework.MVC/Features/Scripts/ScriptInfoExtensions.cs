@@ -77,7 +77,7 @@ namespace Borg.Framework.MVC.Features.Scripts
             if (infos == null || !infos.Any() || !infos.All(x => x.InfoType == ScriptInfoType.Css)) return string.Empty;
 
 
-            var comporessor = new CssCompressor();
+            var comporessor = new CssCompressor() { CompressionType = CompressionType.Standard,  RemoveComments = true};
             var builder = new StringBuilder("<style borg>");
             foreach (var info in infos.Where(x => !x.InlineContent.IsNullOrWhiteSpace()))
             {
@@ -91,7 +91,7 @@ namespace Borg.Framework.MVC.Features.Scripts
             if (infos == null || !infos.Any() || !infos.All(x => x.InfoType == ScriptInfoType.Js)) return string.Empty;
 
 
-            var comporessor = new JavaScriptCompressor();
+            var comporessor = new JavaScriptCompressor() {CompressionType = CompressionType.Standard, DisableOptimizations = false, Encoding = Encoding.UTF8, ObfuscateJavascript = true, PreserveAllSemicolons = false };
             var builder = new StringBuilder("<script borg>");
             foreach (var info in infos.Where(x => !x.InlineContent.IsNullOrWhiteSpace()))
             {

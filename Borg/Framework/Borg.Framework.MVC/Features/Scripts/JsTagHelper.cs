@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Borg.Framework.MVC.Features.Scripts
 {
     [HtmlTargetElement("script", Attributes = "borg")]
-    public class JsTagHelper : ScriptTagHelperBase
+    public class JsTagHelper : ScriptTagHelper
     {
         public JsTagHelper(IScriptStore store) : base(store)
         {
@@ -52,7 +52,7 @@ namespace Borg.Framework.MVC.Features.Scripts
     }
 
     [HtmlTargetElement("script-render", Attributes = "borg")]
-    public class JsRenderTagHelper : ScriptTagHelperBase
+    public class JsRenderTagHelper : ScriptTagHelper
     {
         public JsRenderTagHelper(IScriptStore store) : base(store)
         {

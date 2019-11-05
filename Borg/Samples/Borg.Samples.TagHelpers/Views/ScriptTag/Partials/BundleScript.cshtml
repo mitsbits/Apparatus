@@ -1,0 +1,28 @@
+﻿@{
+    var serverVariable = "This is a server variable manipulted by inline js that is part of a bundle, rendered in the bottom.";
+}
+<p class="thisscripttag">
+    This partial view has style defined for it, but it renders in the head part of a bundle.<br />
+
+    <span style="display:none;"></span>
+</p>
+<script borg borg-position="BodyBeforeEnd">
+
+    $(function() {
+        var $el =  $('p.thisscripttag').find('span').first();
+        $el.html('@serverVariable').show(500);
+        });
+
+
+</script>
+<style borg borg-position="HeadBeforeEnd">
+    p.thisscripttag {
+        color: green;
+        font-size: large
+    }
+
+        p.thisscripttag span {
+            color: orangered;
+            font-style: oblique;
+        }
+</style>

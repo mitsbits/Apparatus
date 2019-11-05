@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Borg.Framework.MVC.Features.Scripts
 {
-    public abstract class ScriptTagHelperBase : TagHelper
+    public abstract class ScriptTagHelper : TagHelper
     {
         protected readonly IScriptStore store;
 
-        protected ScriptTagHelperBase(IScriptStore store)
+        protected ScriptTagHelper(IScriptStore store)
         {
             this.store = Preconditions.NotNull(store, nameof(store));
         }

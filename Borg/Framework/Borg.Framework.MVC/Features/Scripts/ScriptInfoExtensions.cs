@@ -7,6 +7,9 @@ namespace Borg.Framework.MVC.Features.Scripts
 {
     internal static class ScriptInfoExtensions
     {
+
+        private static readonly JavaScriptCompressor _jsCompressor = new JavaScriptCompressor() { CompressionType = CompressionType.Standard, DisableOptimizations = false, Encoding = Encoding.UTF8, ObfuscateJavascript = true, PreserveAllSemicolons = false };
+        private static readonly CssCompressor _cssCompressor = new CssCompressor() { CompressionType = CompressionType.Standard, RemoveComments = true };
         internal static string ToHtml(this ScriptInfo info)
         {
             if (info.InfoType == ScriptInfoType.Js)
@@ -37,9 +40,8 @@ namespace Borg.Framework.MVC.Features.Scripts
             }
             builder.Append(" >");
             if (!info.InlineContent.IsNullOrWhiteSpace())
-            {
-                var jsCompressor = new JavaScriptCompressor();
-                builder.AppendLine(jsCompressor.Compress(info.InlineContent.Value));
+            { 
+                builder.AppendLine(_jsCompressor.Compress(info.InlineContent.Value));
             }
             builder.AppendLine("</script>");
             return builder.ToString();
@@ -65,8 +67,7 @@ namespace Borg.Framework.MVC.Features.Scripts
             else
             {
                 var builder = new StringBuilder("<style>");
-                var cssCompressor = new CssCompressor();
-                builder.AppendLine(cssCompressor.Compress(info.InlineContent.Value));
+                builder.AppendLine(_cssCompressor.Compress(info.InlineContent.Value));
                 builder.AppendLine("</style>");
                 return builder.ToString();
             }
@@ -77,12 +78,10 @@ namespace Borg.Framework.MVC.Features.Scripts
             if (infos == null || !infos.Any() || !infos.All(x => x.InfoType == ScriptInfoType.Css)) return string.Empty;
 
 
-            var comporessor = new CssCompressor() { CompressionType = CompressionType.Standard,  RemoveComments = true};
             var builder = new StringBuilder("<style borg>");
-            foreach (var info in infos.Where(x => !x.InlineContent.IsNullOrWhiteSpace()))
-            {
-                builder.AppendLine(comporessor.Compress(info.InlineContent.Value));
-            }
+            var innerBuilder = new StringBuilder();
+            innerBuilder.AppendJoin(' ', infos.Where(x => !x.InlineContent.IsNullOrWhiteSpace()).Select(x => x.InlineContent));
+            builder.AppendLine(_cssCompressor.Compress(innerBuilder.ToString()));
             builder.AppendLine("</style>");
             return builder.ToString();
         }
@@ -91,12 +90,12 @@ namespace Borg.Framework.MVC.Features.Scripts
             if (infos == null || !infos.Any() || !infos.All(x => x.InfoType == ScriptInfoType.Js)) return string.Empty;
 
 
-            var comporessor = new JavaScriptCompressor() {CompressionType = CompressionType.Standard, DisableOptimizations = false, Encoding = Encoding.UTF8, ObfuscateJavascript = true, PreserveAllSemicolons = false };
+            
             var builder = new StringBuilder("<script borg>");
-            foreach (var info in infos.Where(x => !x.InlineContent.IsNullOrWhiteSpace()))
-            {
-                builder.AppendLine(comporessor.Compress(info.InlineContent.Value));
-            }
+            var innerbuilder = new StringBuilder();
+            innerbuilder.AppendJoin(' ', infos.Where(x => !x.InlineContent.IsNullOrWhiteSpace()).Select(x=>x.InlineContent));
+            var comporessor = 
+            builder.AppendLine(_jsCompressor.Compress(innerbuilder.ToString()));
             builder.AppendLine("</script>");
             return builder.ToString();
         }

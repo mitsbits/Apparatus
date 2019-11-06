@@ -1,3 +1,4 @@
+using Borg.Framework.MVC.Features.HtmlPager;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,7 @@ namespace Borg.Samples.TagHelpers
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScriptStore(asSinglenton: false);
+            services.AddPagination<PaginationInfoStyle>(Configuration.GetSection("Borg:Framework:MVC:Features:HtmlPager"));
             services.AddControllersWithViews();
         }
 

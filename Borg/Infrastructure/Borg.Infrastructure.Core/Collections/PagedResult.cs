@@ -120,5 +120,13 @@ namespace Borg.Infrastructure.Core.Collections
         }
 
         #endregion List implementation
+
+        #region Factory
+        public static IPagedResult<T> Create(IEnumerable<T> data, int pageSize, int pageNumber, int totalcount)
+        {
+  
+            return new PagedResult<T>(data, pageNumber, pageSize, totalcount);
+        }
+        #endregion
     }
 }

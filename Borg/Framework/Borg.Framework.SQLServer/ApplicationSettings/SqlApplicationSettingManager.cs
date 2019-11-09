@@ -9,12 +9,12 @@ namespace Borg.Framework.SQLServer.ApplicationSettings
 {
     public class SqlApplicationSettingManager<T> : IApplicationSettingManager<T> where T : IApplicationSetting, new()
     {
-        private readonly ILogger logger;
+
         private readonly IMediator dispatcher;
 
-        public SqlApplicationSettingManager(ILoggerFactory loggerFactory, IMediator dispatcher)
+        public SqlApplicationSettingManager( IMediator dispatcher)
         {
-            logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
+ 
             this.dispatcher = Preconditions.NotNull(dispatcher, nameof(dispatcher));
         }
 

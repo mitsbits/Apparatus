@@ -16,7 +16,8 @@ namespace Borg
 
             var config = pocoProvider();
             configuration.Bind(config);
-            services.AddSingleton(config);
+ 
+            services.AddOptions<TConfig>();
             return config;
         }
 
@@ -28,7 +29,7 @@ namespace Borg
             Preconditions.NotNull(config, nameof(config));
 
             configuration.Bind(config);
-            services.AddSingleton(config);
+            services.AddOptions<TConfig>();
             return config;
         }
     }

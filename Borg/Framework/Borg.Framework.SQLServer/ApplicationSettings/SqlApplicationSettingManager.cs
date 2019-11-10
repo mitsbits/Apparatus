@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Borg.Framework.SQLServer.ApplicationSettings
 {
-    public class SqlApplicationSettingManager<T> : IApplicationSettingManager<T> where T : IApplicationSetting, new()
+    public class SqlApplicationSettingManager<T> : IApplicationSettingsManager<T> where T : IApplicationSetting, new()
     {
 
         private readonly IMediator dispatcher;

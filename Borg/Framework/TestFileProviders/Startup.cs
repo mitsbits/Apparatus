@@ -43,7 +43,7 @@ namespace TestFileProviders
             var asmmb = new DepedencyAssemblyProvider(LoggerFactory);
             services.AddMediatR((configuration) => { configuration.AsSingleton(); }, asmmb.GetAssemblies().ToArray());
             services.AddTransient<IHostStartUpJob, Borg.Framework.SQLServer.Broadcast.Migration.MigrationPipeline>();
-            services.AddTransient<IHostStartUpJob, Borg.Framework.SQLServer.ApplicationSettings.Migration.MigrationPipeline>();
+            //services.AddTransient<IHostStartUpJob, Borg.Framework.SQLServer.ApplicationSettings.Migration.MigrationPipeline>();
             services.AddSingleton<ISqlBroadcastBus, SqlBroadcastBus>();
             var path = Path.Combine(Environment.WebRootPath, "static");
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);

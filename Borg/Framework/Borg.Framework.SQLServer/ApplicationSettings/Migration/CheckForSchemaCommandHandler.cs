@@ -21,8 +21,8 @@ namespace Borg.Framework.SQLServer.ApplicationSettings.Migration
         public CheckForSchemaCommandHandler(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
-            var options = Configurator<SqlApplicationSettingConfig>.Build(logger, configuration, SqlApplicationSettingsConstants.ConfigKey);
-            sqlConnection = new SqlConnection(Preconditions.NotEmpty(options.SqlConnectionString, nameof(options.SqlConnectionString)));
+            var options = Configurator<SqlApplicationSettingConfiguration>.Build( configuration, SqlApplicationSettingsConstants.ConfigKey);
+            sqlConnection = new SqlConnection(Preconditions.NotEmpty(options.ConnectionString, nameof(options.ConnectionString)));
             using (var stream = GetType().Assembly.GetManifestResourceStream(SqlApplicationSettingsConstants.CheckForVersionResourcePath))
             using (var reader = new StreamReader(stream))
             {

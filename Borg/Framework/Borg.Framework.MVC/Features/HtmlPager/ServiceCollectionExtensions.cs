@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddPagination<TSettings>(this IServiceCollection services, Func<TSettings> factory) where TSettings : IPaginationInfoStyle
         {
-            services.Configure< TSettings >
+          
             return services.AddSingleton<IPaginationSettingsProvider>(c => new FactoryPaginationSettingsProvider<TSettings>(factory));
         }
 

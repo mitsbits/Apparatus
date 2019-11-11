@@ -8,19 +8,19 @@ namespace Borg.Framework.Services.Configuration
     public class Configurator<TConfiguration> : IDisposable
 
     {
-        private readonly ILogger logger;
+
         private TConfiguration config;
 
-        private Configurator(ILogger logger, IConfiguration configuration, Func<IConfiguration, IConfigurationSection> sectionProvider)
+        private Configurator(IConfiguration configuration, Func<IConfiguration, IConfigurationSection> sectionProvider)
         {
-            this.logger = logger;
+       
 
             var section = sectionProvider.Invoke(configuration);
             Preconditions.NotNull(section, nameof(section));
             config = section.Get<TConfiguration>();
         }
 
-        private Configurator(ILogger logger, IConfiguration configuration, string sectionName) : this(logger, configuration, (c) => c.GetSection(sectionName))
+        private Configurator( IConfiguration configuration, string sectionName) : this( configuration, (c) => c.GetSection(sectionName))
         {
         }
 
@@ -33,17 +33,17 @@ namespace Borg.Framework.Services.Configuration
             return config;
         }
 
-        public static TConfiguration Build(ILogger logger, IConfiguration configuration, Func<IConfiguration, IConfigurationSection> sectionProvider)
+        public static TConfiguration Build( IConfiguration configuration, Func<IConfiguration, IConfigurationSection> sectionProvider)
         {
-            using (var configurator = new Configurator<TConfiguration>(logger, configuration, sectionProvider))
+            using (var configurator = new Configurator<TConfiguration>( configuration, sectionProvider))
             {
                 return configurator.Build();
             }
         }
 
-        public static TConfiguration Build(ILogger logger, IConfiguration configuration, string sectionName)
+        public static TConfiguration Build( IConfiguration configuration, string sectionName)
         {
-            using (var configurator = new Configurator<TConfiguration>(logger, configuration, sectionName))
+            using (var configurator = new Configurator<TConfiguration>( configuration, sectionName))
             {
                 return configurator.Build();
             }

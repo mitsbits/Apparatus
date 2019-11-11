@@ -22,7 +22,7 @@ namespace Borg.Framework.SQLServer.Broadcast
         {
             logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
             this.dispatcher = Preconditions.NotNull(dispatcher, nameof(dispatcher));
-            var options = Configurator<SqlBroadcastBusConfig>.Build(logger, configuration, SqlBroadcastBusConfig.Key);
+            var options = Configurator<SqlBroadcastBusConfig>.Build( configuration, SqlBroadcastBusConfig.Key);
             SubcriberName = options.SubcriberName;
             QueuesToListen = options.QueuesToListen;
             PollingIntervalInSeconds = options.PollingIntervalInSeconds;

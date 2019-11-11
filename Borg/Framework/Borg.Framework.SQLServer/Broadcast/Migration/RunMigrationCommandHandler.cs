@@ -29,7 +29,7 @@ namespace Borg.Framework.SQLServer.Broadcast.Migration
         public RunMigrationCommandHandler(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
-            options = Configurator<SqlBroadcastBusConfig>.Build(logger, configuration, SqlBroadcastBusConfig.Key);
+            options = Configurator<SqlBroadcastBusConfig>.Build(configuration, SqlBroadcastBusConfig.Key);
             sqlConnection = new SqlConnection(Preconditions.NotEmpty(options.SqlConnectionString, nameof(options.SqlConnectionString)));
         }
 

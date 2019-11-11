@@ -154,7 +154,7 @@ namespace Borg.Framework.EF
 
         private void SetUpConfig(DbContextOptionsBuilder options)
         {
-            BorgOptions = Configurator<BorgDbContextConfiguration>.Build(Logger, configuration, GetContextName(GetType()));
+            BorgOptions = Configurator<BorgDbContextConfiguration>.Build( configuration, GetContextName(GetType()));
             options.UseSqlServer(BorgOptions.ConnectionString, opt =>
             {
                 opt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), new int[0]);

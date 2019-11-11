@@ -23,7 +23,7 @@ namespace Borg.Framework.SQLServer.Broadcast.Migration
         public MigrationPipeline(ILoggerFactory loggerFactory, IMediator dispatcher, IConfiguration configuration)
         {
             logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
-            config = Configurator<SqlBroadcastBusConfig>.Build(logger, configuration, typeof(SqlBroadcastBus).FullName.Replace(".", ":"));
+            config = Configurator<SqlBroadcastBusConfig>.Build(configuration, typeof(SqlBroadcastBus).FullName.Replace(".", ":"));
             this.dispatcher = Preconditions.NotNull(dispatcher, nameof(dispatcher));
         }
 

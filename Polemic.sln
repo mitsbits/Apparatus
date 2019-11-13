@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29505.145
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Polemic", "Polemic", "{6735A126-3D24-45F2-A11B-BA0D8795AC2A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apparatus", "Apparatus", "{EB7BF64F-F724-4D69-8C61-EC6D71F045C0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Borg", "Borg", "{CFC23854-C068-4128-8199-BA7845903F67}"
@@ -56,6 +54,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Samples.Platform.SQLServer", "Borg\Samples\Borg.Samples.Platform.SQLServer\Borg.Samples.Platform.SQLServer.csproj", "{55980D44-114A-4D56-AE65-AC29E1D7E080}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Samples.TagHelpers", "Borg\Samples\Borg.Samples.TagHelpers\Borg.Samples.TagHelpers.csproj", "{4491D72E-05FC-4EBF-A510-A99CB9E075C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polemic", "Polemic\Polemic.csproj", "{ACDA423A-322E-4E3B-B651-EF4DF9D063D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +135,10 @@ Global
 		{4491D72E-05FC-4EBF-A510-A99CB9E075C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4491D72E-05FC-4EBF-A510-A99CB9E075C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4491D72E-05FC-4EBF-A510-A99CB9E075C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACDA423A-322E-4E3B-B651-EF4DF9D063D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACDA423A-322E-4E3B-B651-EF4DF9D063D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACDA423A-322E-4E3B-B651-EF4DF9D063D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACDA423A-322E-4E3B-B651-EF4DF9D063D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

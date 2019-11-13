@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Polemic.Blazor.Data
+namespace Polemic.Data
 {
     public class WeatherForecastService
     {

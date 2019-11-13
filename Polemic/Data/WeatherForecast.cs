@@ -1,6 +1,6 @@
 using System;
 
-namespace Polemic.Blazor.Data
+namespace Polemic.Data
 {
     public class WeatherForecast
     {

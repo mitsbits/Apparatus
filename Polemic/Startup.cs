@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Polemic.Blazor.Data;
+using Polemic.Data;
 
-namespace Polemic.Blazor
+namespace Polemic
 {
     public class Startup
     {
@@ -26,10 +26,10 @@ namespace Polemic.Blazor
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IPolemic>(new Polemic("foo is better than bar"));
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<Topic>(new Topic("Foo is better than Bar"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

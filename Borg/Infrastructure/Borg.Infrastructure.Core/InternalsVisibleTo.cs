@@ -15,3 +15,4 @@
 [assembly: InternalsVisibleTo("Apparatus.System.Api")]
 [assembly: InternalsVisibleTo("Borg.Framework.SQLServer")]
 [assembly: InternalsVisibleTo("Borg.Platform.Web")]
+[assembly: InternalsVisibleTo("Polemic.Blazor")]

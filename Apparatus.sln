@@ -35,6 +35,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Infrastructure.Core.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Framework.SQLServer", "Borg\Framework\Borg.Framework.SQLServer\Borg.Framework.SQLServer.csproj", "{7C7A0817-C061-4E28-B874-B7A4363229A0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Platform.Web", "Borg\Platform\Borg.Platform.Web\Borg.Platform.Web.csproj", "{23FC5A0F-B947-498F-876B-73FFD8532FC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Platform.SQLServer", "Borg\Platform\Borg.Platform.SQLServer\Borg.Platform.SQLServer.csproj", "{EBE77074-BDED-435C-A303-3050BEF369E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +93,14 @@ Global
 		{7C7A0817-C061-4E28-B874-B7A4363229A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C7A0817-C061-4E28-B874-B7A4363229A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C7A0817-C061-4E28-B874-B7A4363229A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23FC5A0F-B947-498F-876B-73FFD8532FC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23FC5A0F-B947-498F-876B-73FFD8532FC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23FC5A0F-B947-498F-876B-73FFD8532FC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23FC5A0F-B947-498F-876B-73FFD8532FC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBE77074-BDED-435C-A303-3050BEF369E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBE77074-BDED-435C-A303-3050BEF369E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBE77074-BDED-435C-A303-3050BEF369E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBE77074-BDED-435C-A303-3050BEF369E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,6 +120,8 @@ Global
 		{C63DF339-AA9E-4DC8-9646-49EB220D6915} = {F4F3D244-D49D-404A-A524-903F93540AE6}
 		{81FEB35A-9F4A-49F9-8556-936D7ECB378E} = {F4F3D244-D49D-404A-A524-903F93540AE6}
 		{7C7A0817-C061-4E28-B874-B7A4363229A0} = {F4F3D244-D49D-404A-A524-903F93540AE6}
+		{23FC5A0F-B947-498F-876B-73FFD8532FC8} = {F4F3D244-D49D-404A-A524-903F93540AE6}
+		{EBE77074-BDED-435C-A303-3050BEF369E7} = {F4F3D244-D49D-404A-A524-903F93540AE6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1532DD30-AFF2-46C7-BD8F-86371FD48BFE}

@@ -44,20 +44,47 @@ namespace Polemic.Pages
         {
             forScore = topic.Score(Stance.For);
             againstScore = topic.Score(Stance.Against);
-            forMessages = ProduceHtml(eventArgs.Ballot) + forMessages;
-            againstMessages = ProduceHtml(eventArgs.Ballot) + againstMessages;
+            forMessages = ProduceHtml(eventArgs.Ballot, Stance.For) + forMessages;
+            againstMessages = ProduceHtml(eventArgs.Ballot, Stance.Against) + againstMessages;
             forMarkup = new MarkupString(forMessages);
             againstMarkup = new MarkupString(againstMessages);
         }
 
-        private string ProduceHtml(Ballot ballot)
+        private string ProduceHtml(Ballot ballot, Stance stance)
         {
+            string background;
+            string foreground;
+
+            if (ballot.Stance == Stance.Against)
+            {
+                if (stance == Stance.Against)
+                {
+                    background = "white";
+                    foreground = "black";
+                }
+                else
+                {
+                    background = "black";
+                    foreground = "black";
+                }
+            }
+            else
+            {
+                if (stance == Stance.Against)
+                {
+                    background = "white";
+                    foreground = "white";
+                }
+                else
+                {
+                    background = "white";
+                    foreground = "black";
+                }
+            }
             var builder = new StringBuilder();
-            var background = ballot.Stance == Stance.For ? "black" : "white";
-            var foreground = ballot.Stance == Stance.For ? "white" : "black";
 
             builder.Append($"<p style='background-color:{background}; color:{foreground}>");
-            builder.Append($"<span><b>{ballot.Timestamp.ToString("d/M HH:mm")}</b></span>");
+            builder.Append($"<b>{ballot.Timestamp.ToString("d/M HH:mm")}</b> ");
             builder.Append($"{ballot.Message}</p>");
             return builder.ToString();
         }

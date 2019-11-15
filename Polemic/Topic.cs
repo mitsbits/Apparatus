@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace Polemic
 {
+    public delegate void BallotCastEventHandler(object sender, BallotCastEventArgs e);
     public class Topic
     {
 
+        public event BallotCastEventHandler BallotCast;
         public Topic(string title)
         {
             Title = title;
@@ -19,12 +21,16 @@ namespace Polemic
         public string Title { get;  }
         public Task VoteFor(string message)
         {
-            Ballots.Add(new Ballot(Stance.For, message));
+            var ballot = new Ballot(Stance.Against, message);
+            Ballots.Add(ballot);
+            OnBallotCast(new BallotCastEventArgs(ballot));
             return Task.CompletedTask;
         }
-        public Task VoteAginst(string message)
+        public Task VoteAgainst(string message)
         {
-            Ballots.Add(new Ballot(Stance.Against, message));
+            var ballot = new Ballot(Stance.Against, message);
+            Ballots.Add(ballot);
+            OnBallotCast(new BallotCastEventArgs(ballot));
             return Task.CompletedTask;
         }
 
@@ -32,13 +38,19 @@ namespace Polemic
         {
             return Ballots.Where(x => x.Stance == stance).Sum(x => x.Message.Length);
         }
+
+        private  void OnBallotCast(BallotCastEventArgs e)
+        {
+            BallotCastEventHandler handler = BallotCast;
+            handler?.Invoke(this, e);
+        }
     }
 
     public class Ballot
     {
         public Ballot(Stance stance, string message)
         {
-            Stance = Stance;
+            Stance = stance;
             Message = message;
         }
         public Stance Stance { get; }
@@ -50,5 +62,14 @@ namespace Polemic
     {
         For,
         Against
+    }
+
+    public class BallotCastEventArgs :EventArgs
+    {
+        public BallotCastEventArgs(Ballot ballot)
+        {
+            Ballot = ballot;
+        }
+        public Ballot Ballot { get; }
     }
 }

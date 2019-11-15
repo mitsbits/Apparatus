@@ -1,6 +1,45 @@
 ﻿@page "/voting"
-<h3>@title</h3>
+
+<h3>@topic.Title</h3>
+
+<table class="table table-bordered" >
+    <thead>
+        <tr>
+            <th>For <b>@forScore</b></th>
+            <th>Against <b>@againstScore</b></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="background-color:black; color:white;height:600px;overflow:auto;width:50%;">
+                @forMarkup
+            </td>
+            <td style="background-color:white; color:black;height:600px;overflow:auto;">
+                @againstMarkup
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div class="row">
+                    <div class="col-4"></div>
+                    <div class="col-6"><input type="text" class="form-control" @bind="value" /></div>
+                    <div class="col-2">
+                    <button class="btn btn-success" @onclick="SendMessageFor">For</button>
+                    <button class="btn btn-danger" @onclick="SendMessageAgainst">Against</button>
+                    </div>
+                </div>
+                
+                
+            </td>
+        </tr>
+    </tbody>
+</table>
+
 
 @code {
-    private string title = "title";
+    string value;
+
+   
+
+
 }

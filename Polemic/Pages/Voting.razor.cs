@@ -32,11 +32,13 @@ namespace Polemic.Pages
         }
         private async Task SendMessageFor()
         {
+            if (string.IsNullOrEmpty(value)) return;
             await topic.VoteFor(value);
             value = string.Empty;
         }
         private async Task SendMessageAgainst()
         {
+            if (string.IsNullOrEmpty(value)) return;
             await topic.VoteAgainst(value);
             value = string.Empty;
         }
@@ -135,6 +137,7 @@ namespace Polemic.Pages
 
         private void AddTopic()
         {
+            if (string.IsNullOrEmpty(value)) return;
             store.Add(value);
             value = string.Empty;
         }

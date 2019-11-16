@@ -3,22 +3,22 @@ using System;
 
 namespace Borg.Framework.MVC.Features.HtmlPager
 {
-    public interface IPaginationSettingsProvider
-    {
-        IPaginationInfoStyle Style { get; }
-    }
+    //public interface IPaginationSettingsProvider
+    //{
+    //    IPaginationInfoStyle Style { get; }
+    //}
 
-    public class NullPaginationSettingsProvider : IPaginationSettingsProvider
-    {
-        private static readonly IPaginationInfoStyle _paginationInfoStyle;
+    //public class NullPaginationSettingsProvider : IPaginationSettingsProvider
+    //{
+    //    private static readonly IPaginationInfoStyle _paginationInfoStyle;
 
-        static NullPaginationSettingsProvider()
-        {
-            _paginationInfoStyle = new PaginationConfiguration();
-        }
+    //    static NullPaginationSettingsProvider()
+    //    {
+    //        _paginationInfoStyle = new PaginationConfiguration();
+    //    }
 
-        public IPaginationInfoStyle Style => _paginationInfoStyle;
-    }
+    //    public IPaginationInfoStyle Style => _paginationInfoStyle;
+    //}
 
     //public class FactoryPaginationSettingsProvider<TSettings> : IPaginationSettingsProvider where TSettings : IPaginationInfoStyle
     //{
@@ -32,7 +32,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
     //    public IPaginationInfoStyle Style => _paginationInfoStyle;
     //}
 
-    public class InstancePaginationSettingsProvider<TSettings> : IPaginationSettingsProvider where TSettings : IPaginationInfoStyle
+    public class InstancePaginationSettingsProvider<TSettings> : IPaginationSettingsProvider where TSettings : PaginationConfiguration
     {
         private readonly IOptionsMonitor<TSettings> _paginationInfoStyle;
 

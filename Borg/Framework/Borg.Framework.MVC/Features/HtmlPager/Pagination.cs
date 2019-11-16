@@ -14,32 +14,33 @@ namespace Borg.Framework.MVC.Features.HtmlPager
 {
     public static partial class Pagination
     {
-        public static class DisplayFormat
-        {
-            public const string DefaultPlusFirstAndLast = "DefaultPlusFirstAndLast";
-            public const string Minimal = "Minimal";
-            public const string MinimalWithPageCountText = "MinimalWithPageCountText";
-            public const string MinimalWithItemCountText = "MinimalWithItemCountText";
-            public const string MinimalWithPages = "MinimalWithPages";
-            public const string DefaultPager = "DefaultPager";
-            public const string PageNumbersOnly = "PageNumbersOnly";
-            public const string PagerInChucks = "PagerInChucks";
-        }
+        //public static class DisplayFormat
+        //{
+        //    public const string DefaultPlusFirstAndLast = "DefaultPlusFirstAndLast";
+        //    public const string Minimal = "Minimal";
+        //    public const string MinimalWithPageCountText = "MinimalWithPageCountText";
+        //    public const string MinimalWithItemCountText = "MinimalWithItemCountText";
+        //    public const string MinimalWithPages = "MinimalWithPages";
+        //    public const string DefaultPager = "DefaultPager";
+        //    public const string PageNumbersOnly = "PageNumbersOnly";
+        //    public const string PagerInChucks = "PagerInChucks";
+        //}
 
         public static HtmlString HtmlPager<T>(
             this IHtmlHelper helper,
             IPagedResult<T> metaData,
             Func<int, string> generatePageUrl,
             QueryString query,
-            PaginationInfo settings = null,
+            PaginationConfiguration settings = default,
+            PaginationBehaviour behaviour = default,
             object htmlAttributes = null)
         {
             if (metaData == null)
                 throw new ArgumentNullException(nameof(metaData), "A navigation collection is mandatory.");
             if (!metaData.Any()) return HtmlString.Empty;
-            if (settings == null) settings = new PaginationInfo();
+            if (settings == null) settings = new PaginationConfiguration();
             return
-                new HtmlString(GetHtmlPager(metaData, generatePageUrl, query.ToDictionary(), settings, htmlAttributes));
+                new HtmlString(GetHtmlPager(metaData, generatePageUrl, query.ToDictionary(), settings, behaviour, htmlAttributes));
         }
 
         public static HtmlString HtmlPager<T>(
@@ -47,7 +48,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             IPagedResult<T> metaData,
             Func<int, string> generatePageUrl,
             IDictionary<string, string[]> routedValues = null,
-            PaginationInfo settings = null,
+             T settings = default,
             object htmlAttributes = null)
         {
             if (metaData == null)
@@ -61,39 +62,40 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             IPagedResult metaData,
             Func<int, string> generatePageUrl,
             IDictionary<string, string[]> routedValues,
-            PaginationInfo settings,
+            PaginationConfiguration settings,
+            PaginationBehaviour behaviour,
             object htmlAttributes)
         {
             var listItemLinks = new List<TagBuilder>();
 
             //first
 
-            if (settings.DisplayLinkToFirstPage)
+            if (behaviour.DisplayLinkToFirstPage)
                 listItemLinks.Add(First(metaData, generatePageUrl, routedValues, settings));
 
-            if (settings.DisplayLinkToPreviousPage)
+            if (behaviour.DisplayLinkToPreviousPage)
                 listItemLinks.Add(Previous(metaData, generatePageUrl, routedValues, settings));
 
             //text
-            if (settings.DisplayPageCountAndCurrentLocation)
+            if (behaviour.DisplayPageCountAndCurrentLocation)
                 listItemLinks.Add(PageCountAndLocationText(metaData, settings));
 
             //text
-            if (settings.DisplayItemSliceAndTotal)
+            if (behaviour.DisplayItemSliceAndTotal)
                 listItemLinks.Add(ItemSliceAndTotalText(metaData, settings));
 
             //page
-            if (!settings.PagerInChunks)
+            if (!behaviour.PagerInChunks)
             {
-                if (settings.DisplayLinkToIndividualPages)
+                if (behaviour.DisplayLinkToIndividualPages)
                 {
                     //calculate start and end of range of page numbers
                     var start = 1;
                     var end = metaData.TotalPages;
-                    if (settings.MaximumPageNumbersToDisplay.HasValue &&
-                        metaData.TotalPages > settings.MaximumPageNumbersToDisplay)
+                    if (behaviour.MaximumPageNumbersToDisplay.HasValue &&
+                        metaData.TotalPages > behaviour.MaximumPageNumbersToDisplay)
                     {
-                        var maxPageNumbersToDisplay = settings.MaximumPageNumbersToDisplay.Value;
+                        var maxPageNumbersToDisplay = behaviour.MaximumPageNumbersToDisplay.Value;
                         start = metaData.Page - maxPageNumbersToDisplay / 2;
                         if (start < 1)
                             start = 1;
@@ -153,7 +155,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             string listItemLinksString = null;
 
             var builder = new StringBuilder();
-            foreach(var item in listItemLinks)
+            foreach (var item in listItemLinks)
             {
                 using (var writer = new System.IO.StringWriter())
                 {
@@ -176,7 +178,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
                 ul.WriteTo(writer, HtmlEncoder.Default);
                 return writer.ToString();
             }
- 
+
         }
 
         private static string GetRoutedValues(IDictionary<string, string[]> routedValues, string pageVariable)
@@ -203,7 +205,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         private static TagBuilder Next(IPagedResult metadata,
             Func<int, string> generatePageUrl,
             IDictionary<string, string[]> routedValues,
-            PaginationInfo settings)
+            PaginationConfiguration settings)
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.ArrowClass + " next");
@@ -231,7 +233,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         private static TagBuilder Last(IPagedResult metadata,
             Func<int, string> generatePageUrl,
             IDictionary<string, string[]> routedValues,
-            PaginationInfo settings)
+            PaginationConfiguration settings)
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.ArrowClass);
@@ -255,7 +257,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             return item;
         }
 
-        private static TagBuilder PageCountAndLocationText(IPagedResult metadata, PaginationInfo settings)
+        private static TagBuilder PageCountAndLocationText(IPagedResult metadata, PaginationConfiguration settings)
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.UnavailableClass);
@@ -270,7 +272,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             return item;
         }
 
-        private static TagBuilder ItemSliceAndTotalText(IPagedResult metadata, PaginationInfo settings)
+        private static TagBuilder ItemSliceAndTotalText(IPagedResult metadata, PaginationConfiguration settings)
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.UnavailableClass);
@@ -291,11 +293,11 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         }
 
         private static TagBuilder EllipsesPrevious(IPagedResult metaData, Func<int, string> generatePageUrl,
-            IDictionary<string, string[]> routedValues, PaginationInfo settings)
+            IDictionary<string, string[]> routedValues, PaginationConfiguration settings)
         {
             var targetPageNumber = metaData.Page - (settings.MaximumPageNumbersToDisplay ?? 10);
             if (targetPageNumber < 1) targetPageNumber = 1;
-           
+
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.ItemClass);
             var a = new TagBuilder("a");
@@ -318,11 +320,11 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         }
 
         private static TagBuilder EllipsesNext(IPagedResult metaData, Func<int, string> generatePageUrl,
-            IDictionary<string, string[]> routedValues, PaginationInfo settings)
+            IDictionary<string, string[]> routedValues, PaginationConfiguration settings)
         {
             var targetPageNumber = metaData.Page + (settings.MaximumPageNumbersToDisplay ?? 10);
             if (targetPageNumber > metaData.TotalPages) targetPageNumber = metaData.TotalPages;
-           
+
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.ItemClass);
             var a = new TagBuilder("a");
@@ -345,7 +347,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         }
 
         private static TagBuilder Page(int i, IPagedResult metaData, Func<int, string> generatePageUrl,
-            IDictionary<string, string[]> routedValues, PaginationInfo settings)
+            IDictionary<string, string[]> routedValues, PaginationConfiguration settings)
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.ItemClass);
@@ -373,7 +375,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         }
 
         private static TagBuilder Previous(IPagedResult metaData, Func<int, string> generatePageUrl,
-            IDictionary<string, string[]> routedValues, PaginationInfo settings)
+            IDictionary<string, string[]> routedValues, PaginationConfiguration settings )
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.ItemClass);
@@ -400,7 +402,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         }
 
         private static TagBuilder First(IPagedResult metaData, Func<int, string> generatePageUrl,
-            IDictionary<string, string[]> routedValues, PaginationInfo settings)
+            IDictionary<string, string[]> routedValues, PaginationConfiguration settings)
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.ItemClass);
@@ -425,366 +427,366 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             return item;
         }
 
-        public class PaginationInfo
-        {
-            public PaginationInfo()
-            {
-            }
+        //public class PaginationInfo
+        //{
+        //    //public PaginationInfo()
+        //    //{
+        //    //}
 
-            public PaginationInfo(IPaginationSettingsProvider provider) : this()
-            {
-                if (provider != null)
-                {
-                    var instance = provider.Style;
-                    _paginationInfoStyle.ArrowClass = instance.ArrowClass;
-                    _paginationInfoStyle.CurrentClass = instance.CurrentClass;
-                    _paginationInfoStyle.ElementClass = instance.ElementClass;
-                    _paginationInfoStyle.ItemClass = instance.ItemClass;
-                    _paginationInfoStyle.Ellipses = instance.Ellipses;
-                    _paginationInfoStyle.FirstDisplay = instance.FirstDisplay;
-                    _paginationInfoStyle.ItemSliceAndTotalFormat = instance.ItemSliceAndTotalFormat;
-                    _paginationInfoStyle.LastDisplay = instance.LastDisplay;
-                    _paginationInfoStyle.NextDisplay = instance.NextDisplay;
-                    _paginationInfoStyle.PageCountAndLocationFormat = instance.PageCountAndLocationFormat;
-                    _paginationInfoStyle.PageDisplayFormat = instance.PageDisplayFormat;
-                    _paginationInfoStyle.PageVariableName = instance.PageVariableName;
-                    _paginationInfoStyle.PreviousDisplay = instance.PreviousDisplay;
-                    _paginationInfoStyle.UnavailableClass = instance.UnavailableClass;
-                    _paginationInfoStyle.OutputTagElement = instance.OutputTagElement;
-                    _paginationInfoStyle.OutputItemTagElement = instance.OutputItemTagElement;
-                }
-            }
+        //    public PaginationInfo(IPaginationSettingsProvider provider) : this()
+        //    {
+        //        if (provider != null)
+        //        {
+        //            var instance = provider.Style;
+        //            _paginationInfoStyle.ArrowClass = instance.ArrowClass;
+        //            _paginationInfoStyle.CurrentClass = instance.CurrentClass;
+        //            _paginationInfoStyle.ElementClass = instance.ElementClass;
+        //            _paginationInfoStyle.ItemClass = instance.ItemClass;
+        //            _paginationInfoStyle.Ellipses = instance.Ellipses;
+        //            _paginationInfoStyle.FirstDisplay = instance.FirstDisplay;
+        //            _paginationInfoStyle.ItemSliceAndTotalFormat = instance.ItemSliceAndTotalFormat;
+        //            _paginationInfoStyle.LastDisplay = instance.LastDisplay;
+        //            _paginationInfoStyle.NextDisplay = instance.NextDisplay;
+        //            _paginationInfoStyle.PageCountAndLocationFormat = instance.PageCountAndLocationFormat;
+        //            _paginationInfoStyle.PageDisplayFormat = instance.PageDisplayFormat;
+        //            _paginationInfoStyle.PageVariableName = instance.PageVariableName;
+        //            _paginationInfoStyle.PreviousDisplay = instance.PreviousDisplay;
+        //            _paginationInfoStyle.UnavailableClass = instance.UnavailableClass;
+        //            _paginationInfoStyle.OutputTagElement = instance.OutputTagElement;
+        //            _paginationInfoStyle.OutputItemTagElement = instance.OutputItemTagElement;
+        //        }
+        //    }
 
-            [DefaultValue(false)]
-            public bool PagerInChunks { get; set; } = false;
+        //    [DefaultValue(false)]
+        //    public bool PagerInChunks { get; set; } = false;
 
-            public int ChunkCount { get; set; } = 10;
+        //    public int ChunkCount { get; set; } = 10;
 
-            private readonly PaginationConfiguration _paginationInfoStyle = new PaginationConfiguration();
+        //    private readonly PaginationConfiguration _paginationInfoStyle = new PaginationConfiguration();
 
-            public PaginationConfiguration PaginationInfoStyle
-            {
-                get { return _paginationInfoStyle; }
-            }
+        //    public PaginationConfiguration PaginationInfoStyle
+        //    {
+        //        get { return _paginationInfoStyle; }
+        //    }
 
-            [DefaultValue("{0} to {1} of {2}")]
-            public virtual string ItemSliceAndTotalFormat
-            {
-                set { _paginationInfoStyle.ItemSliceAndTotalFormat = value; }
-                get { return _paginationInfoStyle.ItemSliceAndTotalFormat; }
-            }
+        //    [DefaultValue("{0} to {1} of {2}")]
+        //    public virtual string ItemSliceAndTotalFormat
+        //    {
+        //        set { _paginationInfoStyle.ItemSliceAndTotalFormat = value; }
+        //        get { return _paginationInfoStyle.ItemSliceAndTotalFormat; }
+        //    }
 
-            [DefaultValue("{0} of {1}")]
-            public virtual string PageCountAndLocationFormat
-            {
-                set { _paginationInfoStyle.PageCountAndLocationFormat = value; }
-                get { return _paginationInfoStyle.PageCountAndLocationFormat; }
-            }
+        //    [DefaultValue("{0} of {1}")]
+        //    public virtual string PageCountAndLocationFormat
+        //    {
+        //        set { _paginationInfoStyle.PageCountAndLocationFormat = value; }
+        //        get { return _paginationInfoStyle.PageCountAndLocationFormat; }
+        //    }
 
-            [DefaultValue(">")]
-            public virtual string NextDisplay
-            {
-                set { _paginationInfoStyle.NextDisplay = value; }
-                get { return _paginationInfoStyle.NextDisplay; }
-            }
+        //    [DefaultValue(">")]
+        //    public virtual string NextDisplay
+        //    {
+        //        set { _paginationInfoStyle.NextDisplay = value; }
+        //        get { return _paginationInfoStyle.NextDisplay; }
+        //    }
 
-            [DefaultValue(">>")]
-            public virtual string LastDisplay
-            {
-                set { _paginationInfoStyle.LastDisplay = value; }
-                get { return _paginationInfoStyle.LastDisplay; }
-            }
+        //    [DefaultValue(">>")]
+        //    public virtual string LastDisplay
+        //    {
+        //        set { _paginationInfoStyle.LastDisplay = value; }
+        //        get { return _paginationInfoStyle.LastDisplay; }
+        //    }
 
-            [DefaultValue("<")]
-            public virtual string PreviousDisplay
-            {
-                set { _paginationInfoStyle.PreviousDisplay = value; }
-                get { return _paginationInfoStyle.PreviousDisplay; }
-            }
+        //    [DefaultValue("<")]
+        //    public virtual string PreviousDisplay
+        //    {
+        //        set { _paginationInfoStyle.PreviousDisplay = value; }
+        //        get { return _paginationInfoStyle.PreviousDisplay; }
+        //    }
 
-            [DefaultValue("<<")]
-            public virtual string FirstDisplay
-            {
-                set { _paginationInfoStyle.FirstDisplay = value; }
-                get { return _paginationInfoStyle.FirstDisplay; }
-            }
+        //    [DefaultValue("<<")]
+        //    public virtual string FirstDisplay
+        //    {
+        //        set { _paginationInfoStyle.FirstDisplay = value; }
+        //        get { return _paginationInfoStyle.FirstDisplay; }
+        //    }
 
-            [DefaultValue("{0}")]
-            public virtual string PageDisplayFormat
-            {
-                set { _paginationInfoStyle.PageDisplayFormat = value; }
-                get { return _paginationInfoStyle.PageDisplayFormat; }
-            }
+        //    [DefaultValue("{0}")]
+        //    public virtual string PageDisplayFormat
+        //    {
+        //        set { _paginationInfoStyle.PageDisplayFormat = value; }
+        //        get { return _paginationInfoStyle.PageDisplayFormat; }
+        //    }
 
-            [DefaultValue("page")]
-            public virtual string PageVariableName
-            {
-                set { _paginationInfoStyle.PageVariableName = value; }
-                get { return _paginationInfoStyle.PageVariableName; }
-            }
+        //    [DefaultValue("page")]
+        //    public virtual string PageVariableName
+        //    {
+        //        set { _paginationInfoStyle.PageVariableName = value; }
+        //        get { return _paginationInfoStyle.PageVariableName; }
+        //    }
 
-            [DefaultValue("pagination")]
-            public virtual string ElementClass
-            {
-                set { _paginationInfoStyle.ElementClass = value; }
-                get { return _paginationInfoStyle.ElementClass; }
-            }
-            [DefaultValue("page-item")]
-            public virtual string ItemClass
-            {
-                set { _paginationInfoStyle.ItemClass = value; }
-                get { return _paginationInfoStyle.ItemClass; }
-            }
+        //    [DefaultValue("pagination")]
+        //    public virtual string ElementClass
+        //    {
+        //        set { _paginationInfoStyle.ElementClass = value; }
+        //        get { return _paginationInfoStyle.ElementClass; }
+        //    }
+        //    [DefaultValue("page-item")]
+        //    public virtual string ItemClass
+        //    {
+        //        set { _paginationInfoStyle.ItemClass = value; }
+        //        get { return _paginationInfoStyle.ItemClass; }
+        //    }
 
-            [DefaultValue("current")]
-            public virtual string CurrentClass
-            {
-                set { _paginationInfoStyle.CurrentClass = value; }
-                get { return _paginationInfoStyle.CurrentClass; }
-            }
+        //    [DefaultValue("current")]
+        //    public virtual string CurrentClass
+        //    {
+        //        set { _paginationInfoStyle.CurrentClass = value; }
+        //        get { return _paginationInfoStyle.CurrentClass; }
+        //    }
 
-            [DefaultValue("unavailable")]
-            public virtual string UnavailableClass
-            {
-                set { _paginationInfoStyle.UnavailableClass = value; }
-                get { return _paginationInfoStyle.UnavailableClass; }
-            }
+        //    [DefaultValue("unavailable")]
+        //    public virtual string UnavailableClass
+        //    {
+        //        set { _paginationInfoStyle.UnavailableClass = value; }
+        //        get { return _paginationInfoStyle.UnavailableClass; }
+        //    }
 
-            [DefaultValue("arrow")]
-            public virtual string ArrowClass
-            {
-                set { _paginationInfoStyle.ArrowClass = value; }
-                get { return _paginationInfoStyle.ArrowClass; }
-            }
+        //    [DefaultValue("arrow")]
+        //    public virtual string ArrowClass
+        //    {
+        //        set { _paginationInfoStyle.ArrowClass = value; }
+        //        get { return _paginationInfoStyle.ArrowClass; }
+        //    }
 
-            [DefaultValue("ul")]
-            public virtual string OutputTagElement
-            {
-                set { _paginationInfoStyle.OutputTagElement = value; }
-                get { return _paginationInfoStyle.OutputTagElement; }
-            }
+        //    [DefaultValue("ul")]
+        //    public virtual string OutputTagElement
+        //    {
+        //        set { _paginationInfoStyle.OutputTagElement = value; }
+        //        get { return _paginationInfoStyle.OutputTagElement; }
+        //    }
 
-            [DefaultValue("li")]
-            public virtual string OutputItemTagElement
-            {
-                set { _paginationInfoStyle.OutputItemTagElement = value; }
-                get { return _paginationInfoStyle.OutputItemTagElement; }
-            }
+        //    [DefaultValue("li")]
+        //    public virtual string OutputItemTagElement
+        //    {
+        //        set { _paginationInfoStyle.OutputItemTagElement = value; }
+        //        get { return _paginationInfoStyle.OutputItemTagElement; }
+        //    }
 
-            #region List Render options
+        //    #region List Render options
 
-            ///<summary>
-            /// When true, includes a hyperlink to the first page of the list.
-            ///</summary>
-            public bool DisplayLinkToFirstPage { get; set; }
+        //    ///<summary>
+        //    /// When true, includes a hyperlink to the first page of the list.
+        //    ///</summary>
+        //    public bool DisplayLinkToFirstPage { get; set; }
 
-            ///<summary>
-            /// When true, includes a hyperlink to the last page of the list.
-            ///</summary>
-            public bool DisplayLinkToLastPage { get; set; }
+        //    ///<summary>
+        //    /// When true, includes a hyperlink to the last page of the list.
+        //    ///</summary>
+        //    public bool DisplayLinkToLastPage { get; set; }
 
-            ///<summary>
-            /// When true, includes a hyperlink to the previous page of the list.
-            ///</summary>
-            public bool DisplayLinkToPreviousPage { get; set; }
+        //    ///<summary>
+        //    /// When true, includes a hyperlink to the previous page of the list.
+        //    ///</summary>
+        //    public bool DisplayLinkToPreviousPage { get; set; }
 
-            ///<summary>
-            /// When true, includes a hyperlink to the next page of the list.
-            ///</summary>
-            public bool DisplayLinkToNextPage { get; set; }
+        //    ///<summary>
+        //    /// When true, includes a hyperlink to the next page of the list.
+        //    ///</summary>
+        //    public bool DisplayLinkToNextPage { get; set; }
 
-            ///<summary>
-            /// When true, includes hyperlinks for each page in the list.
-            ///</summary>
-            public bool DisplayLinkToIndividualPages { get; set; }
+        //    ///<summary>
+        //    /// When true, includes hyperlinks for each page in the list.
+        //    ///</summary>
+        //    public bool DisplayLinkToIndividualPages { get; set; }
 
-            ///<summary>
-            /// When true, shows the current page number and the total number of pages in the list.
-            ///</summary>
-            ///<example>
-            /// "Page 3 of 8."
-            ///</example>
-            public bool DisplayPageCountAndCurrentLocation { get; set; }
+        //    ///<summary>
+        //    /// When true, shows the current page number and the total number of pages in the list.
+        //    ///</summary>
+        //    ///<example>
+        //    /// "Page 3 of 8."
+        //    ///</example>
+        //    public bool DisplayPageCountAndCurrentLocation { get; set; }
 
-            ///<summary>
-            /// When true, shows the one-based index of the first and last items on the page, and the total number of items in the list.
-            ///</summary>
-            ///<example>
-            /// "Showing items 75 through 100 of 183."
-            ///</example>
-            public bool DisplayItemSliceAndTotal { get; set; }
+        //    ///<summary>
+        //    /// When true, shows the one-based index of the first and last items on the page, and the total number of items in the list.
+        //    ///</summary>
+        //    ///<example>
+        //    /// "Showing items 75 through 100 of 183."
+        //    ///</example>
+        //    public bool DisplayItemSliceAndTotal { get; set; }
 
-            ///<summary>
-            /// The maximum number of page numbers to display. Null displays all page numbers.
-            ///</summary>
-            public int? MaximumPageNumbersToDisplay { get; set; }
+        //    ///<summary>
+        //    /// The maximum number of page numbers to display. Null displays all page numbers.
+        //    ///</summary>
+        //    public int? MaximumPageNumbersToDisplay { get; set; }
 
-            ///<summary>
-            /// If true, adds an ellipsis where not all page numbers are being displayed.
-            ///</summary>
-            ///<example>
-            /// "1 2 3 4 5 ...",
-            /// "... 6 7 8 9 10 ...",
-            /// "... 11 12 13 14 15"
-            ///</example>
-            public bool DisplayEllipsesWhenNotShowingAllPageNumbers { get; set; }
+        //    ///<summary>
+        //    /// If true, adds an ellipsis where not all page numbers are being displayed.
+        //    ///</summary>
+        //    ///<example>
+        //    /// "1 2 3 4 5 ...",
+        //    /// "... 6 7 8 9 10 ...",
+        //    /// "... 11 12 13 14 15"
+        //    ///</example>
+        //    public bool DisplayEllipsesWhenNotShowingAllPageNumbers { get; set; }
 
-            #endregion List Render options
+        //    #endregion List Render options
 
-            ///<summary>
-            /// Also includes links to First and Last pages.
-            ///</summary>
-            public static PaginationInfo DefaultPlusFirstAndLast
-            {
-                get
-                {
-                    var result =
-                        new PaginationInfo
-                        {
-                            DisplayLinkToFirstPage = true,
-                            DisplayLinkToLastPage = true,
-                            DisplayPageCountAndCurrentLocation = true,
-                            PagerInChunks = false,
-                        };
-                    return result;
-                }
-            }
+        //    ///<summary>
+        //    /// Also includes links to First and Last pages.
+        //    ///</summary>
+        //    public static PaginationInfo DefaultPlusFirstAndLast
+        //    {
+        //        get
+        //        {
+        //            var result =
+        //                new PaginationInfo
+        //                {
+        //                    DisplayLinkToFirstPage = true,
+        //                    DisplayLinkToLastPage = true,
+        //                    DisplayPageCountAndCurrentLocation = true,
+        //                    PagerInChunks = false,
+        //                };
+        //            return result;
+        //        }
+        //    }
 
-            ///<summary>
-            /// Shows only the Previous and Next links.
-            ///</summary>
-            public static PaginationInfo Minimal
-            {
-                get
-                {
-                    var result =
-                        new PaginationInfo
-                        {
-                            DisplayLinkToNextPage = true,
-                            DisplayLinkToPreviousPage = true,
-                            PagerInChunks = false,
-                        };
-                    return result;
-                }
-            }
+        //    ///<summary>
+        //    /// Shows only the Previous and Next links.
+        //    ///</summary>
+        //    public static PaginationInfo Minimal
+        //    {
+        //        get
+        //        {
+        //            var result =
+        //                new PaginationInfo
+        //                {
+        //                    DisplayLinkToNextPage = true,
+        //                    DisplayLinkToPreviousPage = true,
+        //                    PagerInChunks = false,
+        //                };
+        //            return result;
+        //        }
+        //    }
 
-            ///<summary>
-            /// Shows Previous and Next links along with current page number and page count.
-            ///</summary>
-            public static PaginationInfo MinimalWithPageCountText
-            {
-                get
-                {
-                    var result =
-                        new PaginationInfo
-                        {
-                            DisplayLinkToNextPage = true,
-                            DisplayLinkToPreviousPage = true,
-                            DisplayPageCountAndCurrentLocation = true,
-                            PagerInChunks = false,
-                        };
-                    return result;
-                }
-            }
+        //    ///<summary>
+        //    /// Shows Previous and Next links along with current page number and page count.
+        //    ///</summary>
+        //    public static PaginationInfo MinimalWithPageCountText
+        //    {
+        //        get
+        //        {
+        //            var result =
+        //                new PaginationInfo
+        //                {
+        //                    DisplayLinkToNextPage = true,
+        //                    DisplayLinkToPreviousPage = true,
+        //                    DisplayPageCountAndCurrentLocation = true,
+        //                    PagerInChunks = false,
+        //                };
+        //            return result;
+        //        }
+        //    }
 
-            ///<summary>
-            ///	Shows Previous and Next links along with index of first and last items on page and total number of items across all pages.
-            ///</summary>
-            public static PaginationInfo MinimalWithItemCountText
-            {
-                get
-                {
-                    var result =
-                        new PaginationInfo
-                        {
-                            DisplayLinkToNextPage = true,
-                            DisplayLinkToPreviousPage = true,
-                            DisplayItemSliceAndTotal = true,
-                            PagerInChunks = false,
-                        };
+        //    ///<summary>
+        //    ///	Shows Previous and Next links along with index of first and last items on page and total number of items across all pages.
+        //    ///</summary>
+        //    public static PaginationInfo MinimalWithItemCountText
+        //    {
+        //        get
+        //        {
+        //            var result =
+        //                new PaginationInfo
+        //                {
+        //                    DisplayLinkToNextPage = true,
+        //                    DisplayLinkToPreviousPage = true,
+        //                    DisplayItemSliceAndTotal = true,
+        //                    PagerInChunks = false,
+        //                };
 
-                    return result;
-                }
-            }
+        //            return result;
+        //        }
+        //    }
 
-            public static PaginationInfo MinimalWithPages
-            {
-                get
-                {
-                    var result =
-                        new PaginationInfo
-                        {
-                            DisplayLinkToFirstPage = false,
-                            DisplayLinkToLastPage = false,
-                            DisplayLinkToPreviousPage = true,
-                            DisplayLinkToNextPage = true,
-                            DisplayEllipsesWhenNotShowingAllPageNumbers = false,
-                            DisplayPageCountAndCurrentLocation = false,
-                            PagerInChunks = false,
-                            DisplayLinkToIndividualPages = true,
-                            MaximumPageNumbersToDisplay = 10,
-                        };
-                    return result;
-                }
-            }
+        //    public static PaginationInfo MinimalWithPages
+        //    {
+        //        get
+        //        {
+        //            var result =
+        //                new PaginationInfo
+        //                {
+        //                    DisplayLinkToFirstPage = false,
+        //                    DisplayLinkToLastPage = false,
+        //                    DisplayLinkToPreviousPage = true,
+        //                    DisplayLinkToNextPage = true,
+        //                    DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+        //                    DisplayPageCountAndCurrentLocation = false,
+        //                    PagerInChunks = false,
+        //                    DisplayLinkToIndividualPages = true,
+        //                    MaximumPageNumbersToDisplay = 10,
+        //                };
+        //            return result;
+        //        }
+        //    }
 
-            public static PaginationInfo DefaultPager
-            {
-                get
-                {
-                    var result =
-                        new PaginationInfo
-                        {
-                            DisplayLinkToNextPage = true,
-                            DisplayLinkToPreviousPage = true,
-                            DisplayPageCountAndCurrentLocation = true,
-                            DisplayLinkToIndividualPages = true,
-                            MaximumPageNumbersToDisplay = 10,
-                            DisplayEllipsesWhenNotShowingAllPageNumbers = true,
-                            PagerInChunks = false,
-                        };
-                    return result;
-                }
-            }
+        //    public static PaginationInfo DefaultPager
+        //    {
+        //        get
+        //        {
+        //            var result =
+        //                new PaginationInfo
+        //                {
+        //                    DisplayLinkToNextPage = true,
+        //                    DisplayLinkToPreviousPage = true,
+        //                    DisplayPageCountAndCurrentLocation = true,
+        //                    DisplayLinkToIndividualPages = true,
+        //                    MaximumPageNumbersToDisplay = 10,
+        //                    DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+        //                    PagerInChunks = false,
+        //                };
+        //            return result;
+        //        }
+        //    }
 
-            ///<summary>
-            ///	Shows only links to each individual page.
-            ///</summary>
-            public static PaginationInfo PageNumbersOnly
-            {
-                get
-                {
-                    var result =
-                        new PaginationInfo
-                        {
-                            DisplayLinkToFirstPage = false,
-                            DisplayLinkToLastPage = false,
-                            DisplayLinkToPreviousPage = false,
-                            DisplayLinkToNextPage = false,
-                            DisplayEllipsesWhenNotShowingAllPageNumbers = false,
-                            PagerInChunks = false,
-                        };
-                    return result;
-                }
-            }
+        //    ///<summary>
+        //    ///	Shows only links to each individual page.
+        //    ///</summary>
+        //    public static PaginationInfo PageNumbersOnly
+        //    {
+        //        get
+        //        {
+        //            var result =
+        //                new PaginationInfo
+        //                {
+        //                    DisplayLinkToFirstPage = false,
+        //                    DisplayLinkToLastPage = false,
+        //                    DisplayLinkToPreviousPage = false,
+        //                    DisplayLinkToNextPage = false,
+        //                    DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+        //                    PagerInChunks = false,
+        //                };
+        //            return result;
+        //        }
+        //    }
 
-            public static PaginationInfo PagerInChucks
-            {
-                get
-                {
-                    var result =
-                        new PaginationInfo
-                        {
-                            DisplayLinkToFirstPage = false,
-                            DisplayLinkToLastPage = false,
-                            DisplayLinkToPreviousPage = true,
-                            DisplayLinkToNextPage = true,
-                            DisplayEllipsesWhenNotShowingAllPageNumbers = false,
-                            PagerInChunks = true,
-                        };
-                    return result;
-                }
-            }
-        }
+        //    public static PaginationInfo PagerInChucks
+        //    {
+        //        get
+        //        {
+        //            var result =
+        //                new PaginationInfo
+        //                {
+        //                    DisplayLinkToFirstPage = false,
+        //                    DisplayLinkToLastPage = false,
+        //                    DisplayLinkToPreviousPage = true,
+        //                    DisplayLinkToNextPage = true,
+        //                    DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+        //                    PagerInChunks = true,
+        //                };
+        //            return result;
+        //        }
+        //    }
+        //}
     }
 }

@@ -134,5 +134,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             get { return _Ellipses; }
             set { _Ellipses = value; }
         }
+
+
     }
 }

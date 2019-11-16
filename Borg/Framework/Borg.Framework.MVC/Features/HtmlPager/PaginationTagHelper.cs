@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
@@ -18,13 +19,17 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         private const string ActionKey = "action";
         private const string AreaKey = "area";
 
-        private readonly IPaginationSettingsProvider _provider;
+  
         private readonly LinkGenerator _linkGenerator;
 
-        public PaginationTagHelper(IPaginationSettingsProvider provider, LinkGenerator linkGenerator)
+        private readonly IOptionsMonitor<PaginationConfiguration> options;
+
+        PaginationConfiguration Options => options.CurrentValue;
+        public PaginationTagHelper(IOptionsMonitor<PaginationConfiguration> options, LinkGenerator linkGenerator)
 
         {
-            _provider = provider;
+            this.options = options;
+      
             _linkGenerator = linkGenerator;
         }
 
@@ -32,7 +37,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         public IPagedResult Model { get; set; }
 
         [HtmlAttributeName("borg-settings")]
-        public Pagination.PaginationInfo Settings { get; set; } = new Pagination.PaginationInfo();
+        public PaginationConfiguration Settings { get; set; } = new PaginationConfiguration();
 
         [HtmlAttributeName("borg-display-style")]
         public DisplayStyle DisplayStyle { get; set; } = DisplayStyle.Minimal;
@@ -53,10 +58,10 @@ namespace Borg.Framework.MVC.Features.HtmlPager
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            if (_provider != null)
-            {
-                Settings = GetSettings();
-            }
+
+            Settings = options.CurrentValue;
+
+
             if (!Query.HasValue)
             {
                 Query = ViewContext.HttpContext.Request.QueryString;
@@ -71,7 +76,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
                 ? context.AllAttributes["class"].Value.ToString()
                     : string.Empty;
             if (Model == null) throw new ArgumentNullException(nameof(Model));
-            var content = Pagination.GetHtmlPager(Model, GeneratePageUrl, Query.ToDictionary(), Settings, null);
+            var content = Pagination.GetHtmlPager(Model, GeneratePageUrl, Query.ToDictionary(), Settings, new PaginationBehaviour {  DisplayLinkToIndividualPages = true}, null);
             var trimstart = content.IndexOf('>') + 1;
             var trimend = content.Length - content.LastIndexOf('<')-1;
             var trimmed = content.Substring(trimstart, content.Length - trimend - trimstart-1);

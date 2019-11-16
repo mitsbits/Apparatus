@@ -21,7 +21,7 @@ namespace Polemic
         public string Title { get;  }
         public Task VoteFor(string message)
         {
-            var ballot = new Ballot(Stance.Against, message);
+            var ballot = new Ballot(Stance.For, message);
             Ballots.Add(ballot);
             OnBallotCast(new BallotCastEventArgs(ballot));
             return Task.CompletedTask;

@@ -77,15 +77,15 @@ namespace Polemic.Pages
                 }
                 else
                 {
-                    background = "white";
-                    foreground = "black";
+                    background = "black";
+                    foreground = "white";
                 }
             }
             var builder = new StringBuilder();
 
-            builder.Append($"<p style='background-color:{background}; color:{foreground}>");
+            builder.Append($"<div style='background-color:{background}; color:{foreground};' >");
             builder.Append($"<b>{ballot.Timestamp.ToString("d/M HH:mm")}</b> ");
-            builder.Append($"{ballot.Message}</p>");
+            builder.Append($"{ballot.Message}</div>");
             return builder.ToString();
         }
 

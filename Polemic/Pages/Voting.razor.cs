@@ -9,14 +9,22 @@ namespace Polemic.Pages
 {
     public partial class Voting : IDisposable
     {
+        private string value;
         private long forScore;
         private long againstScore;
         private string forMessages;
         private string againstMessages;
         private MarkupString forMarkup;
         private MarkupString againstMarkup;
+        [Parameter]
+        public string Key { get; set; }
         [Inject]
-        protected Topic topic { get; set; }
+        protected TopicStore store { get; set; }
+        [Inject]
+        protected NavigationManager navManager { get; set; }
+        protected Topic topic { get; set; } = new Topic("xxx");
+
+        private Mode DisplayMode => string.IsNullOrWhiteSpace(Key) ? Voting.Mode.Grid : Voting.Mode.Item;
         public Voting()
         {
 
@@ -35,9 +43,41 @@ namespace Polemic.Pages
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            this.topic.BallotCast += BallotCast;
+            if (DisplayMode == Mode.Item)
+            {
+                this.topic = this.store.Get(Key);
+                this.topic.BallotCast += BallotCast;
+                if (topic.Ballots.Any())
+                {
+                    foreach (var ballot in topic.Ballots.OrderBy(x => x.Timestamp))
+                    {
+                        BallotCast(this, new BallotCastEventArgs(ballot));
+                    }
+                }
+            }
         }
 
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+            if (DisplayMode == Mode.Item)
+            {
+                this.topic = this.store.Get(Key);
+                this.topic.BallotCast += BallotCast;
+                forMessages = string.Empty;
+                againstMessages = string.Empty;
+                forMarkup = new MarkupString(forMessages);
+                againstMarkup = new MarkupString(againstMessages);
+                if (topic.Ballots.Any())
+                {
+                    foreach (var ballot in topic.Ballots.OrderBy(x => x.Timestamp))
+                    {
+                        BallotCast(this, new BallotCastEventArgs(ballot));
+                    }
+                }
+            }
+        }
 
 
         private void BallotCast(object sender, BallotCastEventArgs eventArgs)
@@ -88,10 +128,26 @@ namespace Polemic.Pages
             builder.Append($"{ballot.Message}</div>");
             return builder.ToString();
         }
+        void Navigate(string title)
+        {
+            navManager.NavigateTo($"voting/{title}");
+        }
+
+        private void AddTopic()
+        {
+            store.Add(value);
+            value = string.Empty;
+        }
+
+        enum Mode { Grid, Item }
 
         public void Dispose()
         {
-            this.topic.BallotCast -= BallotCast;
+            if (DisplayMode == Mode.Item && topic != null)
+            {
+                this.topic.BallotCast -= BallotCast;
+            }
         }
     }
 }
+

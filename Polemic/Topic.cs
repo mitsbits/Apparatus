@@ -17,8 +17,8 @@ namespace Polemic
             Title = title;
         }
         private Lazy<ConcurrentBag<Ballot>> _ballotBox = new Lazy<ConcurrentBag<Ballot>>(() => new ConcurrentBag<Ballot>());
-        ConcurrentBag<Ballot> Ballots => _ballotBox.Value;
-        public string Title { get;  }
+        internal ConcurrentBag<Ballot> Ballots => _ballotBox.Value;
+        public string Title { get; }
         public Task VoteFor(string message)
         {
             var ballot = new Ballot(Stance.For, message);
@@ -39,7 +39,7 @@ namespace Polemic
             return Ballots.Where(x => x.Stance == stance).Sum(x => x.Message.Length);
         }
 
-        private  void OnBallotCast(BallotCastEventArgs e)
+        private void OnBallotCast(BallotCastEventArgs e)
         {
             BallotCastEventHandler handler = BallotCast;
             handler?.Invoke(this, e);
@@ -64,12 +64,29 @@ namespace Polemic
         Against
     }
 
-    public class BallotCastEventArgs :EventArgs
+    public class BallotCastEventArgs : EventArgs
     {
         public BallotCastEventArgs(Ballot ballot)
         {
             Ballot = ballot;
         }
         public Ballot Ballot { get; }
+    }
+
+    public class TopicStore
+    {
+        internal IList<Topic> topics = new List<Topic>();
+
+        internal Topic Add(string title)
+        {
+            var topic = new Topic(title);
+            topics.Add(topic);
+            return topic;
+        }
+
+        internal Topic Get(string title)
+        {
+            return topics.Single(x => x.Title == title);
+        }
     }
 }

@@ -1,45 +1,79 @@
 ﻿@page "/voting"
+@page "/voting/{key}"
 
-<h3>@topic.Title</h3>
 
-<table class="table table-bordered" >
-    <thead>
-        <tr>
-            <th>For <b>@forScore</b></th>
-            <th>Against <b>@againstScore</b></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td style="background-color:black; color:white;height:600px;overflow:auto;width:50%;">
-                @forMarkup
-            </td>
-            <td style="background-color:white; color:black;height:600px;overflow:auto;">
-                @againstMarkup
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <div class="row">
-                    <div class="col-4"></div>
-                    <div class="col-6"><input type="text" class="form-control" @bind="value" /></div>
-                    <div class="col-2">
-                    <button class="btn btn-success" @onclick="SendMessageFor">For</button>
-                    <button class="btn btn-danger" @onclick="SendMessageAgainst">Against</button>
+@if (this.DisplayMode == Mode.Item)
+{
+    <h3>@topic.Title</h3>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>For <b>@forScore</b></th>
+                <th>Against <b>@againstScore</b></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="background-color:black; color:white;height:600px;overflow:auto;width:50%;">
+                    @forMarkup
+                </td>
+                <td style="background-color:white; color:black;height:600px;overflow:auto;">
+                    @againstMarkup
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="row">
+                        <div class="col-4"></div>
+                        <div class="col-6"><input type="text" class="form-control" @bind="value" /></div>
+                        <div class="col-2">
+                            <button class="btn btn-success" @onclick="SendMessageFor">For</button>
+                            <button class="btn btn-danger" @onclick="SendMessageAgainst">Against</button>
+                        </div>
                     </div>
-                </div>
-                
-                
-            </td>
-        </tr>
-    </tbody>
-</table>
 
 
-@code {
-    string value;
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-   
+
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Topics</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @foreach (var tpc in this.store.topics)
+                    {
+
+                        <button class="btn btn-dark" @onclick="@(() => Navigate(tpc.Title))">@tpc.Title</button>
+
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="row">
+                        <div class="col-4"></div>
+                        <div class="col-6"><input type="text" class="form-control" @bind="value" /></div>
+                        <div class="col-2">
+                            <button class="btn btn-primary" @onclick="AddTopic">Add Topic</button>
+
+                        </div>
+                    </div>
 
 
+                </td>
+            </tr>
+        </tbody>
+    </table>
 }

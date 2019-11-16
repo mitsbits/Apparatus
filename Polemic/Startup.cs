@@ -29,7 +29,9 @@ namespace Polemic
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddSingleton<Topic>(new Topic("Foo is better than Bar"));
+            var store = new TopicStore();
+            store.Add("Foo is better then Bar");
+            services.AddSingleton<TopicStore>(store);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

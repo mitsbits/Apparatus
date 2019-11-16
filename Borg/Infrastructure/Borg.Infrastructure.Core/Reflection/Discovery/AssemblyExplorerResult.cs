@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Generic;
 
 namespace Borg.Infrastructure.Core.Reflection.Discovery
@@ -12,7 +11,7 @@ namespace Borg.Infrastructure.Core.Reflection.Discovery
 
         public AssemblyExplorerResult(ILoggerFactory loggerFactory, IEnumerable<IAssemblyExplorer> explorers)
         {
-            Logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
+            Logger = loggerFactory.CreateForType(GetType());
             Populate(Preconditions.NotEmpty(explorers, nameof(explorers)));
         }
 
@@ -20,6 +19,7 @@ namespace Borg.Infrastructure.Core.Reflection.Discovery
         {
             foreach (var explorer in explorers)
             {
+                Logger.Debug($"Exploring {explorer.GetType().Name}");
                 results.AddRange(explorer.ScanAndResult());
             }
         }

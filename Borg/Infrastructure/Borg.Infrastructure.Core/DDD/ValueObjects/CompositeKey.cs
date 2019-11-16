@@ -9,7 +9,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects
 {
     [Serializable]
     [MapperIgnore]
-    public class CompositeKey : ValueObject<CompositeKey>, IReadOnlyDictionary<string, object>
+    public class CompositeKey : ValueObject<CompositeKey>, IReadOnlyDictionary<string, object>, IEquatable<CompositeKey>
     {
         protected readonly Dictionary<string, object> _data;
 

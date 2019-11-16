@@ -1,5 +1,7 @@
 ﻿using Borg.Infrastructure.Core.DDD;
+using Borg.Infrastructure.Core.DDD.ValueObjects;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Borg.Framework.ApplicationSettings
@@ -12,6 +14,10 @@ namespace Borg.Framework.ApplicationSettings
         }
 
         public string Title { get; }
+
+        public string Key => GetType().FullName;
+
+        public CompositeKey Keys => new CompositeKey(new KeyValuePair<string, object>[] { new KeyValuePair<string, object>(nameof(Key), Key) });
 
         private string ResolveTitle()
         {

@@ -42,7 +42,12 @@ namespace Borg
         {
             logger.LogError(default(EventId), exception, "");
         }
-
+        /// <summary>
+        /// Gets the logger or null instanse
+        /// </summary>
+        /// <param name="factory"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static ILogger CreateForType(this ILoggerFactory factory, Type type)
         {
             return factory == null ? NullLogger.Instance : factory.CreateLogger(type);

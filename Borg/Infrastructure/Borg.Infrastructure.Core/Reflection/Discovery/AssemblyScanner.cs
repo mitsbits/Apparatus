@@ -12,7 +12,7 @@ namespace Borg.Infrastructure.Core.Reflection.Discovery
 
         protected AssemblyScanner(ILoggerFactory loggerFactory, Assembly assembly)
         {
-            Logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
+            Logger = loggerFactory.CreateForType(GetType());
             Assembly = Preconditions.NotNull(assembly, nameof(assembly));
         }
 

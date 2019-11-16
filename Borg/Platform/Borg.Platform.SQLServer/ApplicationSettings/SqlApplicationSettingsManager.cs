@@ -1,9 +1,8 @@
 ﻿using Borg.Framework.ApplicationSettings;
 using Borg.Framework.SQLServer.ApplicationSettings;
+using Borg.Infrastructure.Core.Services.Factory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
@@ -16,17 +15,25 @@ namespace Borg.Platform.SQLServer.ApplicationSettings
     {
         private readonly ILogger logger;
         private readonly IOptionsMonitor<SqlApplicationSettingConfiguration> optionsMonitor;
-        private const string selectStatement = "SELECT TOP 1 [Payload] FROM [{0}].[{1}] WHERE [TypeName] = @typeName;";
+
+
         public SqlApplicationSettingsManager(ILoggerFactory loggerFactory, IOptionsMonitor<SqlApplicationSettingConfiguration> options)
         {
             logger = loggerFactory.CreateForType(GetType());
             optionsMonitor = options;
         }
 
-        SqlApplicationSettingConfiguration Options => optionsMonitor.CurrentValue;
+        private SqlApplicationSettingConfiguration Options => optionsMonitor.CurrentValue;
+
+        public event ApplicationSettingChangedEventHandler ApplicationSettingChange;
+
         public async Task<T> Get<T>() where T : IApplicationSetting, new()
         {
-            var commandText = string.Format(selectStatement, Options.Schema, Options.Table);
+            if (!await Exists<T>())
+            {
+                return New<T>.Instance();
+            }
+            var commandText = string.Format(Options.SelectStatement, Options.Schema, Options.Table);
             string payload = "{}";
             using (var connection = new SqlConnection(Options.ConnectionString))
             {
@@ -38,18 +45,58 @@ namespace Borg.Platform.SQLServer.ApplicationSettings
                 }
             }
 
-            using (var stream = new MemoryStream(Encoding.ASCII.GetBytes(payload)))
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(payload)))
             {
-               stream.Position = 0;
-               return await JsonSerializer.DeserializeAsync<T>(stream, new JsonSerializerOptions());
-
+                stream.Position = 0;
+                return await JsonSerializer.DeserializeAsync<T>(stream, new JsonSerializerOptions());
             }
-
         }
 
-        public Task<T> UpdateOrCreate<T>(T updated) where T : IApplicationSetting, new()
+        public async Task<T> UpdateOrCreate<T>(T updated) where T : IApplicationSetting, new()
         {
-            throw new NotImplementedException();
+            var exists = await Exists<T>();
+            var commandStatement = (exists) ? string.Format(Options.UpdateStatement, Options.Schema, Options.Table) : string.Format(Options.InsertStatement, Options.Schema, Options.Table);
+
+            using (var connection = new SqlConnection(Options.ConnectionString))
+            {
+                using (var command = new SqlCommand(commandStatement, connection))
+                {
+                    command.Parameters.AddWithValue("@typeName", typeof(T).FullName);
+                    using (var stream = new MemoryStream())
+                    {
+                        await JsonSerializer.SerializeAsync(stream, updated, typeof(T));
+                        stream.Position = 0;
+                        var json = Encoding.UTF8.GetString(stream.ToArray());
+                        command.Parameters.AddWithValue("@payload", json);
+                    }
+                    if (command.Connection.State == System.Data.ConnectionState.Closed) await command.Connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+            OnApplicationSettingChange(new ApplicationSettingChangedEventArgs(typeof(T).FullName));
+            return updated;
+        }
+
+        private async Task<bool> Exists<T>()
+        {
+            var exsts = string.Format(Options.ExistsStatement, Options.Schema, Options.Table);
+            bool result = false;
+            using (var connection = new SqlConnection(Options.ConnectionString))
+            {
+                using (var command = new SqlCommand(exsts, connection))
+                {
+                    command.Parameters.AddWithValue("@typeName", typeof(T).FullName);
+                    if (command.Connection.State == System.Data.ConnectionState.Closed) await command.Connection.OpenAsync();
+                    result = (bool)(await command.ExecuteScalarAsync());
+                }
+            }
+            return result;
+        }
+
+        private void OnApplicationSettingChange(ApplicationSettingChangedEventArgs e)
+        {
+            ApplicationSettingChangedEventHandler handler = ApplicationSettingChange;
+            handler?.Invoke(this, e);
         }
     }
 }

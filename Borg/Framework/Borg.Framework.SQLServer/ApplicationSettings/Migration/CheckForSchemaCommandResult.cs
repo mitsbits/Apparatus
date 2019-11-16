@@ -1,6 +1,6 @@
 ﻿namespace Borg.Framework.SQLServer.ApplicationSettings.Migration
 {
-    public class CheckForSchemaCommandResult
+    internal class CheckForSchemaCommandResult
     {
         public CheckForSchemaCommandResult(int databaseSchemaVersion, int migrationSchemaVersion)
         {

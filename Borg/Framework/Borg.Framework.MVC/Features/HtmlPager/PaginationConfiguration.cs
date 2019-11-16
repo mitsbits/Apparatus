@@ -2,7 +2,7 @@
 
 namespace Borg.Framework.MVC.Features.HtmlPager
 {
-    public class PaginationInfoStyle : IPaginationInfoStyle
+    public class PaginationConfiguration : IPaginationInfoStyle
     {
         private string _ItemSliceAndTotalFormat = "{0} to {1} of {2}";
         private string _PageCountAndLocationFormat = "{0} of {1}";
@@ -12,6 +12,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         private string _FirstDisplay = "<<";
         private string _PageDisplayFormat = "{0}";
         private string _PageVariableName = "p";
+        private string _ItemClass = "page-item";
         private string _ElementClass = "pagination";
         private string _CurrentClass = "active";
         private string _UnavailableClass = "disabled";
@@ -88,6 +89,15 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         {
             get { return _PageVariableName; }
             set { _PageVariableName = value; }
+        }
+
+
+
+        [DefaultValue("page-item")]
+        public virtual string ItemClass
+        {
+            get { return _ItemClass; }
+            set { _ItemClass = value; }
         }
 
         [DefaultValue("pagination")]

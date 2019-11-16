@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
 
 namespace Borg.Framework.MVC.Features.HtmlPager
 {
@@ -151,11 +152,18 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             //collapse all of the list items into one big string
             string listItemLinksString = null;
 
-            listItemLinksString = listItemLinks.Aggregate(
-                new StringBuilder(),
-                (sb, listItem) => sb.Append(listItem.InnerHtml),
-                sb => sb.ToString()
-            );
+            var builder = new StringBuilder();
+            foreach(var item in listItemLinks)
+            {
+                using (var writer = new System.IO.StringWriter())
+                {
+                    item.WriteTo(writer, HtmlEncoder.Default);
+                    builder.Append(writer.ToString());
+                }
+
+            }
+            listItemLinksString = builder.ToString();
+
 
             var ul = new TagBuilder("ul");
             ul.InnerHtml.AppendHtml(listItemLinksString);
@@ -163,7 +171,12 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             ul.AddCssClass(settings.ElementClass);
             if (htmlAttributes != null) ul.MergeAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes));
 
-            return ul.InnerHtml.ToString();
+            using (var writer = new System.IO.StringWriter())
+            {
+                ul.WriteTo(writer, HtmlEncoder.Default);
+                return writer.ToString();
+            }
+ 
         }
 
         private static string GetRoutedValues(IDictionary<string, string[]> routedValues, string pageVariable)
@@ -194,6 +207,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.ArrowClass + " next");
+            item.AddCssClass(settings.ItemClass);
             var targetPageNumber = metadata.Page + 1;
             var next = new TagBuilder("a");
             next.InnerHtml.Append(settings.NextDisplay);
@@ -245,6 +259,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.UnavailableClass);
+            item.AddCssClass(settings.ItemClass);
             var text = new TagBuilder("a");
 
             text.InnerHtml.AppendHtml(string.Format(settings.PageCountAndLocationFormat, metadata.Page,
@@ -259,7 +274,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
             item.AddCssClass(settings.UnavailableClass);
-
+            item.AddCssClass(settings.ItemClass);
             int FirstItemOnPage = (metadata.Page - 1) * metadata.PageSize + 1;
             var numberOfLastItemOnPage = FirstItemOnPage + metadata.PageSize - 1;
             int LastItemOnPage = numberOfLastItemOnPage > metadata.TotalRecords
@@ -280,8 +295,9 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         {
             var targetPageNumber = metaData.Page - (settings.MaximumPageNumbersToDisplay ?? 10);
             if (targetPageNumber < 1) targetPageNumber = 1;
-
+           
             var item = new TagBuilder(settings.OutputItemTagElement);
+            item.AddCssClass(settings.ItemClass);
             var a = new TagBuilder("a");
             a.InnerHtml.Append(settings.PaginationInfoStyle.Ellipses);
             if (targetPageNumber == metaData.Page)
@@ -306,8 +322,9 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         {
             var targetPageNumber = metaData.Page + (settings.MaximumPageNumbersToDisplay ?? 10);
             if (targetPageNumber > metaData.TotalPages) targetPageNumber = metaData.TotalPages;
-
+           
             var item = new TagBuilder(settings.OutputItemTagElement);
+            item.AddCssClass(settings.ItemClass);
             var a = new TagBuilder("a");
             a.InnerHtml.Append(settings.PaginationInfoStyle.Ellipses);
             if (targetPageNumber == metaData.Page)
@@ -331,7 +348,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             IDictionary<string, string[]> routedValues, PaginationInfo settings)
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
-
+            item.AddCssClass(settings.ItemClass);
             var targetPageNumber = i;
             var page = new TagBuilder("a");
             page.InnerHtml.AppendHtml(string.Format(settings.PageDisplayFormat, i));
@@ -359,6 +376,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             IDictionary<string, string[]> routedValues, PaginationInfo settings)
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
+            item.AddCssClass(settings.ItemClass);
             item.AddCssClass(settings.ArrowClass + " previous");
             var targetPageNumber = metaData.Page - 1;
             var previous = new TagBuilder("a");
@@ -385,7 +403,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             IDictionary<string, string[]> routedValues, PaginationInfo settings)
         {
             var item = new TagBuilder(settings.OutputItemTagElement);
-
+            item.AddCssClass(settings.ItemClass);
             const int targetPageNumber = 1;
             var first = new TagBuilder("a");
             first.InnerHtml.Append(settings.FirstDisplay);
@@ -421,6 +439,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
                     _paginationInfoStyle.ArrowClass = instance.ArrowClass;
                     _paginationInfoStyle.CurrentClass = instance.CurrentClass;
                     _paginationInfoStyle.ElementClass = instance.ElementClass;
+                    _paginationInfoStyle.ItemClass = instance.ItemClass;
                     _paginationInfoStyle.Ellipses = instance.Ellipses;
                     _paginationInfoStyle.FirstDisplay = instance.FirstDisplay;
                     _paginationInfoStyle.ItemSliceAndTotalFormat = instance.ItemSliceAndTotalFormat;
@@ -441,9 +460,9 @@ namespace Borg.Framework.MVC.Features.HtmlPager
 
             public int ChunkCount { get; set; } = 10;
 
-            private readonly PaginationInfoStyle _paginationInfoStyle = new PaginationInfoStyle();
+            private readonly PaginationConfiguration _paginationInfoStyle = new PaginationConfiguration();
 
-            public PaginationInfoStyle PaginationInfoStyle
+            public PaginationConfiguration PaginationInfoStyle
             {
                 get { return _paginationInfoStyle; }
             }
@@ -509,6 +528,12 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             {
                 set { _paginationInfoStyle.ElementClass = value; }
                 get { return _paginationInfoStyle.ElementClass; }
+            }
+            [DefaultValue("page-item")]
+            public virtual string ItemClass
+            {
+                set { _paginationInfoStyle.ItemClass = value; }
+                get { return _paginationInfoStyle.ItemClass; }
             }
 
             [DefaultValue("current")]

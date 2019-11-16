@@ -2,24 +2,24 @@
 @model Borg.Infrastructure.Core.Collections.IPagedResult<Person>
 @{
     ViewData["Title"] = "Home Page";
-    Func<bool,string> _checked = (b) => b ? "checked" : string.Empty;
+    Func<bool, string> _checked = (b) => b ? "checked" : string.Empty;
 }
 
-    <div class="text-center">
-        <h1 class="display-4">Pagination Tag Helper</h1>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">@nameof(Person.Id)</th>
-                    <th scope="col">@nameof(Person.FirstName)</th>
-                    <th scope="col">@nameof(Person.LastName)</th>
-                    <th scope="col">@nameof(Person.Birthday)</th>
-                    <th scope="col">@nameof(Person.IsBlocked)</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var person in Model)
-                {
+<div class="text-center">
+    <h1 class="display-4">Pagination Tag Helper</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">@nameof(Person.Id)</th>
+                <th scope="col">@nameof(Person.FirstName)</th>
+                <th scope="col">@nameof(Person.LastName)</th>
+                <th scope="col">@nameof(Person.Birthday)</th>
+                <th scope="col">@nameof(Person.IsBlocked)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in Model)
+            {
                 <tr>
                     <th scope="row">@person.Id</th>
                     <td>@person.FirstName</td>
@@ -28,7 +28,14 @@
                     <td><input type="checkbox" @_checked(person.IsBlocked) /></td>
                 </tr>
 
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <pagination borg-model="Model"></pagination>
+    <pagination borg-model="Model" borg-display-style="PageNumbersOnly"></pagination>
+    <pagination borg-model="Model" borg-display-style="DefaultPlusFirstAndLast"></pagination>
+    <pagination borg-model="Model" borg-display-style="PagerInChucks"></pagination>
+    <pagination borg-model="Model" borg-display-style=" DefaultPager"></pagination>
+</div>

@@ -2,7 +2,7 @@
 using Borg.Infrastructure.Core.DDD.Contracts;
 using Microsoft.Extensions.Logging;
 
-namespace Borg.Framework.MVC.FeatureProviders
+namespace Borg.Framework.MVC.Features.EntityControllerFeature
 {
     public interface IBackOfficeEntityServiceFacade<TModel> where TModel : IIdentifiable
     {

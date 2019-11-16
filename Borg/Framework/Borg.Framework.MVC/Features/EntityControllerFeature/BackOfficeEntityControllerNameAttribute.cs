@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using System;
 
-namespace Borg.Framework.MVC.FeatureProviders.EntityControllerFeature
+namespace Borg.Framework.MVC.Features.EntityControllerFeature
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class BackOfficeEntityControllerNameAttribute : Attribute, IControllerModelConvention

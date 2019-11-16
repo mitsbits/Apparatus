@@ -20,7 +20,7 @@ namespace Borg.Samples.TagHelpers
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScriptStore(asSinglenton: false);
-            services.AddPagination<PaginationInfoStyle>(Configuration.GetSection("Borg:Framework:MVC:Features:HtmlPager"));
+            services.AddPagination<PaginationConfiguration>(Configuration);
             services.AddControllersWithViews();
         }
 

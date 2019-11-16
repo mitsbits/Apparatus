@@ -28,9 +28,4 @@ namespace Borg.Platform.Web
         }
         protected IModelStore<TModel> ModelStore { get; }
     }
-
-    internal sealed class Constants
-    {
-        internal const string BackofficeAreaName = "Apparatus";
-    }
 }

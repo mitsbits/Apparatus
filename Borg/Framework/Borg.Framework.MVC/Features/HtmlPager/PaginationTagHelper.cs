@@ -28,23 +28,25 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             _linkGenerator = linkGenerator;
         }
 
-        [HtmlAttributeName("model")]
+        [HtmlAttributeName("borg-model")]
         public IPagedResult Model { get; set; }
 
-        [HtmlAttributeName("settings")]
+        [HtmlAttributeName("borg-settings")]
         public Pagination.PaginationInfo Settings { get; set; } = new Pagination.PaginationInfo();
 
-        [HtmlAttributeName("display-style")]
-        public string DisplayStyle { get; set; } = string.Empty;
+        [HtmlAttributeName("borg-display-style")]
+        public DisplayStyle DisplayStyle { get; set; } = DisplayStyle.Minimal;
 
-        [HtmlAttributeName("query")]
+        [HtmlAttributeName("borg-query")]
         public QueryString Query { get; set; } = new QueryString(null);
 
-        [HtmlAttributeName("url-generator")]
+        [HtmlAttributeName("borg-url-generator")]
         public Func<int, string> GeneratePageUrl { get; set; } = null;
 
-        [HtmlAttributeName("page-variable")]
-        public string PageVariable { get; set; } = string.Empty;
+        [HtmlAttributeName("borg-page-variable")]
+        public string PageVariable { get; set; } = "p";
+        [HtmlAttributeName("borg-count-variable")]
+        public string CountVariable { get; set; } = "r";
 
         [ViewContext]
         public ViewContext ViewContext { get; set; }
@@ -71,8 +73,8 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             if (Model == null) throw new ArgumentNullException(nameof(Model));
             var content = Pagination.GetHtmlPager(Model, GeneratePageUrl, Query.ToDictionary(), Settings, null);
             var trimstart = content.IndexOf('>') + 1;
-            var trimend = content.Length - content.LastIndexOf('<');
-            var trimmed = content.Substring(trimstart, content.Length - trimend - trimstart);
+            var trimend = content.Length - content.LastIndexOf('<')-1;
+            var trimmed = content.Substring(trimstart, content.Length - trimend - trimstart-1);
             output.Content.Clear();
             output.TagName = Settings.OutputTagElement;
 
@@ -105,7 +107,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
             Pagination.PaginationInfo resut;
             switch (DisplayStyle)
             {
-                case Pagination.DisplayFormat.DefaultPager:
+                case DisplayStyle.DefaultPager:
                     resut = new Pagination.PaginationInfo(_provider)
                     {
                         DisplayLinkToNextPage = true,
@@ -118,7 +120,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
                     };
                     break;
 
-                case Pagination.DisplayFormat.MinimalWithItemCountText:
+                case DisplayStyle.MinimalWithItemCountText:
                     resut = new Pagination.PaginationInfo(_provider)
                     {
                         DisplayLinkToNextPage = true,
@@ -128,7 +130,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
                     };
                     break;
 
-                case Pagination.DisplayFormat.DefaultPlusFirstAndLast:
+                case DisplayStyle.DefaultPlusFirstAndLast:
                     resut = new Pagination.PaginationInfo(_provider)
                     {
                         DisplayLinkToFirstPage = true,
@@ -138,7 +140,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
                     };
                     break;
 
-                case Pagination.DisplayFormat.Minimal:
+                case DisplayStyle.Minimal:
                     resut = new Pagination.PaginationInfo(_provider)
                     {
                         DisplayLinkToNextPage = true,
@@ -147,7 +149,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
                     };
                     break;
 
-                case Pagination.DisplayFormat.MinimalWithPageCountText:
+                case DisplayStyle.MinimalWithPageCountText:
                     resut = new Pagination.PaginationInfo(_provider)
                     {
                         DisplayLinkToNextPage = true,
@@ -157,7 +159,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
                     };
                     break;
 
-                case Pagination.DisplayFormat.MinimalWithPages:
+                case DisplayStyle.MinimalWithPages:
                     resut = new Pagination.PaginationInfo(_provider)
                     {
                         DisplayLinkToFirstPage = false,
@@ -172,7 +174,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
                     };
                     break;
 
-                case Pagination.DisplayFormat.PageNumbersOnly:
+                case DisplayStyle.PageNumbersOnly:
                     resut = new Pagination.PaginationInfo(_provider)
                     {
                         DisplayLinkToFirstPage = false,
@@ -185,7 +187,7 @@ namespace Borg.Framework.MVC.Features.HtmlPager
                     };
                     break;
 
-                case Pagination.DisplayFormat.PagerInChucks:
+                case DisplayStyle.PagerInChucks:
                     resut = new Pagination.PaginationInfo(_provider)
                     {
                         DisplayLinkToFirstPage = false,

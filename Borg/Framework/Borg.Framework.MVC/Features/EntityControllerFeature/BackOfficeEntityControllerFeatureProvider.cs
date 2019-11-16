@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
-namespace Borg.Framework.MVC.FeatureProviders.EntityControllerFeature
+namespace Borg.Framework.MVC.Features.EntityControllerFeature
 {
     public class BackOfficeEntityControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
     {
@@ -26,13 +27,13 @@ namespace Borg.Framework.MVC.FeatureProviders.EntityControllerFeature
             {
                 var typeName = entityType.Name + "Controller";
 
-                var dbtype = typeof(BorgDb);
+               
 
                 // Check to see if there is a "real" controller for this class
                 if (!feature.Controllers.Any(t => t.Name == typeName))
                 {
                     // Create a generic controller for this type
-                    var controllerType = typeof(BackOfficeEntityController<,>).MakeGenericType(entityType, dbtype).GetTypeInfo();
+                    var controllerType = typeof(BackOfficeEntityController<>).MakeGenericType(entityType).GetTypeInfo();
                     feature.Controllers.Add(controllerType);
                 }
             }

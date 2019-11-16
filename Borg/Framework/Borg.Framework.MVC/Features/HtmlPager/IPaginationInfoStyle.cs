@@ -11,6 +11,7 @@
         string PageDisplayFormat { get; }
         string PageVariableName { get; }
         string ElementClass { get; }
+        string ItemClass { get; }
         string CurrentClass { get; }
         string UnavailableClass { get; }
         string ArrowClass { get; }

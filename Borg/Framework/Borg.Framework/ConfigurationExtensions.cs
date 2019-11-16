@@ -18,6 +18,7 @@ namespace Borg
             configuration.Bind(config);
  
             services.AddOptions<TConfig>();
+
             return config;
         }
 
@@ -30,6 +31,7 @@ namespace Borg
 
             configuration.Bind(config);
             services.AddOptions<TConfig>();
+
             return config;
         }
     }

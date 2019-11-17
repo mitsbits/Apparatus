@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Borg.Framework.MVC.Features.HtmlPager
+﻿namespace Borg.Framework.MVC.Features.HtmlPager
 {
     public enum DisplayStyle
     {
-
+        Undefined = -1,
         DefaultPlusFirstAndLast,
         Minimal,
         MinimalWithPageCountText,
@@ -15,6 +11,5 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         DefaultPager,
         PageNumbersOnly,
         PagerInChucks
-
     }
 }

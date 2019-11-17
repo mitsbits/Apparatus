@@ -1,12 +1,10 @@
 ﻿using Borg.Infrastructure.Core;
 using Borg.Infrastructure.Core.Reflection.Discovery;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Borg.Framework.ApplicationSettings
 {

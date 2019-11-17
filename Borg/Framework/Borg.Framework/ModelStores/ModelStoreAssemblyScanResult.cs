@@ -17,6 +17,7 @@ namespace Borg.Framework.Cms.Contracts
         {
             ModelStoreTypes = null;
         }
+
         public IEnumerable<Type> ModelStoreTypes { get; }
     }
 }

@@ -12,10 +12,10 @@ namespace Borg.Framework.Cms.Contracts
     {
         private readonly List<Type> modelStoreTypes;
         private ModelStoreAssemblyScanResult Result;
+
         public ModelStoreAssemblyScanner(Assembly assembly, ILoggerFactory loggerfactory) : base(loggerfactory, assembly)
         {
             modelStoreTypes = new List<Type>();
-
 
             Populate();
         }
@@ -31,15 +31,16 @@ namespace Borg.Framework.Cms.Contracts
 
             modelStoreTypes.AddRange(types);
 
-
             Result = new ModelStoreAssemblyScanResult(Assembly, modelStoreTypes);
         }
+
         protected override Task<ModelStoreAssemblyScanResult> ScanInternal()
         {
             return Task.FromResult(Result);
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -74,7 +75,6 @@ namespace Borg.Framework.Cms.Contracts
             // GC.SuppressFinalize(this);
         }
 
-
-        #endregion
+        #endregion IDisposable Support
     }
 }

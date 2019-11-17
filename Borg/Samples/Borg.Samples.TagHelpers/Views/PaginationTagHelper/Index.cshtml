@@ -33,9 +33,24 @@
     </table>
 </div>
 <div>
-    <pagination borg-model="Model"></pagination>
-    <pagination borg-model="Model" borg-display-style="PageNumbersOnly"></pagination>
-    <pagination borg-model="Model" borg-display-style="DefaultPlusFirstAndLast"></pagination>
-    <pagination borg-model="Model" borg-display-style="PagerInChucks"></pagination>
-    <pagination borg-model="Model" borg-display-style=" DefaultPager"></pagination>
-</div>
+    <pagination borg-model="Model" borg-behaviour-override-settings="false"
+                borg-behaviour="new Borg.Framework.MVC.Features.HtmlPager.PaginationConfigurationBehaviour
+                    {
+                        ActiveItemClassOperation = Borg.Framework.MVC.Features.HtmlPager.ActiveItemClassOperation.UnavailableClass,
+                        ChunkCount = 5,
+                        DisplayItemSliceAndTotal = false,
+                        DisplayLinkToIndividualPages = true,
+                        DisplayLinkToNextPage = true,
+                        DisplayLinkToPreviousPage = true,
+                        PagerInChunks = true,
+                        DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                        DisplayPageCountAndCurrentLocation = true,
+                    }"></pagination>
+    <pagination borg-model="Model" borg-behaviour-style="DefaultPlusFirstAndLast" borg-behaviour-override-settings="false"></pagination>
+    <pagination borg-model="Model" borg-behaviour-style="DefaultPlusFirstAndLast"></pagination>
+    <pagination borg-model="Model" borg-behaviour-style="PagerInChucks"></pagination>
+    <pagination borg-model="Model" borg-behaviour-style="DefaultPager"></pagination>
+    <pagination borg-model="Model" borg-behaviour-style="MinimalWithPages"></pagination>
+    <pagination borg-model="Model" borg-behaviour-style="MinimalWithItemCountText"></pagination>
+    <pagination borg-model="Model" borg-behaviour-style="DefaultPlusFirstAndLast" borg-behaviour-override-settings="true"></pagination>
+</div> 

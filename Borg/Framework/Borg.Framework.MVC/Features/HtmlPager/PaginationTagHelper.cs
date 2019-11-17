@@ -1,4 +1,5 @@
-﻿using Borg.Infrastructure.Core.Collections;
+﻿using Borg.Infrastructure.Core;
+using Borg.Infrastructure.Core.Collections;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,28 +20,30 @@ namespace Borg.Framework.MVC.Features.HtmlPager
         private const string ActionKey = "action";
         private const string AreaKey = "area";
 
-  
-        private readonly LinkGenerator _linkGenerator;
-
+        private readonly LinkGenerator LinkGenerator;
         private readonly IOptionsMonitor<PaginationConfiguration> options;
 
-        PaginationConfiguration Options => options.CurrentValue;
+        private PaginationConfiguration Options => options.CurrentValue;
+
         public PaginationTagHelper(IOptionsMonitor<PaginationConfiguration> options, LinkGenerator linkGenerator)
 
         {
-            this.options = options;
-      
-            _linkGenerator = linkGenerator;
+            this.options = Preconditions.NotNull(options, nameof(options));
+
+            LinkGenerator = Preconditions.NotNull(linkGenerator, nameof(linkGenerator));
         }
 
         [HtmlAttributeName("borg-model")]
         public IPagedResult Model { get; set; }
 
-        [HtmlAttributeName("borg-settings")]
-        public PaginationConfiguration Settings { get; set; } = new PaginationConfiguration();
+        [HtmlAttributeName("borg-behaviour")]
+        public PaginationConfigurationBehaviour Behaviour { get; set; }
 
-        [HtmlAttributeName("borg-display-style")]
-        public DisplayStyle DisplayStyle { get; set; } = DisplayStyle.Minimal;
+        [HtmlAttributeName("borg-behaviour-style")]
+        public DisplayStyle BehaviourStyle { get; set; } = DisplayStyle.Undefined;
+
+        [HtmlAttributeName("borg-behaviour-override-settings")]
+        public bool BehaviourStyleOverrideSettings { get; set; } = true;
 
         [HtmlAttributeName("borg-query")]
         public QueryString Query { get; set; } = new QueryString(null);
@@ -50,46 +53,70 @@ namespace Borg.Framework.MVC.Features.HtmlPager
 
         [HtmlAttributeName("borg-page-variable")]
         public string PageVariable { get; set; } = "p";
+
         [HtmlAttributeName("borg-count-variable")]
-        public string CountVariable { get; set; } = "r";
+        public string RowsVariable { get; set; } = "r";
 
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-
-            Settings = options.CurrentValue;
-
-
             if (!Query.HasValue)
             {
                 Query = ViewContext.HttpContext.Request.QueryString;
             }
-            if (GeneratePageUrl == null)
-            {
-                var descriptor = ViewContext.ActionDescriptor;
-                var urlHelper = new UrlHelper(ViewContext);
-                GeneratePageUrl = i => UrlFromViewContext(urlHelper, descriptor, i);
-            }
+
             var existsingClass = context.AllAttributes.ContainsName("class")
                 ? context.AllAttributes["class"].Value.ToString()
                     : string.Empty;
             if (Model == null) throw new ArgumentNullException(nameof(Model));
-            var content = Pagination.GetHtmlPager(Model, GeneratePageUrl, Query.ToDictionary(), Settings, new PaginationBehaviour {  DisplayLinkToIndividualPages = true}, null);
-            var trimstart = content.IndexOf('>') + 1;
-            var trimend = content.Length - content.LastIndexOf('<')-1;
-            var trimmed = content.Substring(trimstart, content.Length - trimend - trimstart-1);
-            output.Content.Clear();
-            output.TagName = Settings.OutputTagElement;
 
-            //output.Content.AppendHtml(trimmed);
-            output.Attributes.SetAttribute("class", $"{Settings.ElementClass} {existsingClass}");
+            var behaviour = DefineBehaviour();
+
+            if (GeneratePageUrl == null)
+            {
+                var descriptor = ViewContext.ActionDescriptor;
+                var urlHelper = new UrlHelper(ViewContext);
+                GeneratePageUrl = i => UrlFromViewContext(urlHelper, descriptor, i, behaviour.PageVariable);
+            }
+            var content = Pagination.GetHtmlPager(Model, GeneratePageUrl, Query.ToDictionary(), Options, behaviour, null);
+            var trimstart = content.IndexOf('>') + 1;
+            var trimend = content.Length - content.LastIndexOf('<') - 1;
+            var trimmed = content.Substring(trimstart, content.Length - trimend - trimstart - 1);
+            output.Content.Clear();
+            output.TagName = Options.OutputTagElement;
+            output.Attributes.SetAttribute("class", $"{Options.ElementClass} {existsingClass}");
             output.Content.SetHtmlContent(trimmed);
             var s = (await output.GetChildContentAsync()).GetContent();
         }
 
-        private string UrlFromViewContext(UrlHelper urlHelper, ActionDescriptor descriptor, int i)
+        private PaginationConfigurationBehaviour DefineBehaviour()
+        {
+            var behaviour = Options.Behaviour;
+
+            if (BehaviourStyle != DisplayStyle.Undefined)
+            {
+                behaviour = GetBehaviour(BehaviourStyleOverrideSettings, behaviour);
+            }
+
+            if (BehaviourStyleOverrideSettings && Behaviour != null)
+            {
+                foreach (var prop in typeof(PaginationConfigurationBehaviour).GetProperties())
+                {
+                    var local = behaviour;
+                    var val = typeof(PaginationConfigurationBehaviour).GetProperty(prop.Name).GetValue(Behaviour);
+                    if (val != null)
+                    {
+                        typeof(PaginationConfigurationBehaviour).GetProperty(prop.Name).SetValue(local, val);
+                    }
+                    behaviour = local;
+                }
+            }
+            return behaviour;
+        }
+
+        private string UrlFromViewContext(UrlHelper urlHelper, ActionDescriptor descriptor, int i, string pageVariable)
         {
             var action = descriptor.RouteValues.ContainsKey(ActionKey)
                     ? descriptor.RouteValues[ActionKey]
@@ -102,123 +129,219 @@ namespace Borg.Framework.MVC.Features.HtmlPager
                ? descriptor.RouteValues[AreaKey]
                : string.Empty;
 
-            var raw = _linkGenerator.GetPathByAction(action, controller, new { Area = area });
+            var raw = LinkGenerator.GetPathByAction(action, controller, new { Area = area });
 
-            return $"{raw}?{Settings.PageVariableName}={i}";
+            return $"{raw}?{pageVariable}={i}";
         }
 
-        private Pagination.PaginationInfo GetSettings()
+        private PaginationConfigurationBehaviour GetBehaviour(bool overrideSettings, PaginationConfigurationBehaviour behaviour)
         {
-            Pagination.PaginationInfo resut;
-            switch (DisplayStyle)
+            PaginationConfigurationBehaviour resut = default;
+            if (overrideSettings)
             {
-                case DisplayStyle.DefaultPager:
-                    resut = new Pagination.PaginationInfo(_provider)
-                    {
-                        DisplayLinkToNextPage = true,
-                        DisplayLinkToPreviousPage = true,
-                        DisplayPageCountAndCurrentLocation = true,
-                        DisplayLinkToIndividualPages = true,
-                        MaximumPageNumbersToDisplay = 10,
-                        DisplayEllipsesWhenNotShowingAllPageNumbers = true,
-                        PagerInChunks = false,
-                    };
-                    break;
+                switch (BehaviourStyle)
+                {
+                    case DisplayStyle.DefaultPager:
+                        resut = new PaginationConfigurationBehaviour
+                        {
+                            DisplayLinkToNextPage = true,
+                            DisplayLinkToPreviousPage = true,
+                            DisplayPageCountAndCurrentLocation = true,
+                            DisplayLinkToIndividualPages = true,
+                            MaximumPageNumbersToDisplay = Options.Behaviour.MaximumPageNumbersToDisplay,
+                            DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                            PagerInChunks = false,
+                            ActiveItemClassOperation = ActiveItemClassOperation.CurrentClass
+                        };
+                        break;
 
-                case DisplayStyle.MinimalWithItemCountText:
-                    resut = new Pagination.PaginationInfo(_provider)
-                    {
-                        DisplayLinkToNextPage = true,
-                        DisplayLinkToPreviousPage = true,
-                        DisplayItemSliceAndTotal = true,
-                        PagerInChunks = false,
-                    };
-                    break;
+                    case DisplayStyle.MinimalWithItemCountText:
+                        resut = new PaginationConfigurationBehaviour
+                        {
+                            DisplayLinkToNextPage = true,
+                            DisplayLinkToPreviousPage = true,
+                            DisplayItemSliceAndTotal = true,
+                            PagerInChunks = false,
+                            ActiveItemClassOperation = ActiveItemClassOperation.CurrentClass
+                        };
+                        break;
 
-                case DisplayStyle.DefaultPlusFirstAndLast:
-                    resut = new Pagination.PaginationInfo(_provider)
-                    {
-                        DisplayLinkToFirstPage = true,
-                        DisplayLinkToLastPage = true,
-                        DisplayPageCountAndCurrentLocation = true,
-                        PagerInChunks = false,
-                    };
-                    break;
+                    case DisplayStyle.DefaultPlusFirstAndLast:
+                        resut = new PaginationConfigurationBehaviour
+                        {
+                            DisplayLinkToFirstPage = true,
+                            DisplayLinkToLastPage = true,
+                            DisplayPageCountAndCurrentLocation = true,
+                            PagerInChunks = false,
+                            ActiveItemClassOperation = ActiveItemClassOperation.CurrentClass
+                        };
+                        break;
 
-                case DisplayStyle.Minimal:
-                    resut = new Pagination.PaginationInfo(_provider)
-                    {
-                        DisplayLinkToNextPage = true,
-                        DisplayLinkToPreviousPage = true,
-                        PagerInChunks = false,
-                    };
-                    break;
+                    case DisplayStyle.Minimal:
+                        resut = new PaginationConfigurationBehaviour
+                        {
+                            DisplayLinkToNextPage = true,
+                            DisplayLinkToPreviousPage = true,
+                            PagerInChunks = false,
+                            ActiveItemClassOperation = ActiveItemClassOperation.CurrentClass
+                        };
+                        break;
 
-                case DisplayStyle.MinimalWithPageCountText:
-                    resut = new Pagination.PaginationInfo(_provider)
-                    {
-                        DisplayLinkToNextPage = true,
-                        DisplayLinkToPreviousPage = true,
-                        DisplayPageCountAndCurrentLocation = true,
-                        PagerInChunks = false,
-                    };
-                    break;
+                    case DisplayStyle.MinimalWithPageCountText:
+                        resut = new PaginationConfigurationBehaviour
+                        {
+                            DisplayLinkToNextPage = true,
+                            DisplayLinkToPreviousPage = true,
+                            DisplayPageCountAndCurrentLocation = true,
+                            PagerInChunks = false,
+                            ActiveItemClassOperation = ActiveItemClassOperation.CurrentClass
+                        };
+                        break;
 
-                case DisplayStyle.MinimalWithPages:
-                    resut = new Pagination.PaginationInfo(_provider)
-                    {
-                        DisplayLinkToFirstPage = false,
-                        DisplayLinkToLastPage = false,
-                        DisplayLinkToPreviousPage = true,
-                        DisplayLinkToNextPage = true,
-                        DisplayEllipsesWhenNotShowingAllPageNumbers = false,
-                        DisplayPageCountAndCurrentLocation = false,
-                        PagerInChunks = false,
-                        DisplayLinkToIndividualPages = true,
-                        MaximumPageNumbersToDisplay = 10,
-                    };
-                    break;
+                    case DisplayStyle.MinimalWithPages:
+                        resut = new PaginationConfigurationBehaviour
+                        {
+                            DisplayLinkToFirstPage = false,
+                            DisplayLinkToLastPage = false,
+                            DisplayLinkToPreviousPage = true,
+                            DisplayLinkToNextPage = true,
+                            DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+                            DisplayPageCountAndCurrentLocation = false,
+                            PagerInChunks = false,
+                            DisplayLinkToIndividualPages = true,
+                            MaximumPageNumbersToDisplay = Options.Behaviour.MaximumPageNumbersToDisplay,
+                            ActiveItemClassOperation = ActiveItemClassOperation.CurrentClass
+                        };
+                        break;
 
-                case DisplayStyle.PageNumbersOnly:
-                    resut = new Pagination.PaginationInfo(_provider)
-                    {
-                        DisplayLinkToFirstPage = false,
-                        DisplayLinkToLastPage = false,
-                        DisplayLinkToPreviousPage = false,
-                        DisplayLinkToNextPage = false,
-                        DisplayEllipsesWhenNotShowingAllPageNumbers = false,
-                        DisplayLinkToIndividualPages = true,
-                        PagerInChunks = false,
-                    };
-                    break;
+                    case DisplayStyle.PageNumbersOnly:
+                        resut = new PaginationConfigurationBehaviour
+                        {
+                            DisplayLinkToFirstPage = false,
+                            DisplayLinkToLastPage = false,
+                            DisplayLinkToPreviousPage = false,
+                            DisplayLinkToNextPage = false,
+                            DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+                            DisplayLinkToIndividualPages = true,
+                            PagerInChunks = false,
+                            ActiveItemClassOperation = ActiveItemClassOperation.CurrentClass
+                        };
+                        break;
 
-                case DisplayStyle.PagerInChucks:
-                    resut = new Pagination.PaginationInfo(_provider)
-                    {
-                        DisplayLinkToFirstPage = false,
-                        DisplayLinkToLastPage = false,
-                        DisplayLinkToPreviousPage = true,
-                        DisplayLinkToNextPage = true,
-                        DisplayEllipsesWhenNotShowingAllPageNumbers = false,
-                        PagerInChunks = true,
-                    };
-                    break;
+                    case DisplayStyle.PagerInChucks:
+                        resut = new PaginationConfigurationBehaviour
+                        {
+                            DisplayLinkToFirstPage = false,
+                            DisplayLinkToLastPage = false,
+                            DisplayLinkToPreviousPage = true,
+                            DisplayLinkToNextPage = true,
+                            DisplayEllipsesWhenNotShowingAllPageNumbers = false,
+                            PagerInChunks = true,
+                            ActiveItemClassOperation = ActiveItemClassOperation.CurrentClass
+                        };
+                        break;
 
-                default:
-                    resut = new Pagination.PaginationInfo(_provider)
-                    {
-                        DisplayLinkToNextPage = true,
-                        DisplayLinkToPreviousPage = true,
-                        DisplayPageCountAndCurrentLocation = true,
-                        DisplayLinkToIndividualPages = true,
-                        MaximumPageNumbersToDisplay = 10,
-                        DisplayEllipsesWhenNotShowingAllPageNumbers = true,
-                        PagerInChunks = false,
-                    };
-                    break;
+                    default:
+                        resut = new PaginationConfigurationBehaviour
+                        {
+                            DisplayLinkToNextPage = true,
+                            DisplayLinkToPreviousPage = true,
+                            DisplayPageCountAndCurrentLocation = true,
+                            DisplayLinkToIndividualPages = true,
+                            MaximumPageNumbersToDisplay = 10,
+                            DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                            PagerInChunks = false,
+                            ActiveItemClassOperation = ActiveItemClassOperation.CurrentClass
+                        };
+                        break;
+                }
             }
+            else
+            {
+                switch (BehaviourStyle)
+                {
+                    case DisplayStyle.DefaultPager:
+                        behaviour.DisplayLinkToNextPage = true;
+                        behaviour.DisplayLinkToPreviousPage = true;
+                        behaviour.DisplayPageCountAndCurrentLocation = true;
+                        behaviour.DisplayLinkToIndividualPages = true;
+                        break;
 
-            if (!string.IsNullOrWhiteSpace(PageVariable)) resut.PageVariableName = PageVariable;
+                    case DisplayStyle.MinimalWithItemCountText:
+                        behaviour.DisplayLinkToNextPage = true;
+                        behaviour.DisplayLinkToPreviousPage = true;
+                        behaviour.DisplayItemSliceAndTotal = true;
+                        behaviour.PagerInChunks = false;
+                        break;
+
+                    case DisplayStyle.DefaultPlusFirstAndLast:
+                        behaviour.DisplayLinkToFirstPage = true;
+                        behaviour.DisplayLinkToLastPage = true;
+                        behaviour.DisplayPageCountAndCurrentLocation = true;
+                        behaviour.PagerInChunks = false;
+                        break;
+
+                    case DisplayStyle.Minimal:
+                        behaviour.DisplayLinkToNextPage = true;
+                        behaviour.DisplayLinkToPreviousPage = true;
+                        behaviour.PagerInChunks = false;
+                        break;
+
+                    case DisplayStyle.MinimalWithPageCountText:
+                        behaviour.DisplayLinkToNextPage = true;
+                        behaviour.DisplayLinkToPreviousPage = true;
+                        behaviour.DisplayPageCountAndCurrentLocation = true;
+                        behaviour.PagerInChunks = false;
+
+                        break;
+
+                    case DisplayStyle.MinimalWithPages:
+                        behaviour.DisplayLinkToFirstPage = false;
+                        behaviour.DisplayLinkToLastPage = false;
+                        behaviour.DisplayPageCountAndCurrentLocation = true;
+                        behaviour.DisplayLinkToPreviousPage = true;
+                        behaviour.DisplayLinkToNextPage = true;
+                        behaviour.DisplayEllipsesWhenNotShowingAllPageNumbers = false;
+                        behaviour.DisplayPageCountAndCurrentLocation = false;
+                        behaviour.PagerInChunks = false;
+                        behaviour.DisplayLinkToIndividualPages = true;
+
+                        break;
+
+                    case DisplayStyle.PageNumbersOnly:
+                        behaviour.DisplayLinkToFirstPage = false;
+                        behaviour.DisplayLinkToLastPage = false;
+                        behaviour.DisplayLinkToPreviousPage = false;
+                        behaviour.DisplayLinkToNextPage = false;
+                        behaviour.DisplayEllipsesWhenNotShowingAllPageNumbers = false;
+                        behaviour.DisplayLinkToIndividualPages = true;
+                        behaviour.PagerInChunks = false;
+
+                        break;
+
+                    case DisplayStyle.PagerInChucks:
+                        behaviour.DisplayLinkToFirstPage = false;
+                        behaviour.DisplayLinkToLastPage = false;
+                        behaviour.DisplayLinkToPreviousPage = true;
+                        behaviour.DisplayLinkToNextPage = true;
+                        behaviour.DisplayEllipsesWhenNotShowingAllPageNumbers = false;
+                        behaviour.PagerInChunks = true;
+
+                        break;
+
+                    default:
+                        behaviour.DisplayLinkToNextPage = true;
+                        behaviour.DisplayLinkToPreviousPage = true;
+                        behaviour.DisplayPageCountAndCurrentLocation = true;
+                        behaviour.DisplayLinkToIndividualPages = true;
+                        behaviour.DisplayEllipsesWhenNotShowingAllPageNumbers = true;
+                        behaviour.PagerInChunks = false;
+
+                        break;
+                }
+                resut = behaviour;
+            }
+            if (!string.IsNullOrWhiteSpace(PageVariable)) resut.PageVariable = PageVariable;
             return resut;
         }
     }

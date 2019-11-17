@@ -20,7 +20,10 @@ namespace Borg.Samples.TagHelpers
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScriptStore(asSinglenton: false);
-            services.AddPagination<PaginationConfiguration>(Configuration);
+
+            //services.AddPagination<PaginationConfiguration>(Configuration);
+            var key = typeof(PaginationTagHelper).Namespace.Replace(".", ":");
+            services.Configure<PaginationConfiguration>(Configuration.GetSection(key));
             services.AddControllersWithViews();
         }
 

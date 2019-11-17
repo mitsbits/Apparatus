@@ -1,140 +1,59 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace Borg.Framework.MVC.Features.HtmlPager
 {
-    public class PaginationConfiguration : IPaginationInfoStyle
+    [Serializable]
+    public class PaginationConfiguration
     {
-        private string _ItemSliceAndTotalFormat = "{0} to {1} of {2}";
-        private string _PageCountAndLocationFormat = "{0} of {1}";
-        private string _NextDisplay = ">";
-        private string _LastDisplay = ">>";
-        private string _PreviousDisplay = "<";
-        private string _FirstDisplay = "<<";
-        private string _PageDisplayFormat = "{0}";
-        private string _PageVariableName = "p";
-        private string _ItemClass = "page-item";
-        private string _ElementClass = "pagination";
-        private string _CurrentClass = "active";
-        private string _UnavailableClass = "disabled";
-        private string _ArrowClass = "";
-        private string _Ellipses = "...";
-        private string _OutputTagElement = "ul";
-        private string _OutputItemTagElement = "li";
-
         [DefaultValue("ul")]
-        public virtual string OutputTagElement
-        {
-            get { return _OutputTagElement; }
-            set { _OutputTagElement = value; }
-        }
+        public virtual string OutputTagElement { get; set; } = "ul";
 
         [DefaultValue("li")]
-        public virtual string OutputItemTagElement
-        {
-            get { return _OutputItemTagElement; }
-            set { _OutputItemTagElement = value; }
-        }
+        public virtual string OutputItemTagElement { get; set; } = "li";
 
         [DefaultValue("{0} to {1} of {2}")]
-        public virtual string ItemSliceAndTotalFormat
-        {
-            get { return _ItemSliceAndTotalFormat; }
-            set { _ItemSliceAndTotalFormat = value; }
-        }
+        public virtual string ItemSliceAndTotalFormat { get; set; } = "{0} to {1} of {2}";
 
         [DefaultValue("{0} of {1}")]
-        public virtual string PageCountAndLocationFormat
-        {
-            get { return _PageCountAndLocationFormat; }
-            set { _PageCountAndLocationFormat = value; }
-        }
+        public virtual string PageCountAndLocationFormat { get; set; } = "{0} of {1}";
 
         [DefaultValue(">")]
-        public virtual string NextDisplay
-        {
-            get { return _NextDisplay; }
-            set { _NextDisplay = value; }
-        }
+        public virtual string NextDisplay { get; set; } = ">";
 
         [DefaultValue(">>")]
-        public virtual string LastDisplay
-        {
-            get { return _LastDisplay; }
-            set { _LastDisplay = value; }
-        }
+        public virtual string LastDisplay { get; set; } = ">>";
 
         [DefaultValue("<")]
-        public virtual string PreviousDisplay
-        {
-            get { return _PreviousDisplay; }
-            set { _PreviousDisplay = value; }
-        }
+        public virtual string PreviousDisplay { get; set; } = "<";
 
         [DefaultValue("<<")]
-        public virtual string FirstDisplay
-        {
-            get { return _FirstDisplay; }
-            set { _FirstDisplay = value; }
-        }
+        public virtual string FirstDisplay { get; set; } = "<<";
 
         [DefaultValue("{0}")]
-        public virtual string PageDisplayFormat
-        {
-            get { return _PageDisplayFormat; }
-            set { _PageDisplayFormat = value; }
-        }
+        public virtual string PageDisplayFormat { get; set; } = "{0}";
 
-        [DefaultValue("page")]
-        public virtual string PageVariableName
-        {
-            get { return _PageVariableName; }
-            set { _PageVariableName = value; }
-        }
-
-
+        [DefaultValue("page-link")]
+        public virtual string LinkClass { get; set; } = "page-link";
 
         [DefaultValue("page-item")]
-        public virtual string ItemClass
-        {
-            get { return _ItemClass; }
-            set { _ItemClass = value; }
-        }
+        public virtual string ItemClass { get; set; } = "page-item";
 
         [DefaultValue("pagination")]
-        public virtual string ElementClass
-        {
-            get { return _ElementClass; }
-            set { _ElementClass = value; }
-        }
+        public virtual string ElementClass { get; set; } = "pagination";
 
         [DefaultValue("current")]
-        public virtual string CurrentClass
-        {
-            get { return _CurrentClass; }
-            set { _CurrentClass = value; }
-        }
+        public virtual string CurrentClass { get; set; } = "current";
 
         [DefaultValue("unavailable")]
-        public virtual string UnavailableClass
-        {
-            get { return _UnavailableClass; }
-            set { _UnavailableClass = value; }
-        }
+        public virtual string UnavailableClass { get; set; } = "unavailable";
 
         [DefaultValue("arrow")]
-        public virtual string ArrowClass
-        {
-            get { return _ArrowClass; }
-            set { _ArrowClass = value; }
-        }
+        public virtual string ArrowClass { get; set; } = "arrow";
 
         [DefaultValue("...")]
-        public string Ellipses
-        {
-            get { return _Ellipses; }
-            set { _Ellipses = value; }
-        }
+        public string Ellipses { get; set; } = "...";
 
-
+        public PaginationConfigurationBehaviour Behaviour { get; set; } = new PaginationConfigurationBehaviour();
     }
 }

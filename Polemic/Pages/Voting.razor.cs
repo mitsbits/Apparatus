@@ -1,8 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿
+
+
+using Microsoft.AspNetCore.Components;
+
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Polemic.Pages
@@ -16,13 +23,18 @@ namespace Polemic.Pages
         private string againstMessages;
         private MarkupString forMarkup;
         private MarkupString againstMarkup;
+
         [Parameter]
         public string Key { get; set; }
+
         [Inject]
         protected TopicStore store { get; set; }
+
+        [Inject]
+        protected IJSRuntime JsRuntime { get; set; }
         [Inject]
         protected NavigationManager navManager { get; set; }
-        protected Topic topic { get; set; } = new Topic("xxx");
+        protected Topic topic { get; set; } 
 
         private Mode DisplayMode => string.IsNullOrWhiteSpace(Key) ? Voting.Mode.Grid : Voting.Mode.Item;
         public Voting()
@@ -42,27 +54,15 @@ namespace Polemic.Pages
             await topic.VoteAgainst(value);
             value = string.Empty;
         }
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-            if (DisplayMode == Mode.Item)
-            {
-                this.topic = this.store.Get(Key);
-                this.topic.BallotCast += BallotCast;
-                if (topic.Ballots.Any())
-                {
-                    foreach (var ballot in topic.Ballots.OrderBy(x => x.Timestamp))
-                    {
-                        BallotCast(this, new BallotCastEventArgs(ballot));
-                    }
-                }
-            }
-        }
 
 
-        protected override void OnParametersSet()
+
+
+
+
+        protected override async Task OnParametersSetAsync()
         {
-            base.OnParametersSet();
+            await base.OnParametersSetAsync();
             if (DisplayMode == Mode.Item)
             {
                 this.topic = this.store.Get(Key);
@@ -79,6 +79,7 @@ namespace Polemic.Pages
                     }
                 }
             }
+
         }
 
 
@@ -150,6 +151,12 @@ namespace Polemic.Pages
             {
                 this.topic.BallotCast -= BallotCast;
             }
+        }
+
+        public Task Handle(BallotCastEventArgs notification, CancellationToken cancellationToken = default)
+        {
+            BallotCast(this, notification);
+            return Task.CompletedTask;
         }
     }
 }

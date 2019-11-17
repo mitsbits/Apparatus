@@ -14,7 +14,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework.EF\Borg.Framework.EF.csproj" />
     <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework\Borg.Framework.csproj" />
-    <ProjectReference Include="..\..\System\Apparatus.System.Api\Apparatus.System.Api.csproj" />
     <ProjectReference Include="..\..\System\Apparatus.System.Backoffice\Apparatus.System.Backoffice.csproj" />
   </ItemGroup>
 

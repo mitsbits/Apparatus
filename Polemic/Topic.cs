@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,6 +15,7 @@ namespace Polemic
         public event BallotCastEventHandler BallotCast;
         public Topic(string title)
         {
+            
             Title = title;
         }
         private Lazy<ConcurrentBag<Ballot>> _ballotBox = new Lazy<ConcurrentBag<Ballot>>(() => new ConcurrentBag<Ballot>());
@@ -64,8 +66,7 @@ namespace Polemic
         Against
     }
 
-    public class BallotCastEventArgs : EventArgs
-    {
+    public class BallotCastEventArgs : EventArgs { 
         public BallotCastEventArgs(Ballot ballot)
         {
             Ballot = ballot;

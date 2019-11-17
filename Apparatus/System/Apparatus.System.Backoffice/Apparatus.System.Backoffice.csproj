@@ -8,12 +8,13 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-
   <ItemGroup>
-    <Folder Include="Areas\Apparatus\Views\Shared\" />
+    <EmbeddedResource Include="wwwroot\**\*" />
+    <Compile Remove="node_modules\**" />
+    <Content Remove="node_modules\**" />
+    <EmbeddedResource Remove="node_modules\**" />
+    <None Remove="node_modules\**" />
   </ItemGroup>
-
-
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework.MVC\Borg.Framework.MVC.csproj" />

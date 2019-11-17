@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Polemic.Data;
+using Polemic.Hubs;
 
 namespace Polemic
 {
@@ -32,6 +34,9 @@ namespace Polemic
             var store = new TopicStore();
             store.Add("Foo is better then Bar");
             services.AddSingleton<TopicStore>(store);
+
+            //services.AddSignalR();
+            //services.AddTransient<HubConnectionBuilder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +60,7 @@ namespace Polemic
 
             app.UseEndpoints(endpoints =>
             {
+                //endpoints.MapHub<BallotsHub>("/ballotshub");
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

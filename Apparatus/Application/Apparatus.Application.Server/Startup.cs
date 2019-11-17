@@ -26,7 +26,7 @@ namespace Apparatus.Application.Server
         private readonly IConfiguration configuration;
         private AssemblyExplorerResult entitiesExplorerResult;
 
-        public Startup( IWebHostEnvironment hostingEnvironment, IConfiguration configuration)
+        public Startup(IWebHostEnvironment hostingEnvironment, IConfiguration configuration)
         {
             this.loggerFactory = null;
             this.hostingEnvironment = hostingEnvironment;
@@ -48,8 +48,8 @@ namespace Apparatus.Application.Server
 
             entitiesExplorerResult = new AssemblyExplorerResult(loggerFactory, new[] { explorer });
             services.AddSingleton<IAssemblyExplorerResult>(entitiesExplorerResult);
-            services.ConfigureOptions(typeof(UiConfigureOptions));
-            services.AddControllers();
+            //services.ConfigureOptions(typeof(UiConfigureOptions));
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,12 +60,16 @@ namespace Apparatus.Application.Server
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
 
-
+                endpoints.MapAreaControllerRoute(
+                    name: "apparatus",
+                    areaName: "apparatus",
+                    pattern: "apparatus/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllers();
 
                 endpoints.MapGet("/", async context =>

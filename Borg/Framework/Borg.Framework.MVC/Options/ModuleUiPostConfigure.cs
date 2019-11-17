@@ -31,8 +31,8 @@ namespace Borg.Framework.MVC.Options
             }
 
             options.FileProvider = options.FileProvider ?? Environment.WebRootFileProvider;
-
-            var filesProvider = new ManifestEmbeddedFileProvider(GetType().Assembly, basePath);
+            var asmbl = GetType().Assembly;
+            var filesProvider = new ManifestEmbeddedFileProvider(asmbl, basePath);
             options.FileProvider = new CompositeFileProvider(options.FileProvider, filesProvider);
         }
     }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Apparatus.System.Backoffice
 {
-    class AddOn : ResistanceIsFutile
+   public class AddOn : ResistanceIsFutile
     {
     }
 }

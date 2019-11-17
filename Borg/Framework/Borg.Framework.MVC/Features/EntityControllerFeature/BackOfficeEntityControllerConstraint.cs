@@ -11,7 +11,6 @@ namespace Borg.Framework.MVC.Features.EntityControllerFeature
     public class BackOfficeEntityControllerConstraint : IRouteConstraint
     {
         private List<string> Types = new List<string>();
-        private IAssemblyExplorerResult assemblyExplorerResult;
 
         public BackOfficeEntityControllerConstraint(IAssemblyExplorerResult assemblyExplorerResult)
         {

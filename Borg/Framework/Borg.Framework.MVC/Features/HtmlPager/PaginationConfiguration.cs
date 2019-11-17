@@ -3,7 +3,6 @@ using System.ComponentModel;
 
 namespace Borg.Framework.MVC.Features.HtmlPager
 {
-    [Serializable]
     public class PaginationConfiguration
     {
         [DefaultValue("ul")]

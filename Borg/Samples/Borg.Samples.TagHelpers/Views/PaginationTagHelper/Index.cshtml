@@ -33,10 +33,10 @@
     </table>
 </div>
 <div>
-    <pagination borg-model="Model" borg-behaviour-override-settings="false"
+    <pagination borg-model="Model" borg-behaviour-override-settings="true"
                 borg-behaviour="new Borg.Framework.MVC.Features.HtmlPager.PaginationConfigurationBehaviour
                     {
-                        ActiveItemClassOperation = Borg.Framework.MVC.Features.HtmlPager.ActiveItemClassOperation.UnavailableClass,
+                        ActiveItemClassOperation = Borg.Framework.MVC.Features.HtmlPager.ActiveItemClassOperation.CurrentClass,
                         ChunkCount = 5,
                         DisplayItemSliceAndTotal = false,
                         DisplayLinkToIndividualPages = true,

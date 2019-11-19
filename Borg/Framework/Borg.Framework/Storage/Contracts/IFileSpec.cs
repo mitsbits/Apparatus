@@ -8,15 +8,27 @@ namespace Borg.Framework.Storage.Contracts
         TKey Id { get; }
     }
 
-    public interface IFileSpec
+    public interface IFileSpec : IHaveName, IHaveMimeType, IHaveExtension, IFileAccessTimeInfo
     {
         string FullPath { get; }
-        string Name { get; }
+
+        long SizeInBytes { get; }
+ 
+    }
+
+    public interface IFileAccessTimeInfo
+    {
         DateTimeOffset CreationDate { get; }
         DateTimeOffset LastWrite { get; }
         DateTimeOffset? LastRead { get; }
-        long SizeInBytes { get; }
+    }
+
+    public interface IHaveMimeType
+    {
         string MimeType { get; }
+    }
+    public interface IHaveExtension
+    {
         string Extension { get; }
     }
 }

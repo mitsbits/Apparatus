@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 
 namespace Borg.Infrastructure.Core.DDD
 {
-    public abstract class ValueObject<T> : IEquatable<T>
-        where T : ValueObject<T>
+    public abstract class ValueObject<T> : IEquatable<T> where T : ValueObject<T>
     {
+        private static Lazy<ConcurrentDictionary<Type, IEnumerable<FieldInfo>>> _cache = new Lazy<ConcurrentDictionary<Type, IEnumerable<FieldInfo>>>(() => new ConcurrentDictionary<Type, IEnumerable<FieldInfo>>());
+        private static ConcurrentDictionary<Type, IEnumerable<FieldInfo>> Cache => _cache.Value;
+
         public virtual bool Equals(T other)
 
         {
@@ -84,7 +87,7 @@ namespace Borg.Infrastructure.Core.DDD
             return hashCode;
         }
 
-        private IEnumerable<FieldInfo> GetFields()
+        private IEnumerable<FieldInfo> GetFieldsInternal()
 
         {
             var t = GetType();
@@ -99,6 +102,19 @@ namespace Borg.Infrastructure.Core.DDD
                 t = t.GetTypeInfo().BaseType;
             }
 
+            return fields;
+        }
+
+        private IEnumerable<FieldInfo> GetFields()
+        {
+            var t = GetType();
+
+            if (Cache.TryGetValue(t, out IEnumerable<FieldInfo> value))
+            {
+                return value;
+            }
+            var fields = GetFieldsInternal();
+            Cache.TryAdd(t, fields);
             return fields;
         }
 

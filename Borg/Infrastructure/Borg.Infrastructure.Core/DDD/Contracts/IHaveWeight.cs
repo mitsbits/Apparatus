@@ -4,4 +4,13 @@
     {
         double Weight { get; }
     }
+    public interface IHaveWidth
+    {
+        int Width { get; }
+    }
+
+    public interface IHaveHeight
+    {
+        int Height { get; }
+    }
 }

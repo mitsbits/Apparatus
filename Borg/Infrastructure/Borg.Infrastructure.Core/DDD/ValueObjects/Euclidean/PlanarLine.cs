@@ -2,19 +2,17 @@
 
 namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
 {
-    public class PlanarLine : ValueObject<PlanarPoint>
+    public class PlanarLine : PlanarShape
     {
-        public PlanarLine(PlanarPoint pointOne, PlanarPoint pointTwo)
+        public PlanarLine(PlanarPoint pointOne, PlanarPoint pointTwo) :base(new[] { pointOne, pointTwo })
         {
             if (pointOne.Equals(pointTwo))
             {
                 throw new InvalidOperationException($"this is not a line"); //TODO: create suitable exception
             }
-            PointOne = Preconditions.NotNull(pointOne, nameof(pointOne));
-            PointTwo = Preconditions.NotNull(pointTwo, nameof(pointTwo));
         }
 
-        public PlanarPoint PointOne { get; }
-        public PlanarPoint PointTwo { get; }
+        public PlanarPoint PointOne => Points[0];
+        public PlanarPoint PointTwo => Points[1];
     }
 }

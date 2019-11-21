@@ -56,5 +56,12 @@
         {
             return X < other.X;
         }
+
+
+        internal static PlanarPoint Zero()
+        {
+            return new PlanarPoint(0, 0);
+        }
+
     }
 }

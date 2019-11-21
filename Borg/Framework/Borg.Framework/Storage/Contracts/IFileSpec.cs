@@ -1,5 +1,7 @@
 ﻿using Borg.Infrastructure.Core.DDD.Contracts;
 using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Borg.Framework.Storage.Contracts
 {
@@ -16,6 +18,8 @@ namespace Borg.Framework.Storage.Contracts
  
     }
 
+
+
     public interface IFileAccessTimeInfo
     {
         DateTimeOffset CreationDate { get; }
@@ -31,4 +35,6 @@ namespace Borg.Framework.Storage.Contracts
     {
         string Extension { get; }
     }
+
+
 }

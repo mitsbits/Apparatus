@@ -28,6 +28,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             return new PlanarPoint(x, y);
         }
 
+        //TODO: this method is bullshit code
         private PlanarShape CenterToLefter()
         {
             var point = Lefter();
@@ -37,7 +38,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             var newCollection = Points.Select(x => new PlanarPoint(x.X + horizontalOperation, x.Y + verticalOperation));
             if (newCollection.Count() == 2) return new PlanarLine(newCollection.First(), newCollection.Skip(1).First());
             if (newCollection.Count() == 3) return new PlanarTriangle(newCollection);
-            return new PlanarRectangular(newCollection);
+            return new PlanarΠarallelogram(newCollection);
         }
 
         private IEnumerable<PlanarPoint> Quadrants()
@@ -133,9 +134,9 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         }
     }
 
-    public sealed class PlanarRectangular : PlanarShape
+    public sealed class PlanarΠarallelogram : PlanarShape
     {
-        public PlanarRectangular(IEnumerable<PlanarPoint> points) : base(points)
+        public PlanarΠarallelogram(IEnumerable<PlanarPoint> points) : base(points)
         {
 
         }
@@ -143,7 +144,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         protected override PlanarPoint[] ValidatePoints(IEnumerable<PlanarPoint> points)
         {
             var distinctPoints = points.Distinct();
-            if (distinctPoints.Count() != 4) throw new InvalidOperationException($"Three distinct points are required for a {nameof(PlanarRectangular)}");
+            if (distinctPoints.Count() != 4) throw new InvalidOperationException($"Three distinct points are required for a {nameof(PlanarΠarallelogram)}");
             return distinctPoints.ToArray();
         }
     }

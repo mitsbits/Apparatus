@@ -1,6 +1,6 @@
 ﻿namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
 {
-    public class PlanarPoint : ValueObject<PlanarPoint>
+    public partial class PlanarPoint : ValueObject<PlanarPoint>
     {
         public PlanarPoint(int x, int y)
         {
@@ -8,21 +8,38 @@
             Y = y;
         }
 
-        public PlanarPoint(decimal x, decimal y)
+        public PlanarPoint(double x, double y)
         {
             X = x;
             Y = y;
         }
+        public PlanarPoint(PlanarPoint source) : this(source.X, source.Y)
+        {
+        }
 
-        public decimal X { get; }
-        public decimal Y { get; }
+        public double X { get; }
+        public double Y { get; }
+        public static PlanarPoint operator +(PlanarPoint a, PlanarPoint b)
+        {
+            return new PlanarPoint(a.X + b.X, a.Y + b.Y);
+        }
+
+        public static PlanarPoint operator -(PlanarPoint a, PlanarPoint b)
+        {
+            return new PlanarPoint(a.X - b.X, a.Y - b.Y);
+        }
+
+        public static PlanarPoint operator -(PlanarPoint a)
+        {
+            return Zero() - a;
+        }
 
         public PlanarPoint NewX(int x)
         {
             return new PlanarPoint(x, Y);
         }
 
-        public PlanarPoint NewX(decimal x)
+        public PlanarPoint NewX(double x)
         {
             return new PlanarPoint(x, Y);
         }
@@ -32,7 +49,7 @@
             return new PlanarPoint(X, y);
         }
 
-        public PlanarPoint NewY(decimal y)
+        public PlanarPoint NewY(double y)
         {
             return new PlanarPoint(X, y);
         }

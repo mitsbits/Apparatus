@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Borg.Infrastructure.Core.DDD.Enums;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Borg.Infrastructure.Core.DDD.Enums;
+using System.Text;
 
 namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
 {
@@ -12,6 +12,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         {
             Points = ValidatePoints(Preconditions.NotEmpty(points, nameof(points)));
         }
+
         public PlanarPoint[] Points { get; private set; }
 
         protected virtual PlanarPoint[] ValidatePoints(IEnumerable<PlanarPoint> points)
@@ -21,69 +22,42 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             return distinctPoints.ToArray();
         }
 
-        private PlanarPoint Center()
+        public override string ToString()
         {
-            var x = Righter().X - Lefter().X;
-            var y = Higher().Y - Lower().Y;
-            return new PlanarPoint(x, y);
-        }
-
-        //TODO: this method is bullshit code
-        private PlanarShape CenterToLefter()
-        {
-            var point = Lefter();
-            var zero = PlanarPoint.Zero();
-            var horizontalOperation = zero.X - point.X;
-            var verticalOperation = zero.Y - point.Y;
-            var newCollection = Points.Select(x => new PlanarPoint(x.X + horizontalOperation, x.Y + verticalOperation));
-            if (newCollection.Count() == 2) return new PlanarLine(newCollection.First(), newCollection.Skip(1).First());
-            if (newCollection.Count() == 3) return new PlanarTriangle(newCollection);
-            return new PlanarΠarallelogram(newCollection);
-        }
-
-        private IEnumerable<PlanarPoint> Quadrants()
-        {
-            if (GetType().Equals(typeof(PlanarLine)))
+            var builder = new StringBuilder();
+            foreach (var point in Points)
             {
-                return new[] { Lefter(), Righter() };
+                builder.Append(point.ToString());
             }
-            if (GetType().Equals(typeof(PlanarTriangle)))
-            {
-                List< PlanarPoint> quadrant1;
-                List<PlanarPoint> quadrant2;
-                List<PlanarPoint> quadrant3;
-                List<PlanarPoint> quadrant4;
-                PlanarPoint point1;
-                PlanarPoint point2;
-                PlanarPoint point3;
-                point1 = Lefter();
-                var remaining = Points.Where(x => x != point1);
-                point2 = remaining.OrderByDescending(x => x.X).First();
-                point3 = remaining.OrderBy(x => x.X).First();
-
-
-
-
-            }
+            return builder.ToString();
         }
 
-        private decimal FurtherPointsVlaue(Compass orientation)
+        public virtual PlanarPoint Center()
         {
-            decimal result;
+            return CenterInternal();
+        }
+
+        private double FurtherPointsVlaue(Compass orientation)
+        {
+            double result;
             switch (orientation)
             {
                 case Compass.North:
                     result = Points.Max(x => x.Y);
                     break;
+
                 case Compass.East:
                     result = Points.Max(x => x.X);
                     break;
+
                 case Compass.South:
                     result = Points.Min(x => x.Y);
                     break;
+
                 case Compass.West:
                     result = Points.Min(x => x.X);
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException($"{orientation.ToString()} is not valid {nameof(Compass)} value");
                     break;
@@ -95,7 +69,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         {
             var eligibles = Points.Where(x => x.Y == FurtherPointsVlaue(Compass.South));
             if (eligibles.Count() == 1) return eligibles.Single();
-            return eligibles.OrderBy(x=>x.X).First();
+            return eligibles.OrderBy(x => x.X).First();
         }
 
         private PlanarPoint Higher()
@@ -104,6 +78,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             if (eligibles.Count() == 1) return eligibles.Single();
             return eligibles.OrderBy(x => x.X).First();
         }
+
         private PlanarPoint Lefter()
         {
             var eligibles = Points.Where(x => x.X == FurtherPointsVlaue(Compass.West));
@@ -117,35 +92,52 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             if (eligibles.Count() == 1) return eligibles.Single();
             return eligibles.OrderBy(x => x.Y).First();
         }
-    }
 
-    public sealed class PlanarTriangle : PlanarShape
-    {
-        public PlanarTriangle(IEnumerable<PlanarPoint> points) : base(points)
+        private PlanarPoint CenterInternal()
         {
+            int collectionCount = Points.Length;
+            var localCollection = new PlanarPoint[collectionCount + 1];
+            double localX = 0, localY = 0;
+            Points.CopyTo(localCollection, 0);
+            localCollection[collectionCount] = Points[0];
+            double factor;
 
+            for (int i = 0; i < collectionCount; i++)
+            {
+                factor =
+                    localCollection[i].X * localCollection[i + 1].Y -
+                    localCollection[i + 1].X * localCollection[i].Y;
+                localX += (localCollection[i].X + localCollection[i + 1].X) * factor;
+                localY += (localCollection[i].Y + localCollection[i + 1].Y) * factor;
+            }
+
+            double polygon_area = ShapeArea();
+            localX /= (6 * polygon_area);
+            localY /= (6 * polygon_area);
+
+            return localX < 0 ? new PlanarPoint(-localX, -localY) : new PlanarPoint(localX, localY);
         }
 
-        protected override PlanarPoint[] ValidatePoints(IEnumerable<PlanarPoint> points)
+        private double SignedShapeArea()
         {
-            var distinctPoints = points.Distinct();
-            if (distinctPoints.Count() != 3) throw new InvalidOperationException($"Three distinct points are required for a {nameof(PlanarTriangle)}");
-            return distinctPoints.ToArray();
+            int collectionCount = Points.Length;
+            PlanarPoint[] localCollection = new PlanarPoint[collectionCount + 1];
+            Points.CopyTo(localCollection, 0);
+            localCollection[collectionCount] = Points[0];
+
+            double area = 0;
+            for (int i = 0; i < collectionCount; i++)
+            {
+                area += (localCollection[i + 1].X - localCollection[i].X) *
+                        (localCollection[i + 1].Y + localCollection[i].Y) / 2;
+            }
+
+            return area;
         }
-    }
 
-    public sealed class PlanarΠarallelogram : PlanarShape
-    {
-        public PlanarΠarallelogram(IEnumerable<PlanarPoint> points) : base(points)
+        private double ShapeArea()
         {
-
-        }
-
-        protected override PlanarPoint[] ValidatePoints(IEnumerable<PlanarPoint> points)
-        {
-            var distinctPoints = points.Distinct();
-            if (distinctPoints.Count() != 4) throw new InvalidOperationException($"Three distinct points are required for a {nameof(PlanarΠarallelogram)}");
-            return distinctPoints.ToArray();
+            return Math.Abs(SignedShapeArea());
         }
     }
 }

@@ -13,12 +13,19 @@
             X = x;
             Y = y;
         }
+
         public PlanarPoint(PlanarPoint source) : this(source.X, source.Y)
         {
         }
 
         public double X { get; }
         public double Y { get; }
+
+        public override string ToString()
+        {
+            return $"[{X},{Y}]";
+        }
+
         public static PlanarPoint operator +(PlanarPoint a, PlanarPoint b)
         {
             return new PlanarPoint(a.X + b.X, a.Y + b.Y);
@@ -74,11 +81,9 @@
             return X < other.X;
         }
 
-
         internal static PlanarPoint Zero()
         {
             return new PlanarPoint(0, 0);
         }
-
     }
 }

@@ -9,7 +9,7 @@ namespace Borg.Platform.Imaging.ImageMagick
     {
         void test()
         {
-            MagickGeometry size = new MagickGeometry()
+           
         }
     }
 }

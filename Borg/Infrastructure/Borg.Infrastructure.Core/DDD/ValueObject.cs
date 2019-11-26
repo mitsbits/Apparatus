@@ -119,7 +119,6 @@ namespace Borg.Infrastructure.Core.DDD
         }
 
         public static bool operator ==(ValueObject<T> x, ValueObject<T> y)
-
         {
             return x.Equals(y);
         }

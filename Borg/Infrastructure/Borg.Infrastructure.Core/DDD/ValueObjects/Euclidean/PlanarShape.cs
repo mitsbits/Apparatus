@@ -6,15 +6,30 @@ using System.Text;
 
 namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
 {
+    /// <summary>
+    /// Abstract data structure representing a shape on a geometric axis
+    /// </summary>
     public abstract class PlanarShape : ValueObject<PlanarShape>
     {
+        /// <summary>
+        ///Constructor
+        /// </summary>
+        /// <param name="points"></param>
         protected PlanarShape(IEnumerable<PlanarPoint> points)
         {
             Points = ValidatePoints(Preconditions.NotEmpty(points, nameof(points)));
         }
-
+        /// <summary>
+        /// Collection of distinct point that define the <see cref="PlanarShape"/>
+        /// </summary>
         public PlanarPoint[] Points { get; private set; }
 
+        /// <summary>
+        /// Validation of the dource collection od the source points
+        /// Each derived class should override the method
+        /// </summary>
+        /// <param name="points">Source points</param>
+        /// <returns>Distinct array of points</returns>
         protected virtual PlanarPoint[] ValidatePoints(IEnumerable<PlanarPoint> points)
         {
             var distinctPoints = points.Distinct();
@@ -31,7 +46,10 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             }
             return builder.ToString();
         }
-
+        /// <summary>
+        /// Detrmine the <see cref="PlanarPoint"/> int the center of the <see cref="PlanarShape"/>
+        /// </summary>
+        /// <returns></returns>
         public virtual PlanarPoint Center()
         {
             return CenterInternal();

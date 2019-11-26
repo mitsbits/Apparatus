@@ -40,5 +40,17 @@ namespace Borg.Infrastructure.Core.Tests.Euclidean
             result.X.ShouldBe(resultX);
             result.Y.ShouldBe(resultY);
         }
+
+        [Theory]
+        [InlineData(10, 10, -10, -10)]
+        [InlineData(-10, -10, 10, 10)]
+        [InlineData(10, -10, -10, 10)]
+        public void negative_point(double x1, double y1, double resultX, double resultY)
+        {
+            var point1 = new PlanarPoint(x1, y1);
+            var result = -point1;
+            result.X.ShouldBe(resultX);
+            result.Y.ShouldBe(resultY);
+        }
     }
 }

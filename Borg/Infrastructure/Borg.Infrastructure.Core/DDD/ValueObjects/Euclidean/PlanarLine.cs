@@ -16,6 +16,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             {
                 throw new InvalidOperationException($"this is not a line"); //TODO: create suitable exception
             }
+            Array.Sort(Points, new DefaultPointDirection());
         }
 
         /// <summary>
@@ -143,6 +144,79 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             var dy2 = other.PointTwo.Y - other.PointOne.Y;
             var cosAngle = Math.Abs(((dx1 * dx2) + (dy1 * dy2)) / Math.Sqrt(((dx1 * dx1) + (dy1 * dy1)) * ((dx2 * dx2) + (dy2 * dy2))));
             return cosAngle > thresshold;
+        }
+
+        /// <summary>
+        /// Determines the <see cref="PlanarPoint"/> that intersect, actualy or projected
+        /// </summary>
+        /// <param name="other"> The <see cref="PlanarPoint"/> to caclulate against</param>
+        /// <returns>Will retun <see cref="null"/> if the lines do not intersect, otherwise the intersection as a <see cref="PlanarPoint"/></returns>
+        public PlanarPoint Intersection(PlanarLine other)
+        {
+            bool lines_intersect;
+            bool segments_intersect;
+            PlanarPoint intersection;
+            PlanarPoint close_p1;
+            PlanarPoint close_p2;
+            FindIntersection(other, out lines_intersect, out segments_intersect, out intersection, out close_p1, out close_p2);
+            if (lines_intersect || segments_intersect) return intersection;
+            return null;
+        }
+
+        private void FindIntersection(PlanarLine other, out bool lines_intersect, out bool segments_intersect, out PlanarPoint intersection, out PlanarPoint close_p1, out PlanarPoint close_p2)
+        {
+            // Get the segments' parameters.
+            double dx12 = PointTwo.X - PointOne.X;
+            double dy12 = PointTwo.Y - PointOne.Y;
+            double dx34 = other.PointTwo.X - other.PointOne.X;
+            double dy34 = other.PointTwo.Y - other.PointOne.Y;
+
+            // Solve for t1 and t2
+            double denominator = ((dy12 * dx34) - (dx12 * dy34));
+
+            double t1 = (((PointOne.X - other.PointOne.X) * dy34) + ((other.PointOne.Y - PointOne.Y) * dx34)) / denominator;
+            if (double.IsInfinity(t1))
+            {
+                // The lines are parallel (or close enough to it).
+                lines_intersect = false;
+                segments_intersect = false;
+                intersection = null;
+                close_p1 = null;
+                close_p2 = null;
+                return;
+            }
+            lines_intersect = true;
+
+            double t2 =
+                (((other.PointOne.X - PointOne.X) * dy12) + ((PointOne.Y - other.PointOne.Y) * dx12)) / -denominator;
+
+            // Find the point of intersection.
+            intersection = new PlanarPoint(PointOne.X + dx12 * t1, PointOne.Y + dy12 * t1);
+
+            // The segments intersect if t1 and t2 are between 0 and 1.
+            segments_intersect = ((t1 >= 0) && (t1 <= 1) && (t2 >= 0) && (t2 <= 1));
+
+            // Find the closest points on the segments.
+            if (t1 < 0)
+            {
+                t1 = 0;
+            }
+            else if (t1 > 1)
+            {
+                t1 = 1;
+            }
+
+            if (t2 < 0)
+            {
+                t2 = 0;
+            }
+            else if (t2 > 1)
+            {
+                t2 = 1;
+            }
+
+            close_p1 = new PlanarPoint(PointOne.X + (dx12 * t1), PointOne.Y + (dy12 * t1));
+            close_p2 = new PlanarPoint(other.PointOne.X + (dx34 * t2), other.PointOne.Y + (dy34 * t2));
         }
     }
 }

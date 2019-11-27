@@ -1,4 +1,6 @@
-﻿namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
+﻿using System.Collections.Generic;
+
+namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
 {
     /// <summary>
     /// A data structure that represents a point on a geometric axis
@@ -152,6 +154,20 @@
         internal static PlanarPoint Zero()
         {
             return new PlanarPoint(0, 0);
+        }
+    }
+    /// <summary>
+    /// Default sorting of points, from left to right and then from lower to higher
+    /// </summary>
+    internal class DefaultPointDirection : Comparer<PlanarPoint>
+    {
+        public override int Compare(PlanarPoint x, PlanarPoint y)
+        {
+            if (x.IsLeftThan(y)) return 1;
+            if (x.IsRightThan(y)) return -1;
+            if (x.IsLowerThan(y)) return 1;
+            if (x.IsHigherThan(y)) return -1;
+            return 0;
         }
     }
 }

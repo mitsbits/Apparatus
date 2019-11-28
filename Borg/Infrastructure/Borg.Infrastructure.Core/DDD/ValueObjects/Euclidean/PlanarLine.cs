@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
@@ -6,17 +7,28 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
     public class PlanarLine : PlanarShape
     {
         /// <summary>
-        /// Data structure to represent a line on a geometric axis
+        /// the default direction comparer
         /// </summary>
-        /// <param name="pointOne">Start</param>
-        /// <param name="pointTwo">End</param>
-        public PlanarLine(PlanarPoint pointOne, PlanarPoint pointTwo) : base(new[] { pointOne, pointTwo })
+        private readonly IComparer<PlanarPoint> direction = new DefaultPointDirection();
+
+        /// <summary>
+        /// Data structure to represent a line segment on a geometric axis
+        /// </summary>
+        /// <param name="pointOne">Line segment edge <see cref="PlanarPoint"/></param>
+        /// <param name="pointTwo">Line segment edge <see cref="PlanarPoint"/></param>
+        /// <param name="calculateDirection">If True will order the <see cref="PlanarPoint"/> inputs by the given <see cref="IComparable{PlanarPoint}"/> by the <see cref="direction"/> parameter or if direction is null the <see cref="DefaultPointDirection"/> </param>
+        /// <param name="direction">The <see cref="IComparer{PlanarPoint}"/> to use if <see cref="calculateDirection"/> is true</param>
+        public PlanarLine(PlanarPoint pointOne, PlanarPoint pointTwo, bool calculateDirection = false, IComparer<PlanarPoint> direction = null) : base(new[] { pointOne, pointTwo })
         {
             if (pointOne.Equals(pointTwo))
             {
                 throw new InvalidOperationException($"this is not a line"); //TODO: create suitable exception
             }
-            Array.Sort(Points, new DefaultPointDirection());
+            if (calculateDirection)
+            {
+                if (direction != null) this.direction = direction;
+                Array.Sort(Points, this.direction);
+            }
         }
 
         /// <summary>
@@ -28,6 +40,12 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         /// The ending <see cref="PlanarPoint"/>
         /// </summary>
         public PlanarPoint PointTwo => Points[1];
+
+        public PlanarVector Vector()
+        {
+            var substraction = PointTwo - PointOne;
+            return new PlanarVector(substraction.X, substraction.Y);
+        }
 
         /// <summary>
         /// Calculate the angle against another <see cref="PlanarLine"/>

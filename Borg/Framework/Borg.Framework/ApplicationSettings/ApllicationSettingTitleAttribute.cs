@@ -4,7 +4,8 @@ using System;
 
 namespace Borg.Framework.ApplicationSettings
 {
-    public class ApllicationSettingTitleAttribute : Attribute, IHaveTitle
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    public sealed class ApllicationSettingTitleAttribute : Attribute, IHaveTitle
     {
         public ApllicationSettingTitleAttribute(string title)
         {

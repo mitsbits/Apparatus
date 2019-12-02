@@ -1,13 +1,17 @@
-﻿using System;
+﻿using Borg.Infrastructure.Core.DDD.ValueObjects;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Borg.Infrastructure.Core.DDD
 {
     public abstract class ValueObject<T> : IEquatable<T> where T : ValueObject<T>
     {
+        [ExcludeValueObjectField]
         private static Lazy<ConcurrentDictionary<Type, IEnumerable<FieldInfo>>> _cache = new Lazy<ConcurrentDictionary<Type, IEnumerable<FieldInfo>>>(() => new ConcurrentDictionary<Type, IEnumerable<FieldInfo>>());
+        
         private static ConcurrentDictionary<Type, IEnumerable<FieldInfo>> Cache => _cache.Value;
 
         public virtual bool Equals(T other)
@@ -97,8 +101,8 @@ namespace Borg.Infrastructure.Core.DDD
             while (t != typeof(object))
 
             {
-                fields.AddRange(t.GetTypeInfo().DeclaredFields);
-
+                //TODO: create a HasAttribute extension
+                fields.AddRange(t.GetTypeInfo().DeclaredFields.Where(x=> x.GetCustomAttribute<ExcludeValueObjectFieldAttribute>() == null)); 
                 t = t.GetTypeInfo().BaseType;
             }
 

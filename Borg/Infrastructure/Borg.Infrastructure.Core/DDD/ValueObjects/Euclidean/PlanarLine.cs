@@ -44,7 +44,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         public PlanarVector Vector()
         {
             var substraction = PointTwo - PointOne;
-            return new PlanarVector(substraction.X, substraction.Y);
+            return new PlanarVector(GetDistance(), substraction.X);
         }
 
         /// <summary>

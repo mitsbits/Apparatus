@@ -33,5 +33,14 @@ namespace Borg.Infrastructure.Core.Tests.Euclidean
             resultX.ShouldBe(intersection.X);
             resultY.ShouldBe(intersection.Y);
         }
+        [Theory]
+        [InlineData(0, 0, 0, 10,  10)]
+        [InlineData(-10, 10, -10, -10, 20)]
+        public void calculate_distance(double x1, double y1, double x2, double y2, double result)
+        {
+            var line = new PlanarLine(new PlanarPoint(x1, y1), new PlanarPoint(x2, y2));
+            var dist = line.GetDistance();
+            dist.ShouldBe(result);
+        }
     }
 }

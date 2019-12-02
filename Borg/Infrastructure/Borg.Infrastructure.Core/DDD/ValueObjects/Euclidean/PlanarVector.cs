@@ -2,12 +2,13 @@
 
 namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
 {
-    public class PlanarVector : ValueObject<PlanarVector>
+    public struct PlanarVector 
     {
-        internal PlanarVector(double direction, double magnitude)
+        internal PlanarVector(double magnitude, double direction)
         {
-            Direction = direction;
             Magnitude = magnitude;
+            Direction = direction;
+
         }
 
         public double Direction { get; }
@@ -21,12 +22,12 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
 
         public static PlanarVector operator +(PlanarVector a, PlanarVector b)
         {
-            return new PlanarVector(a.Direction + b.Direction, a.Magnitude + b.Magnitude);
+            return new PlanarVector(a.Magnitude + b.Magnitude, a.Direction + b.Direction);
         }
 
         public static PlanarVector operator -(PlanarVector a, PlanarVector b)
         {
-            return new PlanarVector(a.Direction - b.Direction, a.Magnitude - b.Magnitude);
+            return new PlanarVector(a.Magnitude - b.Magnitude, a.Direction - b.Direction);
         }
     }
 }

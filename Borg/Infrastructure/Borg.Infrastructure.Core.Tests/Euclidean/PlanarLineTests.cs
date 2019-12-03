@@ -1,4 +1,4 @@
-﻿using Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean;
+﻿using Borg.Infrastructure.Core.Euclidean;
 using Shouldly;
 using Test.Borg;
 using Xunit;
@@ -16,16 +16,17 @@ namespace Borg.Infrastructure.Core.Tests.Euclidean
         [InlineData(0, 0, 0, 10, 0, 0, 10, 0, 90)]
         //[InlineData(-10, -10, 10, 10)]
         //[InlineData(10, -10, -10, 10)]
-        public void calculate_angle(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, double result)
+        public void calculate_angle(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float result)
         {
             var line = new PlanarLine(new PlanarPoint(x1, y1), new PlanarPoint(x2, y2));
             var secant = new PlanarLine(new PlanarPoint(x3, y3), new PlanarPoint(x4, y4));
             var radius = line.CornerRadius(secant);
             radius.ShouldBe(result);
         }
+
         [Theory]
         [InlineData(0, 0, 0, 10, 0, 0, 0, 10, 0, 0)]
-        public void calculate_intersection(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, double resultX, double resultY)
+        public void calculate_intersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float resultX, float resultY)
         {
             var line = new PlanarLine(new PlanarPoint(x1, y1), new PlanarPoint(x2, y2));
             var secant = new PlanarLine(new PlanarPoint(x3, y3), new PlanarPoint(x4, y4));
@@ -33,10 +34,11 @@ namespace Borg.Infrastructure.Core.Tests.Euclidean
             resultX.ShouldBe(intersection.X);
             resultY.ShouldBe(intersection.Y);
         }
+
         [Theory]
-        [InlineData(0, 0, 0, 10,  10)]
+        [InlineData(0, 0, 0, 10, 10)]
         [InlineData(-10, 10, -10, -10, 20)]
-        public void calculate_distance(double x1, double y1, double x2, double y2, double result)
+        public void calculate_distance(float x1, float y1, float x2, float y2, float result)
         {
             var line = new PlanarLine(new PlanarPoint(x1, y1), new PlanarPoint(x2, y2));
             var dist = line.GetDistance();

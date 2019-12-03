@@ -1,4 +1,4 @@
-﻿using Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean;
+﻿using Borg.Infrastructure.Core.Euclidean;
 using Shouldly;
 using Test.Borg;
 using Xunit;
@@ -17,7 +17,7 @@ namespace Borg.Infrastructure.Core.Tests.Euclidean
         [InlineData(0, 0, -10, -10, -10, -10)]
         [InlineData(10, 10, -10, -10, 0, 0)]
         [InlineData(10, -10, 10, -10, 20, -20)]
-        public void add_points(double x1, double y1, double x2, double y2, double resultX, double resultY)
+        public void add_points(float x1, float y1, float x2, float y2, float resultX, float resultY)
         {
             var point1 = new PlanarPoint(x1, y1);
             var point2 = new PlanarPoint(x2, y2);
@@ -32,7 +32,7 @@ namespace Borg.Infrastructure.Core.Tests.Euclidean
         [InlineData(10, 10, -10, -10, 20, 20)]
         [InlineData(10, -10, 10, -10, 0, 0)]
         [InlineData(10, -10, -10, 10, 20, -20)]
-        public void substract_points(double x1, double y1, double x2, double y2, double resultX, double resultY)
+        public void substract_points(float x1, float y1, float x2, float y2, float resultX, float resultY)
         {
             var point1 = new PlanarPoint(x1, y1);
             var point2 = new PlanarPoint(x2, y2);
@@ -45,7 +45,7 @@ namespace Borg.Infrastructure.Core.Tests.Euclidean
         [InlineData(10, 10, -10, -10)]
         [InlineData(-10, -10, 10, 10)]
         [InlineData(10, -10, -10, 10)]
-        public void negative_point(double x1, double y1, double resultX, double resultY)
+        public void negative_point(float x1, float y1, float resultX, float resultY)
         {
             var point1 = new PlanarPoint(x1, y1);
             var result = -point1;

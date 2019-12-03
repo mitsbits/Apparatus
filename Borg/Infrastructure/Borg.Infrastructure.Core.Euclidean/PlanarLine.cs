@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
-namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
+namespace Borg.Infrastructure.Core.Euclidean
 {
     public class PlanarLine : PlanarShape
     {
@@ -41,10 +42,10 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         /// </summary>
         public PlanarPoint PointTwo => Points[1];
 
-        public PlanarVector Vector()
+        public Vector2 Vector()
         {
             var substraction = PointTwo - PointOne;
-            return new PlanarVector(GetDistance(), substraction.X);
+            return new Vector2(substraction.X, substraction.Y);
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         /// </summary>
         /// <param name="other">The <see cref="PlanarLine"/> to define an angle</param>
         /// <returns>Degrees</returns>
-        public double CornerRadius(PlanarLine other)
+        public float CornerRadius(PlanarLine other)
         {
             //var x1 = PointOne.X;
             //var y1 = PointOne.Y;
@@ -71,10 +72,10 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             if (point3 == null) return 0;
             var pointA = point1 - point2;
             var pointB = point3 - point2;
-            double ALen = Math.Sqrt(Math.Pow(pointA.X, 2) + Math.Pow(pointA.Y, 2));
+            double ALen = Math.Sqrt(pointA.X * pointA.X + pointA.Y * pointA.Y);
             double BLen = Math.Sqrt(Math.Pow(pointB.X, 2) + Math.Pow(pointB.Y, 2));
-            double dotProduct = (pointA.X * pointB.X) + (pointA.Y * pointB.Y);
-            double theta = (180 / Math.PI) * Math.Acos(dotProduct / (ALen * BLen));
+            float dotProduct = (pointA.X * pointB.X) + (pointA.Y * pointB.Y);
+            float theta = (float)(180 / Math.PI) * (float)Math.Acos(dotProduct / (float)(ALen * BLen));
             return theta;
         }
 
@@ -87,9 +88,9 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         /// Calculate the distance of the <see cref="PlanarLine"/>
         /// </summary>
         /// <returns>Units</returns>
-        public virtual double GetDistance()
+        public virtual float GetDistance()
         {
-            return Math.Sqrt(GetDistanceSquared());
+            return (float)Math.Sqrt(GetDistanceSquared());
         }
 
         /// <summary>
@@ -97,12 +98,12 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         /// </summary>
         /// <returns>Squared units</returns>
         /// <remarks>Use this for comparison as it is faster that the <see cref="GetDistance"/></remarks>
-        public virtual double GetDistanceSquared()
+        public virtual float GetDistanceSquared()
         {
-            double xDelta = PointOne.X - PointTwo.X;
-            double yDelta = PointOne.Y - PointTwo.Y;
+            float xDelta = PointOne.X - PointTwo.X;
+            float yDelta = PointOne.Y - PointTwo.Y;
 
-            return Math.Pow(xDelta, 2) + Math.Pow(yDelta, 2);
+            return (float)Math.Pow(xDelta, 2) + (float)Math.Pow(yDelta, 2);
         }
 
         /// <summary>
@@ -110,11 +111,11 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         /// </summary>
         /// <param name="angle">Degrees</param>
         /// <returns>A <see cref="PlanarLine"/> a an angle</returns>
-        public PlanarLine AtRadius(double angle)
+        public PlanarLine AtRadius(float angle)
         {
             var distance = GetDistance();
             var startpoint = new PlanarPoint(PointOne);
-            var targetpoint = new PlanarPoint(PointOne.X + (Math.Cos(angle) * distance), PointOne.Y + (Math.Sin(angle) * distance));
+            var targetpoint = new PlanarPoint(PointOne.X + (float)(Math.Cos(angle) * distance), PointOne.Y + (Math.Sin(angle) * distance));
             return new PlanarLine(startpoint, targetpoint);
         }
 
@@ -154,7 +155,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         /// <param name="other">The <see cref="PlanarLine"/> to compare</param>
         /// <param name="thresshold">10° are about 0.9848 threshold value</param>
         /// <returns><see cref="Boolean"/>True if the lines are parallel</returns>
-        public bool IsParallelTo(PlanarLine other, double thresshold = 0.99)
+        public bool IsParallelTo(PlanarLine other, float thresshold = 0.99)
         {
             var dx1 = PointOne.X - PointTwo.X;
             var dy1 = PointTwo.Y - PointOne.Y;
@@ -184,16 +185,16 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         private void FindIntersection(PlanarLine other, out bool lines_intersect, out bool segments_intersect, out PlanarPoint intersection, out PlanarPoint close_p1, out PlanarPoint close_p2)
         {
             // Get the segments' parameters.
-            double dx12 = PointTwo.X - PointOne.X;
-            double dy12 = PointTwo.Y - PointOne.Y;
-            double dx34 = other.PointTwo.X - other.PointOne.X;
-            double dy34 = other.PointTwo.Y - other.PointOne.Y;
+            float dx12 = PointTwo.X - PointOne.X;
+            float dy12 = PointTwo.Y - PointOne.Y;
+            float dx34 = other.PointTwo.X - other.PointOne.X;
+            float dy34 = other.PointTwo.Y - other.PointOne.Y;
 
             // Solve for t1 and t2
-            double denominator = ((dy12 * dx34) - (dx12 * dy34));
+            float denominator = ((dy12 * dx34) - (dx12 * dy34));
 
-            double t1 = (((PointOne.X - other.PointOne.X) * dy34) + ((other.PointOne.Y - PointOne.Y) * dx34)) / denominator;
-            if (double.IsInfinity(t1))
+            float t1 = (((PointOne.X - other.PointOne.X) * dy34) + ((other.PointOne.Y - PointOne.Y) * dx34)) / denominator;
+            if (float.IsInfinity(t1))
             {
                 // The lines are parallel (or close enough to it).
                 lines_intersect = false;
@@ -205,7 +206,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             }
             lines_intersect = true;
 
-            double t2 =
+            float t2 =
                 (((other.PointOne.X - PointOne.X) * dy12) + ((PointOne.Y - other.PointOne.Y) * dx12)) / -denominator;
 
             // Find the point of intersection.

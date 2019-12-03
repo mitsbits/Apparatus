@@ -11,7 +11,7 @@ namespace Borg.Infrastructure.Core.DDD
     {
         [ExcludeValueObjectField]
         private static Lazy<ConcurrentDictionary<Type, IEnumerable<FieldInfo>>> _cache = new Lazy<ConcurrentDictionary<Type, IEnumerable<FieldInfo>>>(() => new ConcurrentDictionary<Type, IEnumerable<FieldInfo>>());
-        
+
         private static ConcurrentDictionary<Type, IEnumerable<FieldInfo>> Cache => _cache.Value;
 
         public virtual bool Equals(T other)
@@ -98,11 +98,12 @@ namespace Borg.Infrastructure.Core.DDD
 
             var fields = new List<FieldInfo>();
 
+            bool predicate(FieldInfo x) => x.IsExcludedFromValueObjectComparison();
+
             while (t != typeof(object))
 
             {
-                //TODO: create a HasAttribute extension
-                fields.AddRange(t.GetTypeInfo().DeclaredFields.Where(x=> x.GetCustomAttribute<ExcludeValueObjectFieldAttribute>() == null)); 
+                fields.AddRange(t.GetTypeInfo().DeclaredFields.Where(predicate));
                 t = t.GetTypeInfo().BaseType;
             }
 

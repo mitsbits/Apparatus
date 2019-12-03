@@ -95,6 +95,11 @@ namespace Borg
             return type.GetTypeInfo().GetCustomAttributes<T>(inherit: true).Any();
         }
 
+        public static bool HasAttribute<T>(this FieldInfo field) where T : Attribute
+        {
+            return field.GetCustomAttributes<T>(inherit: true).Any();
+        }
+
         public static bool IsAssignableTo(this Type type, Type otherType)
         {
             var typeInfo = type.GetTypeInfo();
@@ -193,7 +198,7 @@ namespace Borg
             return false;
         }
 
-        public static bool ImplementsInterface<T>(this Type thisType) 
+        public static bool ImplementsInterface<T>(this Type thisType)
         {
             return thisType.ImplementsInterface(typeof(T));
         }

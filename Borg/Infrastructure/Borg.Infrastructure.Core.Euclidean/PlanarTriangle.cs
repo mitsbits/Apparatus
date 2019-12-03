@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
+namespace Borg.Infrastructure.Core.Euclidean
 {
     public sealed class PlanarTriangle : PlanarShape
     {

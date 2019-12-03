@@ -1,10 +1,10 @@
-﻿using Borg.Infrastructure.Core.DDD.Enums;
+﻿using Borg.Infrastructure.Core.DDD;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
+namespace Borg.Infrastructure.Core.Euclidean
 {
     /// <summary>
     /// Abstract data structure representing a shape on a geometric axis
@@ -19,6 +19,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         {
             Points = ValidatePoints(Preconditions.NotEmpty(points, nameof(points)));
         }
+
         /// <summary>
         /// Collection of distinct point that define the <see cref="PlanarShape"/>
         /// </summary>
@@ -46,6 +47,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             }
             return builder.ToString();
         }
+
         /// <summary>
         /// Detrmine the <see cref="PlanarPoint"/> int the center of the <see cref="PlanarShape"/>
         /// </summary>
@@ -55,9 +57,9 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             return CenterInternal();
         }
 
-        private double FurtherPointsVlaue(Compass orientation)
+        private float FurtherPointsVlaue(Compass orientation)
         {
-            double result;
+            float result;
             switch (orientation)
             {
                 case Compass.North:
@@ -115,10 +117,10 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         {
             int collectionCount = Points.Length;
             var localCollection = new PlanarPoint[collectionCount + 1];
-            double localX = 0, localY = 0;
+            float localX = 0, localY = 0;
             Points.CopyTo(localCollection, 0);
             localCollection[collectionCount] = Points[0];
-            double factor;
+            float factor;
 
             for (int i = 0; i < collectionCount; i++)
             {
@@ -129,21 +131,21 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
                 localY += (localCollection[i].Y + localCollection[i + 1].Y) * factor;
             }
 
-            double polygon_area = ShapeArea();
+            float polygon_area = ShapeArea();
             localX /= (6 * polygon_area);
             localY /= (6 * polygon_area);
 
             return localX < 0 ? new PlanarPoint(-localX, -localY) : new PlanarPoint(localX, localY);
         }
 
-        private double SignedShapeArea()
+        private float SignedShapeArea()
         {
             int collectionCount = Points.Length;
             PlanarPoint[] localCollection = new PlanarPoint[collectionCount + 1];
             Points.CopyTo(localCollection, 0);
             localCollection[collectionCount] = Points[0];
 
-            double area = 0;
+            float area = 0;
             for (int i = 0; i < collectionCount; i++)
             {
                 area += (localCollection[i + 1].X - localCollection[i].X) *
@@ -153,7 +155,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
             return area;
         }
 
-        private double ShapeArea()
+        private float ShapeArea()
         {
             return Math.Abs(SignedShapeArea());
         }

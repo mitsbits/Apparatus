@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Borg.Infrastructure.Core.DDD;
+using System.Collections.Generic;
 
-namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
+namespace Borg.Infrastructure.Core.Euclidean
 {
     /// <summary>
     /// A data structure that represents a point on a geometric axis
@@ -23,7 +24,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         /// </summary>
         /// <param name="x">Horizontal value</param>
         /// <param name="y">Vertical value</param>
-        public PlanarPoint(double x, double y)
+        public PlanarPoint(float x, float y)
         {
             X = x;
             Y = y;
@@ -40,12 +41,12 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects.Euclidean
         /// <summary>
         /// Horizontal value
         /// </summary>
-        public double X { get; } = 0;
+        public float X { get; }
 
         /// <summary>
         /// Vertical value
         /// </summary>
-        public double Y { get; } = 0;
+        public float Y { get; }
 
         public override string ToString()
         {

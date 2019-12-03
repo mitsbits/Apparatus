@@ -41,9 +41,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Platform.SQLServer", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Samples.Platform.SQLServer", "Borg\Samples\Borg.Samples.Platform.SQLServer\Borg.Samples.Platform.SQLServer.csproj", "{8747F8AB-E8F5-41DF-A8C4-9FF445F06690}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Borg.Framework.Imaging", "Borg\Framework\Borg.Framework.Imaging\Borg.Framework.Imaging.csproj", "{97D9778C-729C-4D28-A96D-DFC17EFD6CD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Framework.Imaging", "Borg\Framework\Borg.Framework.Imaging\Borg.Framework.Imaging.csproj", "{97D9778C-729C-4D28-A96D-DFC17EFD6CD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Borg.Platform.Imaging.ImageMagick", "Borg\Platform\Borg.Platform.Imaging.ImageMagick\Borg.Platform.Imaging.ImageMagick.csproj", "{BFAD733B-1F55-4315-ABEA-36F13F68B84E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Platform.Imaging.ImageMagick", "Borg\Platform\Borg.Platform.Imaging.ImageMagick\Borg.Platform.Imaging.ImageMagick.csproj", "{BFAD733B-1F55-4315-ABEA-36F13F68B84E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Borg.Infrastructure.Core.Euclidean", "Borg\Infrastructure\Borg.Infrastructure.Core.Euclidean\Borg.Infrastructure.Core.Euclidean.csproj", "{675B3C99-D048-4693-9FB6-3B72676696E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +121,10 @@ Global
 		{BFAD733B-1F55-4315-ABEA-36F13F68B84E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFAD733B-1F55-4315-ABEA-36F13F68B84E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFAD733B-1F55-4315-ABEA-36F13F68B84E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{675B3C99-D048-4693-9FB6-3B72676696E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{675B3C99-D048-4693-9FB6-3B72676696E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{675B3C99-D048-4693-9FB6-3B72676696E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{675B3C99-D048-4693-9FB6-3B72676696E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -140,6 +146,7 @@ Global
 		{8747F8AB-E8F5-41DF-A8C4-9FF445F06690} = {ADDC8770-4CB2-4D7E-983B-9495C81FE775}
 		{97D9778C-729C-4D28-A96D-DFC17EFD6CD3} = {467B140E-EF57-4CB1-BDC2-A032E760CE50}
 		{BFAD733B-1F55-4315-ABEA-36F13F68B84E} = {41EEE61C-CA95-4DBA-8699-CD436BA8CF89}
+		{675B3C99-D048-4693-9FB6-3B72676696E9} = {E364FBA0-1262-465C-8AD1-6B9859C64D34}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B83D8B06-63F3-4B4F-957A-063BEE172667}

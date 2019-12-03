@@ -11,11 +11,5 @@ namespace Borg.Infrastructure.Core.DDD.Enums
         Configure = 4 ^ 2
     }
 
-    public enum Compass
-    {
-        North = 1,
-        East = 2,
-        South = 3,
-        West = 4
-    }
+
 }

@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Borg.Common.Test\Borg.Common.Test.csproj" />
+    <ProjectReference Include="..\Borg.Infrastructure.Core.Euclidean\Borg.Infrastructure.Core.Euclidean.csproj" />
     <ProjectReference Include="..\Borg.Infrastructure.Core\Borg.Infrastructure.Core.csproj" />
   </ItemGroup>
 

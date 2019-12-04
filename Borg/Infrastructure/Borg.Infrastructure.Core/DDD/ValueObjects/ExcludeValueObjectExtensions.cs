@@ -5,9 +5,11 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects
 {
     internal static class ExcludeValueObjectExtensions
     {
-        public static bool IsExcludedFromValueObjectComparison(this FieldInfo fieldInfo)
+        public static bool IsExcludedFromValueObjectComparison(this PropertyInfo propertyInfo)
         {
-            return !fieldInfo.IsPrivate && fieldInfo.GetCustomAttributes().Any(x => x.GetType().IsSubclassOf(typeof(ExcludeFromValueObjectAttribute)));
+            return propertyInfo.GetMethod.IsPrivate
+                ? true
+                : propertyInfo.GetCustomAttributes().Any(x => x.GetType().IsSubclassOf(typeof(ExcludeFromValueObjectAttribute)));
         }
     }
 }

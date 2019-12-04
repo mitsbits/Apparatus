@@ -1,8 +1,5 @@
 ﻿using Borg.Infrastructure.Core.Euclidean;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Test.Borg;
 using Xunit;
 using Xunit.Abstractions;
@@ -14,6 +11,7 @@ namespace Borg.Infrastructure.Core.Tests.Euclidean
         public PlanarTriangleTests(ITestOutputHelper output) : base(output)
         {
         }
+
         [Theory]
         [InlineData(0, 0, 10, 0, 0, 10, 3.3333333333333335, 3.3333333333333335)]
         [InlineData(0, 0, -10, 0, 0, -10, -3.3333333333333335, -3.3333333333333335)]

@@ -10,9 +10,9 @@ namespace Borg.Infrastructure.Core.DDD
     public abstract class ValueObject<T> : IEquatable<T> where T : ValueObject<T>
     {
         [ExcludeValueObjectField]
-        private static Lazy<ConcurrentDictionary<Type, IEnumerable<FieldInfo>>> _cache = new Lazy<ConcurrentDictionary<Type, IEnumerable<FieldInfo>>>(() => new ConcurrentDictionary<Type, IEnumerable<FieldInfo>>());
+        private static Lazy<ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>> _cache = new Lazy<ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>>(() => new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>());
 
-        private static ConcurrentDictionary<Type, IEnumerable<FieldInfo>> Cache => _cache.Value;
+        private static ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> Cache => _cache.Value;
 
         public virtual bool Equals(T other)
 
@@ -91,30 +91,30 @@ namespace Borg.Infrastructure.Core.DDD
             return hashCode;
         }
 
-        private IEnumerable<FieldInfo> GetFieldsInternal()
+        private IEnumerable<PropertyInfo> GetFieldsInternal()
 
         {
             var t = GetType();
 
-            var fields = new List<FieldInfo>();
+            var fields = new List<PropertyInfo>();
 
-            bool predicate(FieldInfo x) => x.IsExcludedFromValueObjectComparison();
+            bool predicate(PropertyInfo x) => !x.IsExcludedFromValueObjectComparison();
 
             while (t != typeof(object))
 
             {
-                fields.AddRange(t.GetTypeInfo().DeclaredFields.Where(predicate));
+                fields.AddRange(t.GetTypeInfo().DeclaredProperties.Where(predicate));
                 t = t.GetTypeInfo().BaseType;
             }
 
             return fields;
         }
 
-        private IEnumerable<FieldInfo> GetFields()
+        private IEnumerable<PropertyInfo> GetFields()
         {
             var t = GetType();
 
-            if (Cache.TryGetValue(t, out IEnumerable<FieldInfo> value))
+            if (Cache.TryGetValue(t, out IEnumerable<PropertyInfo> value))
             {
                 return value;
             }

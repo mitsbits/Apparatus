@@ -44,5 +44,16 @@ namespace Borg.Infrastructure.Core.Tests.Euclidean
             var dist = line.GetDistance();
             dist.ShouldBe(result);
         }
+
+        [Theory]
+        [InlineData(0, 0, 0, 10, 0, 10)]
+        [InlineData(-10, 10, -10, -10, 0, -20)]
+        public void get_vector(float x1, float y1, float x2, float y2, float resultX, float resultY)
+        {
+            var line = new PlanarLine(new PlanarPoint(x1, y1), new PlanarPoint(x2, y2));
+            var vector = line.Vector();
+            vector.X.ShouldBe(resultX);
+            vector.Y.ShouldBe(resultY);
+        }
     }
 }

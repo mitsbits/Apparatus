@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Borg.Infrastructure.Core.DDD.ValueObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
 namespace Borg.Infrastructure.Core.Euclidean
 {
-    public class PlanarLine : PlanarShape
+    public class PlanarLine : PlanarShape, IGetVector
     {
         /// <summary>
         /// the default direction comparer
@@ -35,17 +36,20 @@ namespace Borg.Infrastructure.Core.Euclidean
         /// <summary>
         /// The starting <see cref="PlanarPoint"/>
         /// </summary>
+        [ExcludeValueObjectProperty]
         public PlanarPoint PointOne => Points[0];
 
         /// <summary>
         /// The ending <see cref="PlanarPoint"/>
         /// </summary>
+        [ExcludeValueObjectProperty]
         public PlanarPoint PointTwo => Points[1];
 
         public Vector2 Vector()
         {
             var substraction = PointTwo - PointOne;
-            return new Vector2(substraction.X, substraction.Y);
+            var result = new Vector2(substraction.X, substraction.Y);
+            return result;
         }
 
         /// <summary>
@@ -90,7 +94,8 @@ namespace Borg.Infrastructure.Core.Euclidean
         /// <returns>Units</returns>
         public virtual float GetDistance()
         {
-            return (float)Math.Sqrt(GetDistanceSquared());
+            //return (float)Math.Sqrt(GetDistanceSquared());
+            return Vector2.Distance(PointOne._vector, PointTwo._vector);
         }
 
         /// <summary>
@@ -100,10 +105,11 @@ namespace Borg.Infrastructure.Core.Euclidean
         /// <remarks>Use this for comparison as it is faster that the <see cref="GetDistance"/></remarks>
         public virtual float GetDistanceSquared()
         {
-            float xDelta = PointOne.X - PointTwo.X;
-            float yDelta = PointOne.Y - PointTwo.Y;
+            //    float xDelta = PointOne.X - PointTwo.X;
+            //    float yDelta = PointOne.Y - PointTwo.Y;
 
-            return (float)Math.Pow(xDelta, 2) + (float)Math.Pow(yDelta, 2);
+            //    return (float)Math.Pow(xDelta, 2) + (float)Math.Pow(yDelta, 2);
+            return Vector2.DistanceSquared(PointOne._vector, PointTwo._vector);
         }
 
         /// <summary>
@@ -115,7 +121,7 @@ namespace Borg.Infrastructure.Core.Euclidean
         {
             var distance = GetDistance();
             var startpoint = new PlanarPoint(PointOne);
-            var targetpoint = new PlanarPoint(PointOne.X + (float)(Math.Cos(angle) * distance), PointOne.Y + (Math.Sin(angle) * distance));
+            var targetpoint = new PlanarPoint(PointOne.X + ((float)Math.Cos(angle) * distance), PointOne.Y + ((float)Math.Sin(angle) * distance));
             return new PlanarLine(startpoint, targetpoint);
         }
 
@@ -155,13 +161,13 @@ namespace Borg.Infrastructure.Core.Euclidean
         /// <param name="other">The <see cref="PlanarLine"/> to compare</param>
         /// <param name="thresshold">10° are about 0.9848 threshold value</param>
         /// <returns><see cref="Boolean"/>True if the lines are parallel</returns>
-        public bool IsParallelTo(PlanarLine other, float thresshold = 0.99)
+        public bool IsParallelTo(PlanarLine other, float thresshold = 0.99f)
         {
             var dx1 = PointOne.X - PointTwo.X;
             var dy1 = PointTwo.Y - PointOne.Y;
             var dx2 = other.PointTwo.X - other.PointOne.X;
             var dy2 = other.PointTwo.Y - other.PointOne.Y;
-            var cosAngle = Math.Abs(((dx1 * dx2) + (dy1 * dy2)) / Math.Sqrt(((dx1 * dx1) + (dy1 * dy1)) * ((dx2 * dx2) + (dy2 * dy2))));
+            var cosAngle = (float)Math.Abs(((dx1 * dx2) + (dy1 * dy2)) / Math.Sqrt(((dx1 * dx1) + (dy1 * dy1)) * ((dx2 * dx2) + (dy2 * dy2))));
             return cosAngle > thresshold;
         }
 

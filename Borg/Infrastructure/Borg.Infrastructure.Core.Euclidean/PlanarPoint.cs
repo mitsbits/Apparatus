@@ -1,5 +1,7 @@
 ﻿using Borg.Infrastructure.Core.DDD;
+using Borg.Infrastructure.Core.DDD.ValueObjects;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Borg.Infrastructure.Core.Euclidean
 {
@@ -8,15 +10,16 @@ namespace Borg.Infrastructure.Core.Euclidean
     /// </summary>
     public sealed class PlanarPoint : ValueObject<PlanarPoint>
     {
+        [ExcludeValueObjectField]
+        internal readonly Vector2 _vector;
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="x">Horizontal value</param>
         /// <param name="y">Vertical value</param>
-        public PlanarPoint(int x, int y)
+        public PlanarPoint(int x, int y) : this((float)x, (float)y)
         {
-            X = x;
-            Y = y;
         }
 
         /// <summary>
@@ -28,6 +31,7 @@ namespace Borg.Infrastructure.Core.Euclidean
         {
             X = x;
             Y = y;
+            _vector = new Vector2(X, Y);
         }
 
         /// <summary>
@@ -50,7 +54,8 @@ namespace Borg.Infrastructure.Core.Euclidean
 
         public override string ToString()
         {
-            return $"[{X},{Y}]";
+            //return $"[{X},{Y}]";
+            return _vector.ToString();
         }
 
         public static PlanarPoint operator +(PlanarPoint a, PlanarPoint b)
@@ -60,12 +65,12 @@ namespace Borg.Infrastructure.Core.Euclidean
 
         public static PlanarPoint operator -(PlanarPoint a, PlanarPoint b)
         {
-            return new PlanarPoint(a.X - b.X, a.Y - b.Y);
+            return (a._vector - b._vector).ToPoint();
         }
 
         public static PlanarPoint operator -(PlanarPoint a)
         {
-            return Zero() - a;
+            return Vector2.Negate(a._vector).ToPoint();
         }
 
         /// <summary>
@@ -83,7 +88,7 @@ namespace Borg.Infrastructure.Core.Euclidean
         /// </summary>
         /// <param name="x">New horizontal value</param>
         /// <returns></returns>
-        public PlanarPoint NewX(double x)
+        public PlanarPoint NewX(float x)
         {
             return new PlanarPoint(x, Y);
         }
@@ -103,7 +108,7 @@ namespace Borg.Infrastructure.Core.Euclidean
         /// </summary>
         /// <param name="y">New vorizontal value</param>
         /// <returns></returns>
-        public PlanarPoint NewY(double y)
+        public PlanarPoint NewY(float y)
         {
             return new PlanarPoint(X, y);
         }
@@ -157,6 +162,7 @@ namespace Borg.Infrastructure.Core.Euclidean
             return new PlanarPoint(0, 0);
         }
     }
+
     /// <summary>
     /// Default sorting of points, from left to right and then from lower to higher
     /// </summary>
@@ -169,6 +175,14 @@ namespace Borg.Infrastructure.Core.Euclidean
             if (x.IsLowerThan(y)) return 1;
             if (x.IsHigherThan(y)) return -1;
             return 0;
+        }
+    }
+
+    internal static class PlanarPointMappimgs
+    {
+        public static PlanarPoint ToPoint(this Vector2 vector)
+        {
+            return new PlanarPoint(vector.X, vector.Y);
         }
     }
 }

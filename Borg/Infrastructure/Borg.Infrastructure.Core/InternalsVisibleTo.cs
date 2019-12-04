@@ -17,4 +17,3 @@
 [assembly: InternalsVisibleTo("Borg.Platform.Web")]
 [assembly: InternalsVisibleTo("Polemic.Blazor")]
 [assembly: InternalsVisibleTo("Borg.Infrastructure.Core.Euclidean")]
-

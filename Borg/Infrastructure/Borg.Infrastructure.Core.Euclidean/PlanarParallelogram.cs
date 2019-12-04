@@ -8,7 +8,6 @@ namespace Borg.Infrastructure.Core.Euclidean
     {
         public PlanarParallelogram(IEnumerable<PlanarPoint> points) : base(points)
         {
-
         }
 
         protected override PlanarPoint[] ValidatePoints(IEnumerable<PlanarPoint> points)
@@ -23,7 +22,6 @@ namespace Borg.Infrastructure.Core.Euclidean
     {
         public PlanarSquare(IEnumerable<PlanarPoint> points) : base(points)
         {
-
         }
     }
 }

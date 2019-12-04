@@ -8,10 +8,7 @@ namespace Borg.Infrastructure.Core.Euclidean
     {
         public PlanarΤrapezoid(IEnumerable<PlanarPoint> points) : base(points)
         {
-
         }
-
-
 
         protected override PlanarPoint[] ValidatePoints(IEnumerable<PlanarPoint> points)
         {

@@ -10,6 +10,4 @@ namespace Borg.Infrastructure.Core.DDD.Enums
         Delete = 3 ^ 2,
         Configure = 4 ^ 2
     }
-
-
 }

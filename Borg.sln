@@ -45,7 +45,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Framework.Imaging", "B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Platform.Imaging.ImageMagick", "Borg\Platform\Borg.Platform.Imaging.ImageMagick\Borg.Platform.Imaging.ImageMagick.csproj", "{BFAD733B-1F55-4315-ABEA-36F13F68B84E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Borg.Infrastructure.Core.Euclidean", "Borg\Infrastructure\Borg.Infrastructure.Core.Euclidean\Borg.Infrastructure.Core.Euclidean.csproj", "{675B3C99-D048-4693-9FB6-3B72676696E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Infrastructure.Core.Euclidean", "Borg\Infrastructure\Borg.Infrastructure.Core.Euclidean\Borg.Infrastructure.Core.Euclidean.csproj", "{675B3C99-D048-4693-9FB6-3B72676696E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Borg.Platform.Indexing.Lucene", "Borg\Platform\Borg.Platform.Indexing.Lucene\Borg.Platform.Indexing.Lucene.csproj", "{F91A2B55-C9D2-4A40-9FE7-080EA66B0A8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +127,10 @@ Global
 		{675B3C99-D048-4693-9FB6-3B72676696E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{675B3C99-D048-4693-9FB6-3B72676696E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{675B3C99-D048-4693-9FB6-3B72676696E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F91A2B55-C9D2-4A40-9FE7-080EA66B0A8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F91A2B55-C9D2-4A40-9FE7-080EA66B0A8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F91A2B55-C9D2-4A40-9FE7-080EA66B0A8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F91A2B55-C9D2-4A40-9FE7-080EA66B0A8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -147,6 +153,7 @@ Global
 		{97D9778C-729C-4D28-A96D-DFC17EFD6CD3} = {467B140E-EF57-4CB1-BDC2-A032E760CE50}
 		{BFAD733B-1F55-4315-ABEA-36F13F68B84E} = {41EEE61C-CA95-4DBA-8699-CD436BA8CF89}
 		{675B3C99-D048-4693-9FB6-3B72676696E9} = {E364FBA0-1262-465C-8AD1-6B9859C64D34}
+		{F91A2B55-C9D2-4A40-9FE7-080EA66B0A8E} = {41EEE61C-CA95-4DBA-8699-CD436BA8CF89}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B83D8B06-63F3-4B4F-957A-063BEE172667}

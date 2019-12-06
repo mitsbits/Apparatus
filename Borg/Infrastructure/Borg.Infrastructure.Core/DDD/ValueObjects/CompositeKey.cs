@@ -3,23 +3,30 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using static Borg.Infrastructure.Core.DDD.ValueObjects.CompositeKeyBuilder;
 
 namespace Borg.Infrastructure.Core.DDD.ValueObjects
 {
-    [Serializable]
-    [MapperIgnore]
+
     public class CompositeKey : ValueObject<CompositeKey>, IReadOnlyDictionary<string, object>, IEquatable<CompositeKey>
     {
+        [ExcludeValueObjectField]
         protected readonly Dictionary<string, object> _data;
 
-        public IEnumerable<string> Keys => _data.Keys;
+        [ExcludeValueObjectProperty]
+        public IEnumerable<string> Keys => _data.Keys.OrderBy(x=>x);
 
+        [ExcludeValueObjectProperty]
         public IEnumerable<object> Values => _data.Values;
 
+        [ExcludeValueObjectProperty]
         public int Count => _data.Count();
 
+        [ExcludeValueObjectProperty]
         public object this[string key] => _data[key];
+
+        public Dictionary<string, object> Data => _data;
 
         public CompositeKey(string queryString) : this()
         {
@@ -65,7 +72,9 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects
 
         public override string ToString()
         {
-            return string.Join("", _data.Select(x => $"[{x.Key}:{x.Value}]"));
+            var builder = new StringBuilder();
+            builder.Append(string.Join("", _data.Select(x => $"[{x.Key}:{x.Value}]")));
+            return builder.ToString();
         }
 
         public bool ContainsKey(string key)

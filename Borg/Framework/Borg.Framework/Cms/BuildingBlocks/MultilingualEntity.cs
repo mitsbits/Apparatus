@@ -4,7 +4,7 @@ using System;
 
 namespace Borg.Framework.Cms.BuildingBlocks
 {
-    public abstract class MultilingualEntity<TKey, TLanguage> : IMultilingualEntity<TKey, TLanguage> where TKey : IEquatable<TKey> where TLanguage : IGlobalizationSilo
+    public abstract class MultilingualEntity<TKey, TLanguage> : IMultilingualEntity<TKey, TLanguage> where TKey : IEquatable<TKey> where TLanguage : ILocalizationSilo
     {
         public TKey Id { get; protected set; }
 

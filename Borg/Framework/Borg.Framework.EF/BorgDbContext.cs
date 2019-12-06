@@ -13,6 +13,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using Borg.Infrastructure.Core.DDD.ValueObjects;
+using Borg.Infrastructure.Core.DDD.Contracts;
 
 namespace Borg.Framework.EF
 {
@@ -154,7 +160,7 @@ namespace Borg.Framework.EF
 
         private void SetUpConfig(DbContextOptionsBuilder options)
         {
-            BorgOptions = Configurator<BorgDbContextConfiguration>.Build( configuration, GetContextName(GetType()));
+            BorgOptions = Configurator<BorgDbContextConfiguration>.Build(configuration, GetContextName(GetType()));
             options.UseSqlServer(BorgOptions.ConnectionString, opt =>
             {
                 opt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), new int[0]);
@@ -164,5 +170,27 @@ namespace Borg.Framework.EF
         }
 
         #endregion Private
+    }
+
+    public abstract class EventfulDbContext : DbContext
+    {
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var affected = ChangeTracker.Entries().Where(x => x.State != EntityState.Unchanged);
+            var affectedTypes = new List<(Type type, EntityState state)>();
+            var affectedIndentifiables = new List<(Type type, EntityState state, CompositeKey key)>();
+            foreach (var ent in affected)
+            {
+                var type = (type: ent.GetType(), state: ent.State);
+                if (!affectedTypes.Contains(type)) affectedTypes.Add(type);
+                var identifiable = ent as IIdentifiable;
+                if (identifiable != null)
+                {
+                    affectedIndentifiables.Add((type: type.type, state: type.state, key: identifiable.Keys));
+                }
+            }
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
     }
 }

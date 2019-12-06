@@ -20,8 +20,8 @@ namespace Borg.Platform.Indexing.Lucene
         {
             this.path = Preconditions.NotEmpty(path, nameof(path));
             var dir = FSDirectory.Open(this.path);
-            var analyzer = new Analyzer();
-            this.indexWriter = new IndexWriter(dir, new IndexWriterConfig(MATCH_LUCENE_VERSION, new StandardAnalyzer(MATCH_LUCENE_VERSION)));
+            //var analyzer = new Analyzer();
+            //this.indexWriter = new IndexWriter(dir, new IndexWriterConfig(MATCH_LUCENE_VERSION, new StandardAnalyzer(MATCH_LUCENE_VERSION)));
         }
         public string Name => throw new NotImplementedException();
 

@@ -1,7 +1,7 @@
 ﻿using Borg;
 using Borg.Framework.SQLServer.Broadcast;
 using Borg.Framework.Storage.Contracts;
-using MediatR;
+using Borg.Framework.Dispatch;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

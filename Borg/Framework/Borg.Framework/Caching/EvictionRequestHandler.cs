@@ -1,5 +1,6 @@
-﻿using Borg.Infrastructure.Core;
-using MediatR;
+﻿using Borg.Framework.Dispatch;
+using Borg.Infrastructure.Core;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Threading;

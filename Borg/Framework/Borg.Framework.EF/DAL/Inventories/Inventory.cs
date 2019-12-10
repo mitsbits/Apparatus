@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Borg.Framework.EF.DAL.Inventories
 {
-    public abstract class InventoryBase<T, TDbContext> : IInventory<T> where T : class where TDbContext : BorgDbContext
+    public abstract class InventoryBase<T, TDbContext> : IInventory<T> where T : class where TDbContext : BorgDbContextttt
     {
         protected readonly ILogger Logger;
         protected readonly IUnitOfWork<TDbContext> UOW;
@@ -39,7 +39,7 @@ namespace Borg.Framework.EF.DAL.Inventories
         public bool SupportsFactory => true;
     }
 
-    public class Inventory<T, TDbContext> : InventoryBase<T, TDbContext>, IInventoryFacade<T> where T : class where TDbContext : BorgDbContext
+    public class Inventory<T, TDbContext> : InventoryBase<T, TDbContext>, IInventoryFacade<T> where T : class where TDbContext : BorgDbContextttt
     {
         public Inventory(ILoggerFactory loggerFactory, IUnitOfWork<TDbContext> unitOfWork) : base(loggerFactory, unitOfWork)
         {

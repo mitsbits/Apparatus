@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Apparatus.System.Api.Api
 {
@@ -17,6 +14,7 @@ namespace Apparatus.System.Api.Api
             if (version <= 0) throw new ArgumentOutOfRangeException($"{nameof(version)}:{version}");
             Version = version;
         }
+
         public int Version { get; }
     }
 }

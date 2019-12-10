@@ -1,5 +1,5 @@
 ﻿using Borg.Infrastructure.Core;
-using MediatR;
+using Borg.Framework.Dispatch;
 
 namespace Borg.Framework.SQLServer.Broadcast
 {

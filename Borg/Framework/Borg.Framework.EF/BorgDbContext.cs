@@ -1,185 +1,89 @@
-﻿using Borg.Framework.EF.Contracts;
-using Borg.Framework.EF.Instructions;
-using Borg.Framework.Services.Configuration;
+﻿using Borg.Framework.DAL;
 using Borg.Infrastructure.Core;
-using Borg.Infrastructure.Core.Reflection.Discovery;
-using Borg.Infrastructure.Core.Services.Factory;
-using Borg.Platform.EF.Instructions;
-using Borg.Platform.EF.Instructions.Contracts;
-using JetBrains.Annotations;
+using Borg.Infrastructure.Core.DDD.Contracts;
+using Borg.Infrastructure.Core.DDD.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
-using Borg.Infrastructure.Core.DDD.ValueObjects;
-using Borg.Infrastructure.Core.DDD.Contracts;
-
 namespace Borg.Framework.EF
 {
-    public abstract class BorgDbContext<TConfiguration> : BorgDbContext where TConfiguration : IConfiguration
+    public abstract partial class BorgWithEventsDbContext : BaseBorgDbContext
     {
-        protected BorgDbContext(ILoggerFactory loggerFactory, TConfiguration configuration, IAssemblyExplorerResult explorerResult) : base(loggerFactory, configuration, explorerResult)
-        {
-        }
+        protected event EventHandler<CollectionChangedEventArgs> CollectionChangedEventHandler;
+        protected event EventHandler<IdentifiableChangedEventArgs> IdentifiableChangedEventHandler;
 
-        protected BorgDbContext([NotNull] DbContextOptions options) : base(options)
-        {
-        }
+        protected ReportChangesEnebled ReportChanges { get; set; } = ReportChangesEnebled.All;
 
-        protected BorgDbContext([NotNull] DbContextOptions options, IAssemblyExplorerResult explorerResult) : base(options, explorerResult)
-        {
-        }
-    }
+        private List<(Type type, EntityState state)> affectedCollections;
+        private List<(Type type, EntityState state, CompositeKey key)> affectedIndentifiables;
 
-    public abstract partial class BorgDbContext : DbContext
-    {
-        private IConfiguration configuration;
-
-        public EventHandler<EntityTrackedEventArgs> TrackedEventHandler;
-        public EventHandler<EntityStateChangedEventArgs> StateChangedEventHandler;
-
-        protected readonly ILogger Logger;
-        protected readonly IAssemblyExplorerResult ExplorerResult;
-
-        private readonly SetUpMode Mode = SetUpMode.None;
-
-        protected BorgDbContext(ILoggerFactory loggerFactory, IConfiguration configuration, IAssemblyExplorerResult explorerResult)
-        {
-            Logger = loggerFactory == null ? NullLogger.Instance : loggerFactory.CreateLogger(GetType());
-            this.configuration = Preconditions.NotNull(configuration, nameof(configuration));
-            this.ExplorerResult = Preconditions.NotNull(explorerResult, nameof(explorerResult));
-            Mode = SetUpMode.Configuration;
-        }
-
-        protected BorgDbContext([NotNull] DbContextOptions options) : base(options)
-        {
-        }
-
-        protected BorgDbContext([NotNull] DbContextOptions options, Func<BorgDbContextOptions> borgOptionsFactory = null) : base(options)
-        {
-        }
-
-        protected BorgDbContext([NotNull] DbContextOptions options, IAssemblyExplorerResult explorerResult) : base(options)
-        {
-            this.ExplorerResult = Preconditions.NotNull(explorerResult, nameof(explorerResult));
-        }
-
-        protected BorgDbContext([NotNull] DbContextOptions options, BorgDbContextOptions borgOptions = null) : this(options, () => borgOptions)
-        {
-        }
-
-        public virtual string Schema => (Mode == SetUpMode.Configuration) ? CheckOptionsForSchemaName() : GetType().Name.Replace("DbContext", string.Empty).Slugify();
-
-        private BorgDbContextConfiguration BorgOptions { get; set; }
-        public bool IsWrappedByUOW { get; set; } = false;
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            base.OnConfiguring(options);
-
-            if (Mode == SetUpMode.Configuration)
-            {
-                SetUpConfig(options);
-            }
-        }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-            Map(builder);
-        }
-
-        protected enum SetUpMode
-        {
-            None,
-            Configuration
-        }
-
-        #region Private
-
-        private void Map(ModelBuilder builder)
-        {
-            MapEntities(builder);
-            foreach (var entityType in builder.Model.GetEntityTypes())
-            {
-                entityType.SetSchema(GetContextName(GetType()));
-            };
-        }
-
-        private void MapEntities(ModelBuilder builder)
-        {
-            var localresults = ExplorerResult.Results<EntitiesAssemblyScanResult>();
-            foreach (var result in localresults)
-            {
-                if (!result.Success) continue;
-                var entityTypes = result.AllEntityTypes();
-
-                foreach (var entitytype in entityTypes)
-                {
-                    var isMapped = false;
-                    var mapType = typeof(GenericEntityMap<,>).MakeGenericType(entitytype, GetType());
-                    foreach (var mapdef in result.EntityMaps)
-                    {
-                        if (mapdef.IsAssignableTo(mapType))
-                        {
-                            if (isMapped) continue;
-                            ((IEntityMap)New.Creator(mapdef)).OnModelCreating(builder);
-                            isMapped = true;
-                        }
-                    }
-                    if (!isMapped)
-                    {
-                        var newMapType = typeof(EntityMap<,>).MakeGenericType(entitytype, GetType());
-                        ((IEntityMap)New.Creator(newMapType)).OnModelCreating(builder);
-                        result.AddMap(newMapType);
-                    }
-                }
-            }
-        }
-
-        private string CheckOptionsForSchemaName()
-        {
-            return (BorgOptions?.Overrides?.Schema ?? string.Empty).IsNullOrWhiteSpace()
-              ? GetType().Name.Replace("DbContext", string.Empty).Slugify()
-              : BorgOptions?.Overrides?.Schema;
-        }
-
-        private string GetContextName(Type type)
-        {
-            Preconditions.NotNull(type, nameof(type));
-            var name = type.Name.Replace("Context", string.Empty).Slugify();
-            if (!name.EndsWith("db")) name += "db";
-            return name;
-        }
-
-        private void SetUpConfig(DbContextOptionsBuilder options)
-        {
-            BorgOptions = Configurator<BorgDbContextConfiguration>.Build(configuration, GetContextName(GetType()));
-            options.UseSqlServer(BorgOptions.ConnectionString, opt =>
-            {
-                opt.EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), new int[0]);
-                opt.CommandTimeout(BorgOptions.Overrides.CommandTimeout);
-            });
-            options.EnableDetailedErrors(BorgOptions.Overrides.EnableDetailedErrors);
-        }
-
-        #endregion Private
-    }
-
-    public abstract class EventfulDbContext : DbContext
-    {
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        private ValueTask ThoseWhoAreAboutToCommit(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var affected = ChangeTracker.Entries().Where(x => x.State != EntityState.Unchanged);
-            var affectedTypes = new List<(Type type, EntityState state)>();
-            var affectedIndentifiables = new List<(Type type, EntityState state, CompositeKey key)>();
+            affectedCollections = new List<(Type type, EntityState state)>();
+            affectedIndentifiables = new List<(Type type, EntityState state, CompositeKey key)>();
+            foreach (var ent in affected)
+            {
+                var type = (type: ent.GetType(), state: ent.State);
+                if (!affectedCollections.Contains(type)) affectedCollections.Add(type);
+                var identifiable = ent as IIdentifiable;
+                if (identifiable != null)
+                {
+                    affectedIndentifiables.Add((type: type.type, state: type.state, key: identifiable.Keys));
+                }
+            }
+            return new ValueTask(Task.CompletedTask);
+        }
+
+        private ValueTask WorkOnCommited( CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            foreach (var collectionEvent in affectedCollections)
+            {
+                RaiseCollectionChanged(mapState(collectionEvent.state), collectionEvent.type);
+            }
+
+            foreach (var identifiableEvent in affectedIndentifiables)
+            {
+                RaiseIdentifiableChanged(mapState(identifiableEvent.state), identifiableEvent.type, identifiableEvent.key);
+            }
+            return new ValueTask(Task.CompletedTask);
+        }
+
+
+        private void WorkOnCommited(List<(Type type, EntityState state)> affectedTypes, List<(Type type, EntityState state, CompositeKey key)> affectedIndentifiables)
+        {
+            foreach (var collectionEvent in affectedTypes)
+            {
+                RaiseCollectionChanged(mapState(collectionEvent.state), collectionEvent.type);
+            }
+
+            foreach (var identifiableEvent in affectedIndentifiables)
+            {
+                RaiseIdentifiableChanged(mapState(identifiableEvent.state), identifiableEvent.type, identifiableEvent.key);
+            }
+        }
+
+        private void RaiseCollectionChanged(CRUDOperation operation, Type entityType)
+        {
+            CollectionChangedEventHandler?.Invoke(this, new CollectionChangedEventArgs(operation, entityType));
+        }
+
+        private void RaiseIdentifiableChanged(CRUDOperation operation, Type entityType, CompositeKey keys)
+        {
+            IdentifiableChangedEventHandler?.Invoke(this, new IdentifiableChangedEventArgs(operation, entityType, keys));
+        }
+
+        private void ThoseWhoAreAboutToCommit(out List<(Type type, EntityState state)> affectedTypes, out List<(Type type, EntityState state, CompositeKey key)> affectedIndentifiables)
+        {
+            var affected = ChangeTracker.Entries().Where(x => x.State != EntityState.Unchanged);
+            affectedTypes = new List<(Type type, EntityState state)>();
+            affectedIndentifiables = new List<(Type type, EntityState state, CompositeKey key)>();
             foreach (var ent in affected)
             {
                 var type = (type: ent.GetType(), state: ent.State);
@@ -190,7 +94,132 @@ namespace Borg.Framework.EF
                     affectedIndentifiables.Add((type: type.type, state: type.state, key: identifiable.Keys));
                 }
             }
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private static Func<EntityState, CRUDOperation> mapState = (s) =>
+        {
+            switch (s)
+            {
+                case EntityState.Modified:
+                    return CRUDOperation.Update;
+                    break;
+
+                case EntityState.Added:
+                    return CRUDOperation.Create;
+
+                    break;
+
+                case EntityState.Deleted:
+                    return CRUDOperation.Delete;
+
+                    break;
+
+                case EntityState.Detached:
+                    return CRUDOperation.NoAction;
+                    break;
+
+                case EntityState.Unchanged:
+                    return CRUDOperation.NoAction;
+                    break;
+            }
+            return CRUDOperation.NoAction;
+        };
+
+
+        protected enum ReportChangesEnebled
+        {
+            None = 0,
+            All = 1
         }
     }
+
+
+    public abstract class EntityStateChangedNotification
+    {
+        protected Func<EntityState, CRUDOperation> mapState = (s) =>
+        {
+            switch (s)
+            {
+                case EntityState.Modified:
+                    return CRUDOperation.Update;
+                    break;
+
+                case EntityState.Added:
+                    return CRUDOperation.Create;
+
+                    break;
+
+                case EntityState.Deleted:
+                    return CRUDOperation.Delete;
+
+                    break;
+
+                case EntityState.Detached:
+                    return CRUDOperation.NoAction;
+                    break;
+
+                case EntityState.Unchanged:
+                    return CRUDOperation.NoAction;
+                    break;
+            }
+            return CRUDOperation.NoAction;
+        };
+
+        protected Type EntityType { get; set; }
+        public CRUDOperation Operation { get; protected set; }
+    }
+
+    public abstract class ChangedEventArgs : EventArgs
+    {
+        protected ChangedEventArgs(CRUDOperation operation, Type entityType) : base()
+        {
+            Operation = operation;
+            EntityType = Preconditions.NotNull(entityType, nameof(entityType));
+        }
+
+        public CRUDOperation Operation { get; }
+        public Type EntityType { get; }
+    }
+
+    public class CollectionChangedEventArgs : ChangedEventArgs
+    {
+        public CollectionChangedEventArgs(CRUDOperation operation, Type entityType) : base(operation, entityType)
+        {
+        }
+    }
+
+    public class IdentifiableChangedEventArgs : ChangedEventArgs
+    {
+        public IdentifiableChangedEventArgs(CRUDOperation operation, Type entityType, CompositeKey keys) : base(operation, entityType)
+        {
+            Keys = Preconditions.NotNull(keys, nameof(keys));
+        }
+
+        public CompositeKey Keys { get; }
+    }
+
+    public sealed class EntityTypeChanged : EntityStateChangedNotification
+    {
+        public EntityTypeChanged(Type type, EntityState state)
+        {
+            EntityType = Preconditions.NotNull(type, nameof(type));
+            var localoperation = mapState(state);
+            Operation = Preconditions.IsDefined<CRUDOperation>(localoperation, nameof(localoperation));
+        }
+    }
+
+    public sealed class EntityChanged : EntityStateChangedNotification
+    {
+        public EntityChanged(Type type, EntityState state, CompositeKey keys)
+        {
+            EntityType = Preconditions.NotNull(type, nameof(type));
+            var localoperation = mapState(state);
+            Operation = Preconditions.IsDefined<CRUDOperation>(localoperation, nameof(localoperation));
+            Keys = Preconditions.NotNull(keys, nameof(keys));
+        }
+
+        public CompositeKey Keys { get; }
+    }
+
+
 }

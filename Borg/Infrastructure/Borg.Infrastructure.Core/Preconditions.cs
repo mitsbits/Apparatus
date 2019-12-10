@@ -1,5 +1,4 @@
 ﻿using Borg.Infrastructure.Core.Exceptions;
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,8 +10,7 @@ namespace Borg.Infrastructure.Core
     [DebuggerStepThrough]
     internal static partial class Preconditions
     {
-        [ContractAnnotation("value:null => halt")]
-        public static T NotNull<T>([NoEnumeration] T value, [InvokerParameterName, NotNull] string parameterName, [CallerMemberName] string callerName = "")
+        public static T NotNull<T>(T value, string parameterName, [CallerMemberName] string callerName = "")
             where T : class
         {
             if (ReferenceEquals(value, null))
@@ -25,8 +23,7 @@ namespace Borg.Infrastructure.Core
             return value;
         }
 
-        [ContractAnnotation("value:null => halt")]
-        public static string NotEmpty(string value, [InvokerParameterName, NotNull] string parameterName, [CallerMemberName] string callerName = "")
+        public static string NotEmpty(string value, string parameterName, [CallerMemberName] string callerName = "")
         {
             if (ReferenceEquals(value, null))
             {
@@ -45,8 +42,7 @@ namespace Borg.Infrastructure.Core
             return value;
         }
 
-        [ContractAnnotation("value:null => halt")]
-        public static DateTime NotEmpty(DateTime value, [InvokerParameterName, NotNull] string parameterName, [CallerMemberName] string callerName = "")
+        public static DateTime NotEmpty(DateTime value, string parameterName, [CallerMemberName] string callerName = "")
         {
             if (value.Equals(default(DateTime)))
             {
@@ -58,8 +54,7 @@ namespace Borg.Infrastructure.Core
             return value;
         }
 
-        [ContractAnnotation("value:null => halt")]
-        public static TEnum IsDefined<TEnum>(TEnum value, [InvokerParameterName, NotNull] string parameterName, [CallerMemberName] string callerName = "") where TEnum : struct
+        public static TEnum IsDefined<TEnum>(TEnum value, string parameterName, [CallerMemberName] string callerName = "") where TEnum : struct
         {
             if (!Enum.IsDefined(typeof(TEnum), value))
             {
@@ -71,8 +66,7 @@ namespace Borg.Infrastructure.Core
             return value;
         }
 
-        [ContractAnnotation("value:null => halt")]
-        public static int PositiveOrZero([NoEnumeration] int value, [InvokerParameterName, NotNull] string parameterName, [CallerMemberName] string callerName = "")
+        public static int PositiveOrZero(int value, string parameterName, [CallerMemberName] string callerName = "")
         {
             parameterName = NotEmpty(parameterName, nameof(parameterName));
             if (ReferenceEquals(value, null))
@@ -88,8 +82,7 @@ namespace Borg.Infrastructure.Core
             return value;
         }
 
-        [ContractAnnotation("value:null => halt")]
-        public static int Positive([NoEnumeration] int value, [InvokerParameterName, NotNull] string parameterName, [CallerMemberName] string callerName = "")
+        public static int Positive(int value, string parameterName, [CallerMemberName] string callerName = "")
         {
             parameterName = NotEmpty(parameterName, nameof(parameterName));
             if (ReferenceEquals(value, null))
@@ -105,8 +98,7 @@ namespace Borg.Infrastructure.Core
             return value;
         }
 
-        [ContractAnnotation("value:null => halt")]
-        public static int NegativeOrZero([NoEnumeration] int value, [InvokerParameterName, NotNull] string parameterName, [CallerMemberName] string callerName = "")
+        public static int NegativeOrZero(int value, string parameterName, [CallerMemberName] string callerName = "")
         {
             parameterName = NotEmpty(parameterName, nameof(parameterName));
             if (ReferenceEquals(value, null))
@@ -122,8 +114,7 @@ namespace Borg.Infrastructure.Core
             return value;
         }
 
-        [ContractAnnotation("value:null => halt")]
-        public static IEnumerable<T> NotEmpty<T>(IEnumerable<T> value, [InvokerParameterName, NotNull] string parameterName, [CallerMemberName] string callerName = "")
+        public static IEnumerable<T> NotEmpty<T>(IEnumerable<T> value, string parameterName, [CallerMemberName] string callerName = "")
         {
             if (ReferenceEquals(value, null))
             {
@@ -143,7 +134,7 @@ namespace Borg.Infrastructure.Core
 
     internal static partial class Preconditions
     {
-        public static T SubclassOf<T>([NotNull]Type target, [NoEnumeration, NotNull] T value, [InvokerParameterName, NotNull] string parameterName, [CallerMemberName] string callerName = "") where T : class
+        public static T SubclassOf<T>(Type target, T value, string parameterName, [CallerMemberName] string callerName = "") where T : class
         {
             var typetocheck = value.GetType();
             if (typetocheck.IsSubclassOf(target))

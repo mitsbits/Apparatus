@@ -1,5 +1,5 @@
 ﻿using Borg.Infrastructure.Core;
-using MediatR;
+using Borg.Framework.Dispatch;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using System;

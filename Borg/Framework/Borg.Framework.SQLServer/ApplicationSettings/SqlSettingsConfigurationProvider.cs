@@ -1,5 +1,5 @@
 ﻿using Borg.Infrastructure.Core;
-using MediatR;
+using Borg.Framework.Dispatch;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;

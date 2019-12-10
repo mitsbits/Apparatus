@@ -11,7 +11,7 @@ using Borg.Framework.SQLServer.Broadcast;
 using Borg.Framework.Storage.Contracts;
 using Borg.Framework.Storage.FileDepots;
 using Borg.Infrastructure.Core.Services.Serializer;
-using MediatR;
+using Borg.Framework.Dispatch;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

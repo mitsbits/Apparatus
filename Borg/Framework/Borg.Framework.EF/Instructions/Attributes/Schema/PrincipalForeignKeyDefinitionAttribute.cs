@@ -8,7 +8,7 @@ namespace Borg.Framework.EF.Instructions.Attributes.Schema
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class PrincipalForeignKeyDefinitionAttribute : Attribute
     {
-        public PrincipalForeignKeyDefinitionAttribute([NotNull] bool IsRequired, [NotNull]params string[] columns)
+        public PrincipalForeignKeyDefinitionAttribute(bool IsRequired, params string[] columns)
         {
             Columns = Preconditions.NotEmpty(columns, nameof(columns)).ToArray();
         }

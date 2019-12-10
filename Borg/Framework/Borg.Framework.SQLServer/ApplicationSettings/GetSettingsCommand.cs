@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Borg.Framework.Dispatch;
 
 namespace Borg.Framework.SQLServer.ApplicationSettings
 {

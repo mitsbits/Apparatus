@@ -1,5 +1,4 @@
 ﻿using Borg.Infra.Messaging;
-using JetBrains.Annotations;
 using System;
 
 namespace Borg.Framework.DAL
@@ -49,7 +48,7 @@ namespace Borg.Framework.DAL
 
         public T Payload { get; private set; }
 
-        public static CommandResult<T> Success([NotNull]T payload)
+        public static CommandResult<T> Success(T payload)
         {
             return new CommandResult<T>(TransactionOutcome.Success) { Payload = payload };
         }

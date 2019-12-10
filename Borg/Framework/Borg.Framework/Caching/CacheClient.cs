@@ -1,7 +1,8 @@
-﻿using Borg.Infrastructure.Core;
+﻿using Borg.Framework.Dispatch;
+using Borg.Infrastructure.Core;
 using Borg.Infrastructure.Core.Services.Serializer;
 using Borg.Infrastructure.Core.Threading;
-using MediatR;
+
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;

@@ -48,7 +48,7 @@ namespace Apparatus.Application.Server
 
             entitiesExplorerResult = new AssemblyExplorerResult(loggerFactory, new[] { explorer });
             services.AddSingleton<IAssemblyExplorerResult>(entitiesExplorerResult);
-            //services.ConfigureOptions(typeof(UiConfigureOptions));
+            services.ConfigureOptions(typeof(UiConfigureOptions));
             services.AddControllersWithViews();
         }
 

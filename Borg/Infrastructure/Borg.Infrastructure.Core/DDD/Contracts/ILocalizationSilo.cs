@@ -2,7 +2,7 @@
 {
     public interface ILocalizationSilo
     {
-        string TwoLetterISO { get;  }
-        string CultureName { get;  }
+        string TwoLetterISO { get; }
+        string CultureName { get; }
     }
 }

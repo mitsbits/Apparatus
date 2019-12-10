@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Borg.Framework.EF.DAL
 {
-    public class UnitOfWork<TDbContext> : IUnitOfWork<TDbContext> where TDbContext : BorgDbContext
+    public class UnitOfWork<TDbContext> : IUnitOfWork<TDbContext> where TDbContext : BorgDbContextttt
     {
         protected ILogger Log;
 

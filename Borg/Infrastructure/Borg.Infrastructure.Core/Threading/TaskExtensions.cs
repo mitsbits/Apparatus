@@ -17,5 +17,16 @@ namespace Borg
         {
             return task.ConfigureAwait(false);
         }
+        [DebuggerStepThrough]
+        public static ConfiguredValueTaskAwaitable AnyContext(this ValueTask task)
+        {
+            return task.ConfigureAwait(false);
+        }
+        [DebuggerStepThrough]
+        public static ConfiguredValueTaskAwaitable<TResult> AnyContext<TResult>(this ValueTask<TResult> task)
+        {
+            return task.ConfigureAwait(false);
+        }
+
     }
 }

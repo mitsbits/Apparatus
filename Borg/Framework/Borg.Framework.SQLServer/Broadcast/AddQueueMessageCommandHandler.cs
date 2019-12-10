@@ -1,6 +1,6 @@
 ﻿using Borg.Framework.Services.Configuration;
 using Borg.Infrastructure.Core;
-using MediatR;
+using Borg.Framework.Dispatch;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -26,7 +26,7 @@ namespace Borg.Framework.SQLServer.Broadcast
             sqlConnection = new SqlConnection(Preconditions.NotEmpty(options.SqlConnectionString, nameof(options.SqlConnectionString)));
         }
 
-        public async Task<MediatR.Unit> Handle(AddQueueMessageCommand request, CancellationToken cancellationToken = default)
+        public async Task<Unit> Handle(AddQueueMessageCommand request, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var args = request;

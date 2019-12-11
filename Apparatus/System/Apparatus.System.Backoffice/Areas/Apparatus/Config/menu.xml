@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<menu>
+  <header display="Main navigation" tooltip="tooltip"/>
+  <sections>
+    <section>
+      <header display="System" tooltip="tooltip"/>
+      <uls>
+        <ul>
+          <lis>
+            <li area="" controller="home" action="index" id="" display="index" target="_self" tooltip="tooltip"/>
+            <li> <header display ="Sub options"  tooltip="tooltip"/>
+              <ul>
+                <lis>
+                  <li area="" controller="home" action="index" display="index 1" id="1" target="_self" tooltip="tooltip"/>
+                  <li area="" controller="home" action="index" display="index 2" id="1" target="_self" tooltip="tooltip"/>
+                  <li href="www.google.com" display="google" target="_blank" tooltip="tooltip"/>
+                </lis>
+              </ul>
+            </li>
+          </lis>
+        </ul>
+      </uls>
+    </section>
+    <section>
+      <uls>
+        <ul>
+          <lis>
+            <li area="" controller="home" action="index" id="" display="index" target="_self" tooltip="tooltip"/>
+            <li>
+              <header display ="Sub options"  tooltip="tooltip"/>
+              <ul>
+                <lis>
+                  <li area="" controller="home" action="index" display="index 1" id="1" target="_self" tooltip="tooltip"/>
+                  <li area="" controller="home" action="index" display="index 2" id="1" target="_self" tooltip="tooltip"/>
+                  <li href="www.google.com" display="google" target="_blank" tooltip="tooltip"/>
+                </lis>
+              </ul>
+            </li>
+          </lis>
+        </ul>
+        <ul>
+          <lis>
+            <li>
+              <header display ="Sub options"  tooltip="tooltip"/>
+              <ul>
+                <lis>
+                  <li>
+                    <header display ="Sub options"  tooltip="tooltip"/>
+                    <ul>
+                      <lis>
+                        <li area="" controller="home" action="index" display="index 1" id="1" target="_self" tooltip="tooltip"/>
+                        <li area="" controller="home" action="index" display="index 2" id="1" target="_self" tooltip="tooltip"/>
+                        <li href="www.google.com" display="google" target="_blank" tooltip="tooltip"/>
+                        <li display="js">
+                          <![CDATA[<script type="text/javascript">alert('koko');</script>]]>
+                        </li>
+                      </lis>
+                    </ul>
+                  </li>
+                </lis>
+              </ul>
+            </li>
+          </lis>
+        </ul>
+      </uls>
+    </section>
+    <section>
+      <uls>
+        <ul>
+          <lis>
+            <li>
+              <header display ="Sub options"  tooltip="tooltip"/>
+              <ul>
+                <lis>
+                  <li area="" controller="home" action="index" display="index 1" id="1" target="_self" tooltip="tooltip"/>
+                  <li area="" controller="home" action="index" display="index 2" id="1" target="_self" tooltip="tooltip"/>
+                  <li href="www.google.com" display="google" target="_blank" tooltip="tooltip"/>
+                  <li display="js">
+                    <![CDATA[<script type="text/javascript">alert('koko');</script>]]>
+                  </li>
+                </lis>
+              </ul>
+            </li>
+          </lis>
+        </ul>
+      </uls>
+    </section>
+  </sections>
+</menu>

@@ -36,7 +36,7 @@ namespace Apparatus.Application.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var b = new WebHostBuilder();
+            //var b = new WebHostBuilder();
             var depAsmblPrv = new DepedencyAssemblyProvider(loggerFactory);
             var refAsmblPrv = new ReferenceAssemblyProvider(loggerFactory, null, GetType().Assembly);
             var explorer = new EntitiesExplorer(loggerFactory,
@@ -48,8 +48,8 @@ namespace Apparatus.Application.Server
 
             entitiesExplorerResult = new AssemblyExplorerResult(loggerFactory, new[] { explorer });
             services.AddSingleton<IAssemblyExplorerResult>(entitiesExplorerResult);
-            //services.ConfigureOptions(typeof(UiConfigureOptions));
             services.AddControllersWithViews();
+            services.AddSession((o) => o.Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,20 +61,32 @@ namespace Apparatus.Application.Server
             }
 
             app.UseStaticFiles();
-            app.UseRouting();
 
+
+            app.MapWhen(c => c.Request.Path.Value.Contains("apparatus", StringComparison.InvariantCultureIgnoreCase), app =>
+            {
+                app.UseHsts();
+                app.UseSession(new SessionOptions() { Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" } });
+                app.UseRouting();
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapAreaControllerRoute(
+                        name: "apparatus",
+                        areaName: "apparatus",
+                        pattern: "apparatus/{controller=Home}/{action=Index}/{id?}");
+                    endpoints.MapControllers();
+                });
+
+            });
+
+
+            app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
-
-                endpoints.MapAreaControllerRoute(
-                    name: "apparatus",
-                    areaName: "apparatus",
-                    pattern: "apparatus/{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapControllers();
-
-                endpoints.MapGet("/", async context =>
+                endpoints.MapGet("/", context => 
                 {
-                    await context.Response.WriteAsync("Hello World!");
+                    context.Response.Redirect("apparatus");
+                    return Task.CompletedTask;
                 });
             });
         }

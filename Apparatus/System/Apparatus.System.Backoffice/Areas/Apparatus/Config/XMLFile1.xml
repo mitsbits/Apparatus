@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <!-- XML Schema Generated from XML Document on Wed Dec 11 2019 15:58:01 GMT+0200 (Eastern European Standard Time) -->
+  <!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
+  <xs:element name="menu">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="header">
+          <xs:complexType>
+            <xs:attribute name="display" type="xs:string"></xs:attribute>
+            <xs:attribute name="tooltip" type="xs:string"></xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="sections">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="section" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="header">
+                      <xs:complexType>
+                        <xs:attribute name="display" type="xs:string"></xs:attribute>
+                        <xs:attribute name="tooltip" type="xs:string"></xs:attribute>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="uls">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ul">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="lis">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="li" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                          <xs:attribute name="area" type="xs:string"></xs:attribute>
+                                          <xs:attribute name="controller" type="xs:string"></xs:attribute>
+                                          <xs:attribute name="action" type="xs:string"></xs:attribute>
+                                          <xs:attribute name="id" type="xs:string"></xs:attribute>
+                                          <xs:attribute name="display" type="xs:string"></xs:attribute>
+                                          <xs:attribute name="target" type="xs:string"></xs:attribute>
+                                          <xs:attribute name="tooltip" type="xs:string"></xs:attribute>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

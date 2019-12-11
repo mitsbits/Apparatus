@@ -16,6 +16,9 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CsQuery" Version="1.3.4" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework.MVC\Borg.Framework.MVC.csproj" />
   </ItemGroup>
 

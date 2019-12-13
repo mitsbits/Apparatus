@@ -11,6 +11,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using TestFileProviders.Models;
+using Borg.Platform.EF;
+using Borg.Platform.EF.Silos;
+using Borg.Framework.DAL.Ordering;
 
 namespace TestFileProviders.Controllers
 {
@@ -36,6 +39,16 @@ namespace TestFileProviders.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public async Task<IActionResult> DbContext()
+        {
+            using (var db = new PlatformDb())
+            {
+                var l = db.ReadRepo<Language, PlatformDb>();
+                var s = await l.Find(x => true, SortBuilder.Get<Language>().Build());
+            }
+            return Ok();
         }
 
         public IActionResult Upload()

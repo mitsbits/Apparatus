@@ -21,6 +21,17 @@ namespace Borg.Framework.EF.Instructions
         {
         }
 
+        protected string GetSequenceName(string property)
+        {
+            var type = typeof(TEntity);
+            var propInfo = type.GetProperty(property);
+            if (propInfo == null)
+            {
+                throw new InvalidPropertyName(type, property);
+            }
+            return $"{typeof(TEntity).Name}_{property}_seq";
+        }
+
         #region OnModelCreating
 
         public override void OnModelCreating(ModelBuilder builder)
@@ -261,5 +272,16 @@ namespace Borg.Framework.EF.Instructions
         public Type ContextType { get; }
 
         public abstract void OnModelCreating(ModelBuilder builder);
+    }
+
+    internal class InvalidPropertyName : ApplicationException
+    {
+        public InvalidPropertyName(Type type, string property) : base(CreateEcxeptionMessage(type, property)) { }
+        private static string CreateEcxeptionMessage(Type type, string property)
+        {
+
+            return $"Property {property} is not declared for type {type.FullName}";
+
+        }
     }
 }

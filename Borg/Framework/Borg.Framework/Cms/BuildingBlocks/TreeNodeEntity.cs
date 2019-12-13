@@ -13,14 +13,14 @@ namespace Borg.Framework.Cms.BuildingBlocks
         public string Hierarchy { get; protected set; }
     }
 
-    public class Entity<TKey> : IEntity<TKey>
+    public abstract class Entity<TKey> : IEntity<TKey> where TKey : IEquatable<TKey>
     {
 
 
         public CompositeKey Keys => throw new NotImplementedException();
 
+        public TKey Id => throw new NotImplementedException();
 
 
-        Key IEntity<Key>.Id => throw new NotImplementedException();
     }
 }

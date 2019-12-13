@@ -28,4 +28,21 @@ namespace Borg.Framework.EF.DAL
             return await Context.Fetch(predicate, page, records, orderBy, cancellationToken, false, paths);
         }
     }
+
+    public class ReadRepository<T> : IReadRepository<T> where T : class 
+    {
+        public ReadRepository(DbContext dbContext)
+        {
+            Context = Preconditions.NotNull(dbContext, nameof(dbContext));
+            if (!Context.EntityIsMapped<T>()) throw new EntityNotMappedException<DbContext>(typeof(T));
+        }
+
+        protected DbContext Context { get; }
+
+        public async Task<IPagedResult<T>> Read(Expression<Func<T, bool>> predicate, int page, int records, IEnumerable<OrderByInfo<T>> orderBy, CancellationToken cancellationToken = default(CancellationToken), params Expression<Func<T, dynamic>>[] paths)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return await Context.Fetch(predicate, page, records, orderBy, cancellationToken, false, paths);
+        }
+    }
 }

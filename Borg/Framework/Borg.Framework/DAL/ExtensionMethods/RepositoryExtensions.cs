@@ -1,4 +1,5 @@
-﻿using Borg.Framework.DAL.Ordering;
+﻿using Borg.Framework.DAL;
+using Borg.Framework.DAL.Ordering;
 using Borg.Infrastructure.Core.Collections;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Borg.Framework.DAL
+namespace Borg
 {
     public static class RepositoryExtensions
     {

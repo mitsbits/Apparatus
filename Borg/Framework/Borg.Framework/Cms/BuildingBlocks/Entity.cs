@@ -4,7 +4,12 @@ using System;
 
 namespace Borg.Framework.Cms.BuildingBlocks
 {
-    public abstract class Entity<TKey> : IEntity<TKey> where TKey : IEquatable<TKey>
+
+    public abstract class EntityCompositeKey<TKey> : EntityGeneric<TKey> where TKey : CompositeKey, IEquatable<TKey>
+    {
+
+    }
+    public abstract class EntityGeneric<TKey> : IEntity<TKey> where TKey : IEquatable<TKey>
     {
         public virtual TKey Id { get; protected set; }
 

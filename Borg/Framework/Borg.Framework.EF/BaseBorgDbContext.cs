@@ -10,7 +10,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 /// <summary>
 /// Abstraction over the <see cref="DbContext"/>
 /// Used as BaseClass for applicarion db contexts
@@ -41,15 +40,6 @@ public abstract class BaseBorgDbContext : DbContext
     protected BaseBorgDbContext([NotNull] DbContextOptions options) : base(options)
     {
         setUpMode = SetUpMode.Constructor;
-    }
-
-    private static string ConfigKey(Type type)
-    {
-        if (type.IsAbstract) throw new InvalidOperationException("Can not configure abstract db context");
-        var parts = type.FullName.Split('.');
-        var removeTrailingDbContext = parts[parts.Length - 1].EndsWith(TrailingDbContext);
-        var output = string.Join(":", parts);
-        return removeTrailingDbContext ? output.Substring(0, output.Length - TrailingDbContext.Length) : output;
     }
 
     public override int SaveChanges()
@@ -156,5 +146,14 @@ public abstract class BaseBorgDbContext : DbContext
                 await pre(true, cancellationToken).AnyContext();
             }
         }
+    }
+
+    private static string ConfigKey(Type type)
+    {
+        if (type.IsAbstract) throw new InvalidOperationException("Can not configure abstract db context");
+        var parts = type.FullName.Split('.');
+        var removeTrailingDbContext = parts[parts.Length - 1].EndsWith(TrailingDbContext);
+        var output = string.Join(":", parts);
+        return removeTrailingDbContext ? output.Substring(0, output.Length - TrailingDbContext.Length) : output;
     }
 }

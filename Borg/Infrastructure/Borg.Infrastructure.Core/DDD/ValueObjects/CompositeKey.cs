@@ -1,5 +1,4 @@
-﻿using Borg.Infrastructure.Core.Reflection.Discovery.Annotations;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +7,13 @@ using static Borg.Infrastructure.Core.DDD.ValueObjects.CompositeKeyBuilder;
 
 namespace Borg.Infrastructure.Core.DDD.ValueObjects
 {
-
     public class CompositeKey : ValueObject<CompositeKey>, IReadOnlyDictionary<string, object>, IEquatable<CompositeKey>
     {
         [ExcludeValueObjectField]
         protected readonly Dictionary<string, object> _data;
 
         [ExcludeValueObjectProperty]
-        public IEnumerable<string> Keys => _data.Keys.OrderBy(x=>x);
+        public IEnumerable<string> Keys => _data.Keys.OrderBy(x => x);
 
         [ExcludeValueObjectProperty]
         public IEnumerable<object> Values => _data.Values;
@@ -120,7 +118,7 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects
         public ICanAddValue AddKey(string key)
         {
             key = Preconditions.NotEmpty(key, nameof(key));
-            if (source.Any(x => string.Equals(x.key, key, StringComparison.InvariantCultureIgnoreCase))) throw new ApplicationException($"{nameof(key)} already in {nameof(source)}");
+            if (source.Any(x => string.Equals(x.key, key, StringComparison.InvariantCultureIgnoreCase))) throw new KeyExistsInCompositeKeyCollection(key);
             var tuple = (key: key, value: default(object));
             source.Add(tuple);
             return this as ICanAddValue;
@@ -158,6 +156,18 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects
         public interface ICanBuildCompositeKey
         {
             CompositeKey Build();
+        }
+
+        internal sealed class KeyExistsInCompositeKeyCollection : ApplicationException
+        {
+            public KeyExistsInCompositeKeyCollection(string key) : base(CrateExceptionMessage(key))
+            {
+            }
+
+            private static string CrateExceptionMessage(string key)
+            {
+                return $"Key property {nameof(key)} is already in Composite Key Collection";
+            }
         }
     }
 }

@@ -71,7 +71,8 @@ namespace Borg
             }
             throw new EntityNotMappedException(typeof(T));
         }
-        public static IReadRepository<T> ReadRepo<T>(this DbContext db) where T : class 
+
+        public static IReadRepository<T> ReadRepo<T>(this DbContext db) where T : class
         {
             if (db == null) throw new ArgumentNullException(nameof(db));
             if (db.EntityIsMapped<T>())
@@ -80,6 +81,7 @@ namespace Borg
             }
             throw new EntityNotMappedException(typeof(T));
         }
+
         public static IReadRepository<T> ReadRepo<T, TDbContext>(this TDbContext db) where T : class where TDbContext : DbContext
         {
             if (db == null) throw new ArgumentNullException(nameof(db));
@@ -95,11 +97,13 @@ namespace Borg
             if (db == null) throw new ArgumentNullException(nameof(db));
             return new ReadWriteRepository<T, TDbContext>(db);
         }
-        public static bool EntityIsMapped<T>(this DbContext db) where T : class 
+
+        public static bool EntityIsMapped<T>(this DbContext db) where T : class
         {
             var exists = db.Model.GetEntityTypes(typeof(T)).Any(); //TODO:this should be cached
             return exists;
         }
+
         public static bool EntityIsMapped<T, TDbContext>(this TDbContext db) where T : class where TDbContext : DbContext
         {
             var exists = db.Model.GetEntityTypes(typeof(T)).Any(); //TODO:this should be cached

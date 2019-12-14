@@ -1,5 +1,4 @@
-﻿
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -7,7 +6,6 @@
 
     <link href="_content/Apparatus.System.Backoffice/apparatus/apparatus.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/330d4dacee.js" crossorigin="anonymous"></script>
-
 </head>
 
 <body>
@@ -23,7 +21,7 @@
 
     <div class="container-fluid">
         <div class="row">
-        @(await Component.InvokeAsync<MainNavigationViewComponent>())
+            @(await Component.InvokeAsync<MainNavigationViewComponent>())
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
                 @RenderBody()
             </main>

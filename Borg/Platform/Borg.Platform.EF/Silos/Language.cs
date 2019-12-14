@@ -1,7 +1,4 @@
 ﻿using Borg.Framework.Cms.BuildingBlocks;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Borg.Platform.EF.Instructions;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +9,6 @@ namespace Borg.Platform.EF.Silos
         public virtual int Id { get; protected set; }
         public virtual string TwoLetterISOCode { get; protected set; }
     }
-
 
     public class LanguageInstruction : EntityMap<Language, PlatformDb>
     {
@@ -26,5 +22,4 @@ namespace Borg.Platform.EF.Silos
             builder.Entity<Language>().Property(x => x.TwoLetterISOCode).HasMaxLength(2).IsUnicode(false).IsRequired();
         }
     }
-
 }

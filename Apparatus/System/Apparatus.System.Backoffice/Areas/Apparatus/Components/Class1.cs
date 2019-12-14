@@ -2,20 +2,17 @@
 
 namespace Apparatus.System.Backoffice
 {
-
     public sealed class menu
     {
         public List<header> headers { get; set; }
         public List<section> sections { get; set; }
-
     }
 
     public sealed class header : displayer { }
 
-    public sealed class section {
-
+    public sealed class section
+    {
         public List<ul> uls { get; set; }
-
     }
 
     public class ul

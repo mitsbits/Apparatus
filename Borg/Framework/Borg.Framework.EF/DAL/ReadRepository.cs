@@ -29,7 +29,7 @@ namespace Borg.Framework.EF.DAL
         }
     }
 
-    public class ReadRepository<T> : IReadRepository<T> where T : class 
+    public class ReadRepository<T> : IReadRepository<T> where T : class
     {
         public ReadRepository(DbContext dbContext)
         {

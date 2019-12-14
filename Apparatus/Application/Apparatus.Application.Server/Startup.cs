@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Apparatus.System.Backoffice;
 using Borg.Framework.EF.Discovery;
 using Borg.Framework.Reflection.Services;
 using Borg.Infrastructure.Core.Reflection.Discovery;
@@ -13,14 +8,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-
+using System;
+using System.Threading.Tasks;
 
 namespace Apparatus.Application.Server
 {
     public class Startup
     {
-
         private readonly ILoggerFactory loggerFactory;
         private readonly IWebHostEnvironment hostingEnvironment;
         private readonly IConfiguration configuration;
@@ -32,6 +26,7 @@ namespace Apparatus.Application.Server
             this.hostingEnvironment = hostingEnvironment;
             this.configuration = configuration;
         }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -62,7 +57,6 @@ namespace Apparatus.Application.Server
 
             app.UseStaticFiles();
 
-
             app.MapWhen(c => c.Request.Path.Value.Contains("apparatus", StringComparison.InvariantCultureIgnoreCase), app =>
             {
                 app.UseHsts();
@@ -76,14 +70,12 @@ namespace Apparatus.Application.Server
                         pattern: "apparatus/{controller=Home}/{action=Index}/{id?}");
                     endpoints.MapControllers();
                 });
-
             });
-
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", context => 
+                endpoints.MapGet("/", context =>
                 {
                     context.Response.Redirect("apparatus");
                     return Task.CompletedTask;

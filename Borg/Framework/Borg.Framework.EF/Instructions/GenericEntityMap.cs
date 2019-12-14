@@ -276,12 +276,13 @@ namespace Borg.Framework.EF.Instructions
 
     internal class InvalidPropertyName : ApplicationException
     {
-        public InvalidPropertyName(Type type, string property) : base(CreateEcxeptionMessage(type, property)) { }
+        public InvalidPropertyName(Type type, string property) : base(CreateEcxeptionMessage(type, property))
+        {
+        }
+
         private static string CreateEcxeptionMessage(Type type, string property)
         {
-
             return $"Property {property} is not declared for type {type.FullName}";
-
         }
     }
 }

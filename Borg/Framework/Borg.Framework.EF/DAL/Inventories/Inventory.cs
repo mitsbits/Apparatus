@@ -4,15 +4,13 @@ using Borg.Framework.DAL.Ordering;
 using Borg.Framework.EF.Contracts;
 using Borg.Infrastructure.Core;
 using Borg.Infrastructure.Core.Collections;
+using Borg.Infrastructure.Core.DDD.Contracts;
 using Borg.Infrastructure.Core.DDD.ValueObjects;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,7 +37,7 @@ namespace Borg.Framework.EF.DAL.Inventories
         public bool SupportsFactory => true;
     }
 
-    public class Inventory<T, TDbContext> : InventoryBase<T, TDbContext>, IInventoryFacade<T> where T : class where TDbContext : BorgDbContextttt
+    public class Inventory<T, TDbContext> : InventoryBase<T, TDbContext>, IInventoryFacade<T> where T : class, IIdentifiable where TDbContext : BorgDbContextttt
     {
         public Inventory(ILoggerFactory loggerFactory, IUnitOfWork<TDbContext> unitOfWork) : base(loggerFactory, unitOfWork)
         {
@@ -85,34 +83,7 @@ namespace Borg.Framework.EF.DAL.Inventories
 
         public async Task<T> Get(CompositeKey compositeKey, CancellationToken cancellationToken = default)
         {
-            var exprBuilder = new StringBuilder("x=> ");
-
-            foreach (var prop in typeof(T).GetProperties())
-            {
-                if (compositeKey.TryGetValue(prop.Name, out var value))
-                {
-                    if (prop.PropertyType.Equals(typeof(string)))
-                    {
-                        exprBuilder.Append($"x.{prop.Name} == ").Append($"\"{value}\"");
-                    }
-                    else if (prop.PropertyType.Equals(typeof(bool)))
-                    {
-                        Func<int> localValue = () => (bool)value ? 1 : 0;
-
-                        exprBuilder.Append($"x.{prop.Name} == {localValue.Invoke()}");
-                    }
-                    else
-                    {
-                        exprBuilder.Append($"x.{prop.Name} == {value}");
-                    }
-                    exprBuilder.Append(" && ");
-                }
-            }
-
-            var exp = exprBuilder.ToString();
-            exp = exp.Substring(0, exp.Length - " && ".Length);
-            var options = ScriptOptions.Default.AddReferences(typeof(T).Assembly);
-            Expression<Func<T, bool>> predicate = await CSharpScript.EvaluateAsync<Expression<Func<T, bool>>>(exp, options);
+            var predicate = await compositeKey.ToPredicate<T>(cancellationToken);
             return await ReadWrite.Get(predicate);
         }
     }

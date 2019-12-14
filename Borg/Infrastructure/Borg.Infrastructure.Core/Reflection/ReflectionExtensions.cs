@@ -275,8 +275,6 @@ namespace Borg
             return TypeHelper.GetTypeDisplayName(type);
         }
 
-
-
         public static PropertyInfo GetPropertyInfo<T>(this T obj, Expression<Func<T, object>> selector)
         {
             if (selector.NodeType != ExpressionType.Lambda)
@@ -408,6 +406,7 @@ namespace Borg
 
             return null;
         }
+
         #endregion Private
     }
 }

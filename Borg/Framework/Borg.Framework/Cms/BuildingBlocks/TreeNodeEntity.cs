@@ -15,12 +15,8 @@ namespace Borg.Framework.Cms.BuildingBlocks
 
     public abstract class Entity<TKey> : IEntity<TKey> where TKey : IEquatable<TKey>
     {
-
-
         public CompositeKey Keys => throw new NotImplementedException();
 
         public TKey Id => throw new NotImplementedException();
-
-
     }
 }

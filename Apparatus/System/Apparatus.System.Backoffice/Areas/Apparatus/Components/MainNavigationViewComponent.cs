@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Apparatus.System.Backoffice.Areas.Apparatus.Components
 {
@@ -7,7 +6,6 @@ namespace Apparatus.System.Backoffice.Areas.Apparatus.Components
     {
         public IViewComponentResult Invoke()
         {
-
             return View();
         }
     }

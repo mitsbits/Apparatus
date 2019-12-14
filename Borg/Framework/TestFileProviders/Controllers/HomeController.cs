@@ -1,7 +1,10 @@
 ﻿using Borg;
+using Borg.Framework.DAL.Ordering;
+using Borg.Framework.Dispatch;
 using Borg.Framework.SQLServer.Broadcast;
 using Borg.Framework.Storage.Contracts;
-using Borg.Framework.Dispatch;
+using Borg.Platform.EF;
+using Borg.Platform.EF.Silos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,9 +14,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using TestFileProviders.Models;
-using Borg.Platform.EF;
-using Borg.Platform.EF.Silos;
-using Borg.Framework.DAL.Ordering;
 
 namespace TestFileProviders.Controllers
 {

@@ -17,6 +17,8 @@ namespace Borg.Framework.EF.Instructions
 {
     public abstract partial class GenericEntityMap<TEntity, TDbContext> : EntityMapBase, IEntityMap<TEntity, TDbContext> where TEntity : class where TDbContext : DbContext
     {
+        protected bool ProcessAnnotations = true;
+
         protected GenericEntityMap() : base(typeof(TEntity), typeof(TDbContext))
         {
         }
@@ -36,6 +38,7 @@ namespace Borg.Framework.EF.Instructions
 
         public override void OnModelCreating(ModelBuilder builder)
         {
+            if (!ProcessAnnotations) return;
             SequenceDefinition(builder);
             IndexDefinition(builder);
             StringFieldsLenth(builder);
@@ -111,7 +114,7 @@ namespace Borg.Framework.EF.Instructions
                             var pksqa = ixsqa as PrimaryKeySequenceDefinitionAttribute;
                             if (pksqa != null)
                             {
-                                builder.Entity<TEntity>().HasKey(keyExpression).HasName($"PK_{EntityType.Name}_{p.Name}").ForSqlServerIsClustered();
+                                builder.Entity<TEntity>().HasKey(keyExpression).HasName($"PK_{EntityType.Name}_{p.Name}").IsClustered();
                             }
                             else
                             {
@@ -168,7 +171,7 @@ namespace Borg.Framework.EF.Instructions
                         if (prop.GetCustomAttribute<PrimaryKeyDefinitionAttribute>() != null)
                         {
                             indexName = IndexName(indexName, IndexDefinitionAttribute.IndexDefinitionMode.PrimaryKey, group.Select(x => x.prop));
-                            builder.Entity<TEntity>().HasKey(keyExpression).HasName(indexName).ForSqlServerIsClustered();
+                            builder.Entity<TEntity>().HasKey(keyExpression).HasName(indexName).IsClustered();
                         }
                         else
                         {
@@ -194,7 +197,7 @@ namespace Borg.Framework.EF.Instructions
                         if (@group.All(x => x.prop.GetCustomAttribute<PrimaryKeyDefinitionAttribute>() != null))
                         {
                             indexName = IndexName(indexName, IndexDefinitionAttribute.IndexDefinitionMode.PrimaryKey, group.Select(x => x.prop));
-                            builder.Entity<TEntity>().HasKey(keyExpression).HasName(indexName).ForSqlServerIsClustered();
+                            builder.Entity<TEntity>().HasKey(keyExpression).HasName(indexName).IsClustered();
                         }
                         else
                         {

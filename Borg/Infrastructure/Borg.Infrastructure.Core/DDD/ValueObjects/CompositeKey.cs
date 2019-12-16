@@ -121,10 +121,16 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects
             return result.AddKey(fieldname);
         }
 
-        public static ICanAddValue CreateWithFNameOfId()
+        public static ICanAddValue CreateWithNameOfId()
         {
             var result = new CompositeKeyBuilder();
             return result.AddKey("Id");
+        }
+
+        public static ICanAddKeyOrBuild CreateWithId(object id)
+        {
+            var result = new CompositeKeyBuilder();
+            return result.AddKey("Id").AddValue(id);
         }
 
         public ICanAddValue AddKey(string key)

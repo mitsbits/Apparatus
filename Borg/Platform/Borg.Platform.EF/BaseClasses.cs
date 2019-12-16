@@ -14,8 +14,7 @@ namespace Borg.Platform.EF
         public virtual Language Language { get; protected set; }
         public virtual Tenant Tenant { get; protected set; }
 
-        public virtual CompositeKey Keys => CompositeKeyBuilder.CreateWithFieldName(nameof(Id))
-            .AddValue(Id)
+        public virtual CompositeKey Keys => CompositeKeyBuilder.CreateWithId(Id)
             .AddKey(nameof(LanguageId)).AddValue(LanguageId)
             .AddKey(nameof(TenantId)).AddValue(TenantId)
             .Build();
@@ -32,6 +31,7 @@ namespace Borg.Platform.EF
         public string DeActivationID { get; protected set; }
 
         public bool IsActive { get; protected set; }
+        public bool IsCurrentlyActive { get; protected set; }
     }
 
     public abstract class Treenode : Siloed, ITreeNode<int>

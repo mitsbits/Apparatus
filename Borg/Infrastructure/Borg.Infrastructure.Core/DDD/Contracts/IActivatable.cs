@@ -4,12 +4,14 @@ namespace Borg.Infrastructure.Core.DDD.Contracts
 {
     public interface IActive
     {
-        bool IsActive { get; set; }
+        bool IsActive { get; }
     }
 
     public interface IActivatable : IActive
     {
-        DateTimeOffset? ActiveFrom { get; set; }
-        DateTimeOffset? ActiveTo { get; set; }
+        DateTimeOffset? ActiveFrom { get; }
+        DateTimeOffset? ActiveTo { get; }
+        string ActivationID { get; }
+        string DeActivationID { get; }
     }
 }

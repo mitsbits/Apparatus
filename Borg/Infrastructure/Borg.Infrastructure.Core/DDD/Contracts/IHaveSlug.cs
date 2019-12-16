@@ -2,6 +2,6 @@
 {
     public interface IHaveSlug
     {
-        string Slug { get; set; }
+        string Slug { get; }
     }
 }

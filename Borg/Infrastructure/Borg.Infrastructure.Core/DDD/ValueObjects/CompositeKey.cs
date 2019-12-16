@@ -115,6 +115,18 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects
             return new CompositeKeyBuilder();
         }
 
+        public static ICanAddValue CreateWithFieldName(string fieldname)
+        {
+            var result = new CompositeKeyBuilder();
+            return result.AddKey(fieldname);
+        }
+
+        public static ICanAddValue CreateWithFNameOfId()
+        {
+            var result = new CompositeKeyBuilder();
+            return result.AddKey("Id");
+        }
+
         public ICanAddValue AddKey(string key)
         {
             key = Preconditions.NotEmpty(key, nameof(key));
@@ -132,6 +144,11 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects
             source.RemoveAt(source.Count() - 1);
             source.Add(tuple);
             return this as ICanAddKeyOrBuild;
+        }
+
+        public ICanAddKeyOrBuild AddFieldAndValue(string fieldname, object value)
+        {
+            return AddKey(fieldname).AddValue(value);
         }
 
         public CompositeKey Build()

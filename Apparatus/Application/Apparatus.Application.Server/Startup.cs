@@ -1,9 +1,11 @@
 using Borg.Framework.EF.Discovery;
+using Borg.Framework.MVC.Features.EntityControllerFeature;
 using Borg.Framework.Reflection.Services;
 using Borg.Infrastructure.Core.Reflection.Discovery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -43,7 +45,14 @@ namespace Apparatus.Application.Server
 
             entitiesExplorerResult = new AssemblyExplorerResult(loggerFactory, new[] { explorer });
             services.AddSingleton<IAssemblyExplorerResult>(entitiesExplorerResult);
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().ConfigureApplicationPartManager(manager =>
+            {
+                manager.FeatureProviders.Add(new BackOfficeEntityControllerFeatureProvider(entitiesExplorerResult));
+            });
+            services.Configure<RouteOptions>(routeOptions =>
+            {
+                routeOptions.ConstraintMap.Add("backofficeentitycontroller", typeof(BackOfficeEntityControllerConstraint));
+            });
             services.AddSession((o) => o.Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" });
         }
 
@@ -57,13 +66,18 @@ namespace Apparatus.Application.Server
 
             app.UseStaticFiles();
 
-            app.MapWhen(c => c.Request.Path.Value.Contains("apparatus", StringComparison.InvariantCultureIgnoreCase), app =>
+            app.MapWhen(c => c.Request.Path.Value.Contains("/apparatus", StringComparison.InvariantCultureIgnoreCase), app =>
             {
                 app.UseHsts();
                 app.UseSession(new SessionOptions() { Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" } });
                 app.UseRouting();
                 app.UseEndpoints(endpoints =>
                 {
+                    endpoints.MapAreaControllerRoute(
+                        name: "backofficeentity",
+                        areaName: "apparatus",
+                        pattern: "apparatus/entity/{controller:backofficeentitycontroller}/{action=Index}/{id?}");
+
                     endpoints.MapAreaControllerRoute(
                         name: "apparatus",
                         areaName: "apparatus",

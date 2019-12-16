@@ -6,7 +6,7 @@ namespace Borg.Framework.Cms.BuildingBlocks
     {
     }
 
-    public interface ITenant : ISilo, IHaveName
+    public interface ITenant : ISilo, IHaveName, IHaveDescription
     {
     }
 

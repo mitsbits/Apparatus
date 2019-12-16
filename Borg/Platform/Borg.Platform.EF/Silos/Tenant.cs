@@ -1,13 +1,18 @@
 ﻿using Borg.Framework.Cms.BuildingBlocks;
+using Borg.Infrastructure.Core.DDD.Contracts;
+using Borg.Infrastructure.Core.DDD.ValueObjects;
 using Borg.Platform.EF.Instructions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Borg.Platform.EF.Silos
 {
-    public class Tenant : ITenant
+    public class Tenant : ITenant, IIdentifiable
     {
         public virtual int Id { get; protected set; }
         public string Name { get; protected set; }
+        public string Description { get; protected set; }
+
+        public virtual CompositeKey Keys => CompositeKeyBuilder.CreateWithFieldName(nameof(Id)).AddValue(Id).Build();
     }
 
     public class TenantInstruction : EntityMap<Tenant, PlatformDb>
@@ -20,6 +25,7 @@ namespace Borg.Platform.EF.Silos
             builder.Entity<Tenant>().HasKey(x => x.Id);
             builder.Entity<Tenant>().Property(x => x.Id).HasDefaultValueSql($"NEXT VALUE FOR {seqName}");
             builder.Entity<Tenant>().Property(x => x.Name).HasMaxLength(50).IsUnicode(false).IsRequired();
+            builder.Entity<Tenant>().Property(x => x.Description).IsUnicode(true).IsRequired(false);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Borg.Infrastructure.Core.Reflection.Discovery
 {
@@ -20,7 +21,14 @@ namespace Borg.Infrastructure.Core.Reflection.Discovery
             foreach (var explorer in explorers)
             {
                 Logger.Debug($"Exploring {explorer.GetType().Name}");
-                results.AddRange(explorer.ScanAndResult());
+                var result = explorer.ScanAndResult().Where(x => x.Success);
+                foreach (var r in result)
+                {
+                    if (!result.Contains(r))
+                    {
+                        results.Add(r);
+                    }
+                }
             }
         }
 

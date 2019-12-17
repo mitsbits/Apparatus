@@ -8,5 +8,7 @@ namespace Borg.Framework.Cms.BuildingBlocks
         public virtual string Title { get; set; }
         public virtual string Slug { get; set; }
         public virtual bool IsActive { get; set; }
+
+        public bool IsCurrentlyActive => throw new NotImplementedException();
     }
 }

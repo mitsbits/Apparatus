@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -19,6 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework.EF\Borg.Framework.EF.csproj" />
+    <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework\Borg.Framework.csproj" />
     <ProjectReference Include="..\..\..\Borg\Infrastructure\Borg.Infrastructure.Core\Borg.Infrastructure.Core.csproj" />
   </ItemGroup>
 

@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Borg.Framework.EF.Discovery;
+using Borg.Framework.Reflection.Services;
+using Borg.Infrastructure.Core.Reflection.Discovery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -18,14 +21,30 @@ namespace Apparatus.System.Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        }
 
+        }
+        private AssemblyExplorerResult entitiesExplorerResult;
+        private readonly ILoggerFactory loggerFactory;
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            var depAsmblPrv = new DepedencyAssemblyProvider(loggerFactory);
+            var refAsmblPrv = new ReferenceAssemblyProvider(loggerFactory, null, GetType().Assembly);
+            var explorer = new EntitiesExplorer(loggerFactory,
+                    new IAssemblyProvider[]
+                    {
+                                refAsmblPrv,
+                                depAsmblPrv
+                    });
+
+            entitiesExplorerResult = new AssemblyExplorerResult(loggerFactory, new[] { explorer });
+            services.AddSingleton<IAssemblyExplorerResult>(entitiesExplorerResult);
+            services.AddControllers().AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.MaxDepth = int.MaxValue;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +63,7 @@ namespace Apparatus.System.Api
 
             app.UseEndpoints(endpoints =>
             {
-                
+
                 endpoints.MapControllers();
             });
         }

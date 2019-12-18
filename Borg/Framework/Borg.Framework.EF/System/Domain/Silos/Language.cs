@@ -4,7 +4,7 @@ using Borg.Infrastructure.Core.DDD.ValueObjects;
 using Borg.Platform.EF.Instructions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Borg.Platform.EF.Silos
+namespace Borg.Framework.EF.System.Domain.Silos
 {
     public class Language : ILanguage, IIdentifiable, IDataState
     {
@@ -14,7 +14,7 @@ namespace Borg.Platform.EF.Silos
         public virtual CompositeKey Keys => CompositeKeyBuilder.CreateWithFieldName(nameof(Id)).AddValue(Id).Build();
     }
 
-    public class LanguageInstruction : EntityMap<Language, PlatformDb>
+    public class LanguageInstruction<TDbContext> : EntityMap<Language, TDbContext> where TDbContext : DbContext
     {
         public override void OnModelCreating(ModelBuilder builder)
         {

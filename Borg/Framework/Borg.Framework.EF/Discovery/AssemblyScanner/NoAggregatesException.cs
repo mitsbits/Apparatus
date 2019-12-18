@@ -1,4 +1,5 @@
 ﻿using Borg.Infrastructure.Core.DDD.Contracts;
+using Borg.Platform.EF.Instructions;
 using System;
 using System.Reflection;
 
@@ -24,7 +25,8 @@ namespace Borg.Framework.EF.Discovery.AssemblyScanner
 
         private static string CreateExceptionMessage(Assembly assembly)
         {
-            return $"Assembly {assembly.GetName().Name} has no {nameof(BorgDbContext)} defined or any {nameof(IDataState)} implementations.";
+            return $"Assembly {assembly.GetName().Name} has no {nameof(BorgDbContext)} defined or any {nameof(IDataState)} implementations."
+                + $"No Entity Maps where discovered.";
         }
     }
 }

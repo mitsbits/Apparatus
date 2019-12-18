@@ -4,7 +4,7 @@ using Borg.Infrastructure.Core.DDD.ValueObjects;
 using Borg.Platform.EF.Instructions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Borg.Platform.EF.Silos
+namespace Borg.Framework.EF.System.Domain.Silos
 {
     public class Tenant : ITenant, IIdentifiable, IDataState
     {
@@ -15,7 +15,7 @@ namespace Borg.Platform.EF.Silos
         public virtual CompositeKey Keys => CompositeKeyBuilder.CreateWithFieldName(nameof(Id)).AddValue(Id).Build();
     }
 
-    public class TenantInstruction : EntityMap<Tenant, PlatformDb>
+    public class TenantInstruction<TDbContext> : EntityMap<Tenant, TDbContext> where TDbContext : DbContext;
     {
         public override void OnModelCreating(ModelBuilder builder)
         {

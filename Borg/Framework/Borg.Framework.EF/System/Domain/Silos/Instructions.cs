@@ -1,9 +1,10 @@
-﻿using Borg.Platform.EF.Instructions;
+﻿using Borg.Platform.EF;
+using Borg.Platform.EF.Instructions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Borg.Platform.EF.Silos
+namespace Borg.Framework.EF.System.Domain.Silos
 {
-    public class SiloedInstruction<T> : EntityMap<T, PlatformDb> where T : Siloed
+    public class SiloedInstruction<T, TDbContext> : EntityMap<T, TDbContext> where T : Siloed where TDbContext : DbContext
     {
         public override void OnModelCreating(ModelBuilder builder)
         {
@@ -16,7 +17,7 @@ namespace Borg.Platform.EF.Silos
         }
     }
 
-    public class SiloedActivatablenstruction<T> : SiloedInstruction<T> where T : SiloedActivatable
+    public class SiloedActivatablenstruction<T, TDbContext> : SiloedInstruction<T, TDbContext> where T : SiloedActivatable where TDbContext : DbContext
     {
         public override void OnModelCreating(ModelBuilder builder)
         {
@@ -30,7 +31,7 @@ namespace Borg.Platform.EF.Silos
         }
     }
 
-    public class TreenodeInstruction<T> : SiloedInstruction<T> where T : Treenode
+    public class TreenodeInstruction<T, TDbContext> : SiloedInstruction<T, TDbContext> where T : Treenode where TDbContext : DbContext
     {
         public override void OnModelCreating(ModelBuilder builder)
         {
@@ -41,7 +42,7 @@ namespace Borg.Platform.EF.Silos
         }
     }
 
-    public class TreenodeActivatableInstruction<T> : SiloedActivatablenstruction<T> where T : TreenodeActivatable
+    public class TreenodeActivatableInstruction<T, TDbContext> : SiloedActivatablenstruction<T, TDbContext> where T : TreenodeActivatable where TDbContext : DbContext
     {
         public override void OnModelCreating(ModelBuilder builder)
         {

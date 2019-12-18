@@ -1,4 +1,5 @@
-﻿using Borg.Infrastructure.Core.DDD.Contracts;
+﻿using Borg.Framework.EF.Instructions;
+using Borg.Infrastructure.Core.DDD.Contracts;
 using System;
 using System.Reflection;
 
@@ -27,6 +28,16 @@ namespace Borg.Framework.EF.Discovery
         public static bool IsDataState(this TypeInfo type)
         {
             return type == null || type.IsAbstract ? false : type.ImplementsInterface(_dataStateType);
+        }
+
+        public static bool IsEntityMap(this Type type)
+        {
+            return type.GetTypeInfo().IsDataState();
+        }
+
+        public static bool IsEntityMap(this TypeInfo type)
+        {
+            return type == null || type.IsAbstract ? false : type.IsSubclassOfRawGeneric(typeof(GenericEntityMap<,>));
         }
     }
 }

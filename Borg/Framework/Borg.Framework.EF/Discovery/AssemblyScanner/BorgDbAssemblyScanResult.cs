@@ -13,23 +13,28 @@ namespace Borg.Framework.EF.Discovery.AssemblyScanner
     {
         private readonly List<Type> _dbs;
         private readonly List<Type> _states;
+        private readonly List<Type> _maps;
 
-        public BorgDbAssemblyScanResult(Assembly assembly, IEnumerable<Type> dbs, IEnumerable<Type> states) : base(assembly, true, new string[0])
+        public BorgDbAssemblyScanResult(Assembly assembly, IEnumerable<Type> dbs, IEnumerable<Type> states, IEnumerable<Type> maps) : base(assembly, true, new string[0])
         {
             _dbs = new List<Type>();
             _states = new List<Type>();
+            _maps = new List<Type>();
             _dbs.AddRange(Preconditions.NotEmpty(dbs, nameof(dbs)));
             _states.AddRange(Preconditions.NotEmpty(states, nameof(states)));
+            _states.AddRange(Preconditions.NotEmpty(maps, nameof(maps)));
         }
 
         public BorgDbAssemblyScanResult(Assembly assembly, string[] errors) : base(assembly, false, errors)
         {
             _dbs = null;
             _states = null;
+            _maps = null;
         }
 
         public IEnumerable<Type> Dbs => _dbs;
         public IEnumerable<Type> DataStates => _states;
+        public IEnumerable<Type> DefinedEntityMaps => _maps;
     }
 
     internal class BorgDbAssemblyScanner : AssemblyScanner<BorgDbAssemblyScanResult>, IDisposable
@@ -48,14 +53,16 @@ namespace Borg.Framework.EF.Discovery.AssemblyScanner
 
         private void Populate()
         {
-            var dbs = Assembly.GetTypes().Where(t => t.IsBorgDb());
-            var states = Assembly.GetTypes().Where(t => t.IsDataState());
-            if (!dbs.Any() && !states.Any())
+            var types = Assembly.GetTypes().ToList();
+            var dbs = types.Where(t => t.IsBorgDb());
+            var states = types.Where(t => t.IsDataState());
+            var maps = types.Where(t => t.IsEntityMap());
+            if (!dbs.Any() && !states.Any() && !maps.Any())
             {
                 Result = new BorgDbAssemblyScanResult(Assembly, new string[] { new EmptyBorgDbScanResultException(Assembly).ToString() });
                 return;
             }
-            Result = new BorgDbAssemblyScanResult(Assembly, dbs, states);
+            Result = new BorgDbAssemblyScanResult(Assembly, dbs, states, maps);
         }
 
         #region IDisposable Support

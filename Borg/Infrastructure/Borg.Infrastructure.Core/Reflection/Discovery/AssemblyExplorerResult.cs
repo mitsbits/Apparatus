@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Borg.Infrastructure.Core.Reflection.Discovery
 {
@@ -9,6 +8,7 @@ namespace Borg.Infrastructure.Core.Reflection.Discovery
         private ILogger Logger { get; }
 
         private readonly List<AssemblyScanResult> results = new List<AssemblyScanResult>();
+        private readonly List<AssemblyScanResult> resultsWithErrors = new List<AssemblyScanResult>();
 
         public AssemblyExplorerResult(ILoggerFactory loggerFactory, IEnumerable<IAssemblyExplorer> explorers)
         {
@@ -21,12 +21,22 @@ namespace Borg.Infrastructure.Core.Reflection.Discovery
             foreach (var explorer in explorers)
             {
                 Logger.Debug($"Exploring {explorer.GetType().Name}");
-                var result = explorer.ScanAndResult().Where(x => x.Success);
+                var result = explorer.ScanAndResult();
                 foreach (var r in result)
                 {
-                    if (!result.Contains(r))
+                    if (r.Success)
                     {
-                        results.Add(r);
+                        if (!results.Contains(r))
+                        {
+                            results.Add(r);
+                        }
+                    }
+                    else
+                    {
+                        if (!resultsWithErrors.Contains(r))
+                        {
+                            resultsWithErrors.Add(r);
+                        }
                     }
                 }
             }

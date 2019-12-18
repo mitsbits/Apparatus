@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Borg.Platform.EF.Silos
 {
-    public class Tenant : ITenant, IIdentifiable
+    public class Tenant : ITenant, IIdentifiable, IDataState
     {
         public virtual int Id { get; protected set; }
         public string Name { get; protected set; }

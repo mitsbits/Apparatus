@@ -2,7 +2,6 @@
 using Borg.Platform.EF.Silos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
 using System.Collections.Generic;
 
 namespace Borg.Platform.EF.SystemEntites
@@ -27,6 +26,7 @@ namespace Borg.Platform.EF.SystemEntites
         _blank,
         _partent
     }
+
     public class MenuInstruction : SiloedActivatablenstruction<Menu>
     {
         public override void OnModelCreating(ModelBuilder builder)
@@ -34,9 +34,9 @@ namespace Borg.Platform.EF.SystemEntites
             base.OnModelCreating(builder);
 
             builder.Entity<Menu>().Property(x => x.Title).HasMaxLength(1024).IsRequired(true);
-
         }
     }
+
     public class MenuItemInstruction : TreenodeActivatableInstruction<MenuItem>
     {
         public override void OnModelCreating(ModelBuilder builder)

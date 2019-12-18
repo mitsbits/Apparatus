@@ -36,6 +36,13 @@ namespace Apparatus.Application.Server
             //var b = new WebHostBuilder();
             var depAsmblPrv = new DepedencyAssemblyProvider(loggerFactory);
             var refAsmblPrv = new ReferenceAssemblyProvider(loggerFactory, null, GetType().Assembly);
+
+            services.BorgDbAssemblyScan(new IAssemblyProvider[]
+                    {
+                                refAsmblPrv,
+                                depAsmblPrv
+                    });
+
             var explorer = new EntitiesExplorer(loggerFactory,
                     new IAssemblyProvider[]
                     {
@@ -45,6 +52,7 @@ namespace Apparatus.Application.Server
 
             entitiesExplorerResult = new AssemblyExplorerResult(loggerFactory, new[] { explorer });
             services.AddSingleton<IAssemblyExplorerResult>(entitiesExplorerResult);
+
             services.AddControllersWithViews().ConfigureApplicationPartManager(manager =>
             {
                 manager.FeatureProviders.Add(new BackOfficeEntityControllerFeatureProvider(entitiesExplorerResult));

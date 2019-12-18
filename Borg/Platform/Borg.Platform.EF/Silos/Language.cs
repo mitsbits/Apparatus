@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Borg.Platform.EF.Silos
 {
-    public class Language : ILanguage, IIdentifiable
+    public class Language : ILanguage, IIdentifiable, IDataState
     {
         public virtual int Id { get; protected set; }
         public virtual string TwoLetterISOCode { get; protected set; }

@@ -5,7 +5,7 @@ using System;
 
 namespace Borg.Platform.EF
 {
-    public abstract class Siloed : IIdentifiable
+    public abstract class Siloed : IIdentifiable, IDataState
     {
         public virtual int Id { get; protected set; }
         public virtual int LanguageId { get; protected set; }

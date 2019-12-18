@@ -8,6 +8,8 @@ namespace Borg.Infrastructure.Core.DDD.Contracts
     {
         CompositeKey Keys { get; }
     }
+
+    public interface IDataState { }
 }
 
 namespace Borg

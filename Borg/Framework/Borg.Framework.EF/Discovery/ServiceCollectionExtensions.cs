@@ -1,6 +1,8 @@
-﻿using Borg.Framework.EF.Discovery.AssemblyScanner;
+﻿using Borg.Framework;
+using Borg.Framework.EF.Discovery.AssemblyScanner;
 using Borg.Infrastructure.Core;
 using Borg.Infrastructure.Core.Reflection.Discovery;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
 namespace Microsoft.Extensions.DependencyInjection

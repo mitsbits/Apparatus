@@ -15,7 +15,7 @@ namespace Borg.Framework.EF.System.Domain.Silos
         public virtual CompositeKey Keys => CompositeKeyBuilder.CreateWithFieldName(nameof(Id)).AddValue(Id).Build();
     }
 
-    public class TenantInstruction<TDbContext> : EntityMap<Tenant, TDbContext> where TDbContext : DbContext;
+    public class TenantInstruction<TDbContext> : EntityMap<Tenant, TDbContext> where TDbContext : DbContext
     {
         public override void OnModelCreating(ModelBuilder builder)
         {

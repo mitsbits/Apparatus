@@ -17,14 +17,14 @@ namespace Apparatus.Application.Server
 {
     public class Startup
     {
-        private readonly ILoggerFactory loggerFactory;
+        private readonly ILogger logger;
         private readonly IWebHostEnvironment hostingEnvironment;
         private readonly IConfiguration configuration;
         private AssemblyExplorerResult entitiesExplorerResult;
 
         public Startup(IWebHostEnvironment hostingEnvironment, IConfiguration configuration)
         {
-            this.loggerFactory = null;
+
             this.hostingEnvironment = hostingEnvironment;
             this.configuration = configuration;
         }
@@ -33,24 +33,18 @@ namespace Apparatus.Application.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //var b = new WebHostBuilder();
-            var depAsmblPrv = new DepedencyAssemblyProvider(loggerFactory);
-            var refAsmblPrv = new ReferenceAssemblyProvider(loggerFactory, null, GetType().Assembly);
+            var providers = new IAssemblyProvider[]
+            {
+              new DepedencyAssemblyProvider(null),
+              new ReferenceAssemblyProvider(null, null, GetType().Assembly)
+            };
 
-            services.BorgDbAssemblyScan(new IAssemblyProvider[]
-                    {
-                                refAsmblPrv,
-                                depAsmblPrv
-                    });
 
-            var explorer = new EntitiesExplorer(loggerFactory,
-                    new IAssemblyProvider[]
-                    {
-                                refAsmblPrv,
-                                depAsmblPrv
-                    });
+            services.BorgDbAssemblyScan(providers);
 
-            entitiesExplorerResult = new AssemblyExplorerResult(loggerFactory, new[] { explorer });
+            var explorer = new EntitiesExplorer(null, providers);
+
+            entitiesExplorerResult = new AssemblyExplorerResult(null, new[] { explorer });
             services.AddSingleton<IAssemblyExplorerResult>(entitiesExplorerResult);
 
             services.AddControllersWithViews().ConfigureApplicationPartManager(manager =>

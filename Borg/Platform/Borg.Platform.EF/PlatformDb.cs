@@ -1,5 +1,5 @@
 ﻿using Borg.Framework.EF;
-using Borg.Platform.EF.Silos;
+using Borg.Framework.EF.System.Domain.Silos;
 using Microsoft.EntityFrameworkCore;
 
 namespace Borg.Platform.EF

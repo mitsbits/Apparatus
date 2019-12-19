@@ -1,7 +1,4 @@
-﻿using Borg;
-using Borg.Framework;
-using Borg.Framework.EF;
-using Borg.Framework.Services.Configuration;
+﻿using Borg.Framework.Services.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -9,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+
 namespace Borg.Framework.EF
 {
     /// <summary>

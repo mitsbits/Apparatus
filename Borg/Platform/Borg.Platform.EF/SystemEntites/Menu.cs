@@ -1,5 +1,5 @@
-﻿using Borg.Infrastructure.Core.DDD.Contracts;
-using Borg.Platform.EF.Silos;
+﻿using Borg.Framework.EF.System.Domain.Silos;
+using Borg.Infrastructure.Core.DDD.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ namespace Borg.Platform.EF.SystemEntites
         _partent
     }
 
-    public class MenuInstruction : SiloedActivatablenstruction<Menu>
+    public class MenuInstruction : SiloedActivatablenstruction<Menu, PlatformDb>
     {
         public override void OnModelCreating(ModelBuilder builder)
         {
@@ -37,7 +37,7 @@ namespace Borg.Platform.EF.SystemEntites
         }
     }
 
-    public class MenuItemInstruction : TreenodeActivatableInstruction<MenuItem>
+    public class MenuItemInstruction : TreenodeActivatableInstruction<MenuItem, PlatformDb>
     {
         public override void OnModelCreating(ModelBuilder builder)
         {

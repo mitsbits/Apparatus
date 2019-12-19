@@ -1,5 +1,5 @@
 ﻿using Borg.Framework.Cms.BuildingBlocks;
-using Borg.Platform.EF.Silos;
+using Borg.Framework.EF.System.Domain.Silos;
 using Microsoft.EntityFrameworkCore;
 
 namespace Borg.Platform.EF.SystemEntites
@@ -11,7 +11,7 @@ namespace Borg.Platform.EF.SystemEntites
         public string Slug { get; protected set; }
     }
 
-    public class PageInstruction : TreenodeActivatableInstruction<Page>
+    public class PageInstruction : TreenodeActivatableInstruction<Page, PlatformDb>
     {
         public override void OnModelCreating(ModelBuilder builder)
         {

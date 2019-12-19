@@ -9,7 +9,7 @@ namespace Borg.Framework.EF.System.Domain.Silos
     public class Language : ILanguage, IIdentifiable, IDataState
     {
         public virtual int Id { get; protected set; }
-        public virtual string TwoLetterISOCode { get; protected set; }
+        public virtual string TwoLetterISOCode { get; protected set; } = string.Empty;
 
         public virtual CompositeKey Keys => CompositeKeyBuilder.CreateWithFieldName(nameof(Id)).AddValue(Id).Build();
     }

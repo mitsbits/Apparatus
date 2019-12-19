@@ -1,9 +1,9 @@
 ﻿using Borg.Infrastructure.Core.DDD.Contracts;
 using Borg.Infrastructure.Core.DDD.ValueObjects;
-using Borg.Platform.EF.Silos;
+
 using System;
 
-namespace Borg.Platform.EF
+namespace Borg.Framework.EF.System.Domain.Silos
 {
     public abstract class Siloed : IIdentifiable, IDataState
     {
@@ -11,8 +11,8 @@ namespace Borg.Platform.EF
         public virtual int LanguageId { get; protected set; }
         public virtual int TenantId { get; protected set; }
 
-        public virtual Language Language { get; protected set; }
-        public virtual Tenant Tenant { get; protected set; }
+        public virtual Language? Language { get; protected set; }
+        public virtual Tenant? Tenant { get; protected set; }
 
         public virtual CompositeKey Keys => CompositeKeyBuilder.CreateWithId(Id)
             .AddKey(nameof(LanguageId)).AddValue(LanguageId)

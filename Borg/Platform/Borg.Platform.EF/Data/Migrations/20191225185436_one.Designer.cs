@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Borg.Platform.EF.Data.Migrations
 {
     [DbContext(typeof(PlatformDb))]
-    [Migration("20191225120157_one")]
+    [Migration("20191225185436_one")]
     partial class one
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,6 +19,12 @@ namespace Borg.Platform.EF.Data.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("Relational:Sequence:.DictionaryState_Id_seq", "'DictionaryState_Id_seq', '', '1', '1', '', '', 'Int32', 'False'")
+                .HasAnnotation("Relational:Sequence:.Language_Id_seq", "'Language_Id_seq', '', '1', '1', '', '', 'Int32', 'False'")
+                .HasAnnotation("Relational:Sequence:.Menu_Id_seq", "'Menu_Id_seq', '', '1', '1', '', '', 'Int32', 'False'")
+                .HasAnnotation("Relational:Sequence:.MenuItem_Id_seq", "'MenuItem_Id_seq', '', '1', '1', '', '', 'Int32', 'False'")
+                .HasAnnotation("Relational:Sequence:.Page_Id_seq", "'Page_Id_seq', '', '1', '1', '', '', 'Int32', 'False'")
+                .HasAnnotation("Relational:Sequence:.Tenant_Id_seq", "'Tenant_Id_seq', '', '1', '1', '', '', 'Int32', 'False'")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Borg.Framework.EF.System.Domain.Silos.Language", b =>
@@ -26,11 +32,15 @@ namespace Borg.Platform.EF.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasDefaultValueSql("NEXT VALUE FOR Language_Id_seq");
 
                     b.Property<string>("TwoLetterISOCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(2)")
+                        .HasMaxLength(2)
+                        .IsUnicode(false)
+                        .HasDefaultValue("");
 
                     b.HasKey("Id");
 
@@ -42,19 +52,82 @@ namespace Borg.Platform.EF.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasDefaultValueSql("NEXT VALUE FOR Tenant_Id_seq");
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100)
+                        .IsUnicode(true)
+                        .HasDefaultValue("");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasDefaultValue("");
 
                     b.HasKey("Id");
 
                     b.ToTable("Tenants");
+                });
+
+            modelBuilder.Entity("Borg.Framework.EF.System.Domain.System.DictionaryState", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Depth")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("Descriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Hierarchy")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(512)")
+                        .HasMaxLength(512)
+                        .IsUnicode(false)
+                        .HasDefaultValue("");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(512)")
+                        .HasMaxLength(512)
+                        .IsUnicode(true)
+                        .HasDefaultValue("");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(2147483647)
+                        .IsUnicode(true)
+                        .HasDefaultValue("");
+
+                    b.HasKey("Id", "TenantId", "LanguageId");
+
+                    b.HasIndex("LanguageId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("DictionaryState");
                 });
 
             modelBuilder.Entity("Borg.Framework.EF.System.Domain.System.Entry", b =>
@@ -65,6 +138,13 @@ namespace Borg.Platform.EF.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Depth")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EntryType")
                         .HasColumnType("int");
 
                     b.Property<string>("Hierarchy")
@@ -78,7 +158,7 @@ namespace Borg.Platform.EF.Data.Migrations
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ParentId")
+                    b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
                     b.Property<int>("TenantId")
@@ -97,56 +177,27 @@ namespace Borg.Platform.EF.Data.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("Entry");
-                });
 
-            modelBuilder.Entity("Borg.Framework.EF.System.Domain.System.Folder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Depth")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Hierarchy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TenantId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LanguageId");
-
-                    b.HasIndex("ParentId");
-
-                    b.HasIndex("TenantId");
-
-                    b.ToTable("Dictionaries");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Entry");
                 });
 
             modelBuilder.Entity("Borg.Platform.EF.SystemEntites.Menu", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ActivationID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasDefaultValue("");
 
                     b.Property<DateTimeOffset?>("ActiveFrom")
                         .HasColumnType("datetimeoffset");
@@ -155,8 +206,11 @@ namespace Borg.Platform.EF.Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("DeActivationID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasDefaultValue("");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -164,16 +218,15 @@ namespace Borg.Platform.EF.Data.Migrations
                     b.Property<bool>("IsCurrentlyActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TenantId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(1024)")
+                        .HasMaxLength(1024)
+                        .IsUnicode(true)
+                        .HasDefaultValue("");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "TenantId", "LanguageId");
 
                     b.HasIndex("LanguageId");
 
@@ -185,13 +238,20 @@ namespace Borg.Platform.EF.Data.Migrations
             modelBuilder.Entity("Borg.Platform.EF.SystemEntites.MenuItem", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ActivationID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasDefaultValue("");
 
                     b.Property<DateTimeOffset?>("ActiveFrom")
                         .HasColumnType("datetimeoffset");
@@ -200,15 +260,24 @@ namespace Borg.Platform.EF.Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("DeActivationID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasDefaultValue("");
 
                     b.Property<int>("Depth")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("Hierarchy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(512)")
+                        .HasMaxLength(512)
+                        .IsUnicode(false)
+                        .HasDefaultValue("");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -216,28 +285,24 @@ namespace Borg.Platform.EF.Data.Migrations
                     b.Property<bool>("IsCurrentlyActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
-
                     b.Property<int>("MenuId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ParentId")
+                    b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Targets")
-                        .HasColumnType("int");
+                    b.Property<string>("Targets")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TenantId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
+                    b.HasKey("Id", "TenantId", "LanguageId");
 
                     b.HasIndex("LanguageId");
 
-                    b.HasIndex("MenuId");
+                    b.HasIndex("MenuId")
+                        .HasName("FK_Menu_Id");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("TenantId", "LanguageId", "MenuId");
 
                     b.ToTable("MenuItem");
                 });
@@ -245,13 +310,20 @@ namespace Borg.Platform.EF.Data.Migrations
             modelBuilder.Entity("Borg.Platform.EF.SystemEntites.Page", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ActivationID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasDefaultValue("");
 
                     b.Property<DateTimeOffset?>("ActiveFrom")
                         .HasColumnType("datetimeoffset");
@@ -260,19 +332,32 @@ namespace Borg.Platform.EF.Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("DeActivationID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasDefaultValue("");
 
                     b.Property<int>("Depth")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("FullSlug")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(1024)")
+                        .HasMaxLength(1024)
+                        .IsUnicode(true)
+                        .HasDefaultValue("");
 
                     b.Property<string>("Hierarchy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(512)")
+                        .HasMaxLength(512)
+                        .IsUnicode(false)
+                        .HasDefaultValue("");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -280,29 +365,63 @@ namespace Borg.Platform.EF.Data.Migrations
                     b.Property<bool>("IsCurrentlyActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ParentId")
+                    b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TenantId")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(1024)")
+                        .HasMaxLength(1024)
+                        .IsUnicode(true)
+                        .HasDefaultValue("");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(1024)")
+                        .HasMaxLength(1024)
+                        .IsUnicode(true)
+                        .HasDefaultValue("");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "TenantId", "LanguageId");
 
                     b.HasIndex("LanguageId");
 
                     b.HasIndex("TenantId");
 
                     b.ToTable("Pages");
+                });
+
+            modelBuilder.Entity("Borg.Framework.EF.System.Domain.System.Folder", b =>
+                {
+                    b.HasBaseType("Borg.Framework.EF.System.Domain.System.Entry");
+
+                    b.Property<int?>("FolderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("FolderId");
+
+                    b.HasDiscriminator().HasValue("Folder");
+                });
+
+            modelBuilder.Entity("Borg.Framework.EF.System.Domain.System.DictionaryState", b =>
+                {
+                    b.HasOne("Borg.Framework.EF.System.Domain.Silos.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Borg.Framework.EF.System.Domain.Silos.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Borg.Framework.EF.System.Domain.System.Entry", b =>
@@ -315,30 +434,7 @@ namespace Borg.Platform.EF.Data.Migrations
 
                     b.HasOne("Borg.Framework.EF.System.Domain.System.Folder", "Parent")
                         .WithMany("Entries")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Borg.Framework.EF.System.Domain.Silos.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Borg.Framework.EF.System.Domain.System.Folder", b =>
-                {
-                    b.HasOne("Borg.Framework.EF.System.Domain.Silos.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Borg.Framework.EF.System.Domain.System.Folder", "Parent")
-                        .WithMany("Folders")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ParentId");
 
                     b.HasOne("Borg.Framework.EF.System.Domain.Silos.Tenant", "Tenant")
                         .WithMany()
@@ -370,16 +466,16 @@ namespace Borg.Platform.EF.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Borg.Platform.EF.SystemEntites.Menu", "Menu")
-                        .WithMany("Items")
-                        .HasForeignKey("MenuId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Borg.Framework.EF.System.Domain.Silos.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Borg.Platform.EF.SystemEntites.Menu", "Menu")
+                        .WithMany("Items")
+                        .HasForeignKey("TenantId", "LanguageId", "MenuId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -396,6 +492,13 @@ namespace Borg.Platform.EF.Data.Migrations
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Borg.Framework.EF.System.Domain.System.Folder", b =>
+                {
+                    b.HasOne("Borg.Framework.EF.System.Domain.System.Folder", null)
+                        .WithMany("Folders")
+                        .HasForeignKey("FolderId");
                 });
 #pragma warning restore 612, 618
         }

@@ -34,14 +34,13 @@ namespace Borg.Platform.EF.SystemEntites
         public override void ConfigureDb(ModelBuilder builder)
         {
             base.ConfigureDb(builder);
-
-        
         }
 
         public override void ConfigureEntity(EntityTypeBuilder<Menu> builder)
         {
             base.ConfigureEntity(builder);
             builder.Property(x => x.Title).HasMaxLength(1024).IsRequired(true);
+            builder.HasMany(x => x.Items).WithOne(x => x.Menu).HasForeignKey(x => new { x.TenantId, x.LanguageId, x.MenuId }).OnDelete(DeleteBehavior.NoAction);
         }
     }
 
@@ -50,8 +49,6 @@ namespace Borg.Platform.EF.SystemEntites
         public override void ConfigureDb(ModelBuilder builder)
         {
             base.ConfigureDb(builder);
-
-
         }
 
         public override void ConfigureEntity(EntityTypeBuilder<MenuItem> builder)
@@ -60,7 +57,7 @@ namespace Borg.Platform.EF.SystemEntites
             builder.Property(e => e.Targets).HasConversion(new EnumToStringConverter<Targets>());
             builder.Property(x => x.MenuId).IsRequired(true);
             builder.HasIndex(x => x.MenuId).HasName("FK_Menu_Id");
-            builder.HasOne(x => x.Menu).WithMany(x => x.Items).HasForeignKey(x => x.MenuId);
+            builder.HasOne(x => x.Menu).WithMany(x => x.Items).HasForeignKey(x => new { x.TenantId, x.LanguageId, x.MenuId }).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

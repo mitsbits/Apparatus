@@ -14,7 +14,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Apparatus.Application.Server
@@ -58,7 +57,7 @@ namespace Apparatus.Application.Server
                 routeOptions.ConstraintMap.Add("backofficeentitycontroller", typeof(BackOfficeEntityControllerConstraint));
             });
             services.AddSession((o) => o.Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" });
-            Debugger.Launch();
+
             var config = configuration.GetSection("Borg:Platform:EF:Platform");
             var typed = config.Get<BorgDbContextConfiguration>();
             services.AddDbContext<PlatformDb>((o) =>

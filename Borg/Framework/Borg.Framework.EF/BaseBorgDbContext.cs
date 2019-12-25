@@ -1,10 +1,17 @@
-﻿using Borg.Framework.Services.Configuration;
+﻿using Borg.Framework.EF.Discovery.AssemblyScanner;
+using Borg.Framework.EF.Instructions;
+using Borg.Framework.Services.Configuration;
+using Borg.Infrastructure.Core;
+using Borg.Infrastructure.Core.Reflection.Discovery;
+using Borg.Infrastructure.Core.Services.Factory;
+using Borg.Platform.EF.Instructions.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +27,8 @@ namespace Borg.Framework.EF
         {
             None = 0,
             Constructor = 1,
-            Configuration = 2
+            Configuration = 2,
+            AssemblyScan = 3
         }
 
         private const string TrailingDbContext = "DbContext";
@@ -30,18 +38,23 @@ namespace Borg.Framework.EF
         public bool EnablePreSave = true;
         public bool EnablePostSave = true;
         protected SetUpMode setUpMode;
-        private BorgDbContextConfiguration DbOptions;
+        private BorgDbContextConfiguration? DbOptions;
+        protected IAssemblyExplorerResult? ExplorerResult;
 
         protected BaseBorgDbContext() : base()
         {
-            Debugger.Launch();
             setUpMode = SetUpMode.Configuration;
         }
 
         protected BaseBorgDbContext([NotNull] DbContextOptions options) : base(options)
         {
-            Debugger.Launch();
             setUpMode = SetUpMode.Constructor;
+        }
+
+        protected BaseBorgDbContext([NotNull] DbContextOptions options, [NotNull]IAssemblyExplorerResult explorerResult) : base(options)
+        {
+            ExplorerResult = Preconditions.NotNull(explorerResult, nameof(explorerResult));
+            setUpMode = SetUpMode.AssemblyScan;
         }
 
         public override int SaveChanges()
@@ -81,7 +94,6 @@ namespace Borg.Framework.EF
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            Debugger.Launch();
             base.OnConfiguring(options);
 
             if (setUpMode == SetUpMode.Configuration)
@@ -91,6 +103,27 @@ namespace Borg.Framework.EF
             };
             if (setUpMode == SetUpMode.Constructor)
             {
+            }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+            base.OnModelCreating(modelBuilder);
+            if (setUpMode == SetUpMode.AssemblyScan)
+            {
+                var mapsResult = ExplorerResult.Results<BorgDbAssemblyScanResult>();
+                var maps = mapsResult.SelectMany(x => x.DefinedEntityMaps).Distinct();
+                foreach (var map in maps)
+                {
+                    
+
+                    var hit = New.Creator(map) as IEntityMap;
+                    if (hit != null)
+                    {
+                        hit.Apply(modelBuilder);
+                    }
+                }
             }
         }
 

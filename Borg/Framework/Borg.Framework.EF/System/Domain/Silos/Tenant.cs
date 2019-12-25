@@ -19,15 +19,16 @@ namespace Borg.Framework.EF.System.Domain.Silos
     public class TenantInstruction<TDbContext> : EntityMap<Tenant, TDbContext> where TDbContext : DbContext
     {
         private readonly string seqName;
+
         public TenantInstruction()
         {
             seqName = GetSequenceName(nameof(Tenant.Id));
         }
+
         public override void ConfigureDb(ModelBuilder builder)
         {
             base.ConfigureDb(builder);
             builder.HasSequence<int>(seqName);
-
         }
 
         public override void ConfigureEntity(EntityTypeBuilder<Tenant> builder)

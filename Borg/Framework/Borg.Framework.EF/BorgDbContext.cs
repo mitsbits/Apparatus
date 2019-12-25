@@ -3,11 +3,11 @@ using Borg.Framework.Dispatch;
 using Borg.Infrastructure.Core;
 using Borg.Infrastructure.Core.DDD.Contracts;
 using Borg.Infrastructure.Core.DDD.ValueObjects;
+using Borg.Infrastructure.Core.Reflection.Discovery;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
@@ -35,11 +35,15 @@ namespace Borg.Framework.EF
 
         protected BorgDbContext() : base()
         {
-            Debugger.Launch();
             WireUpContext();
         }
 
         protected BorgDbContext([NotNull] DbContextOptions options) : base(options)
+        {
+            WireUpContext();
+        }
+
+        protected BorgDbContext([NotNull] DbContextOptions options, [NotNull]IAssemblyExplorerResult explorerResult) : base(options, explorerResult)
         {
             WireUpContext();
         }

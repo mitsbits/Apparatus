@@ -15,7 +15,6 @@ namespace Borg.Platform.EF.SystemEntites
         public override void ConfigureDb(ModelBuilder builder)
         {
             base.ConfigureDb(builder);
-            
         }
 
         public override void ConfigureEntity(EntityTypeBuilder<Page> builder)

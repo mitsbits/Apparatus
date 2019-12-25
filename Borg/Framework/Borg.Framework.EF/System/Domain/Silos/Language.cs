@@ -18,6 +18,7 @@ namespace Borg.Framework.EF.System.Domain.Silos
     public class LanguageInstruction<TDbContext> : EntityMap<Language, TDbContext> where TDbContext : DbContext
     {
         private readonly string seqName;
+
         public LanguageInstruction()
         {
             seqName = GetSequenceName(nameof(Language.Id));
@@ -27,7 +28,6 @@ namespace Borg.Framework.EF.System.Domain.Silos
         {
             base.ConfigureDb(builder);
             builder.HasSequence<int>(seqName);
-           
         }
 
         public override void ConfigureEntity(EntityTypeBuilder<Language> builder)

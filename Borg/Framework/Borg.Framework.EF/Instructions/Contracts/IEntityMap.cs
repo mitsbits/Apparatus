@@ -6,10 +6,13 @@ namespace Borg.Platform.EF.Instructions.Contracts
 {
     public interface IEntityMap
     {
+     
+
         void ConfigureDb(ModelBuilder builder);
 
         Type EntityType { get; }
         Type ContextType { get; }
+        void Apply(ModelBuilder builder);
     }
 
     public interface IEntityMap<TEntity> : IEntityMap where TEntity : class
@@ -19,5 +22,6 @@ namespace Borg.Platform.EF.Instructions.Contracts
 
     public interface IEntityMap<TEntity, TDbContext> : IEntityMap<TEntity> where TEntity : class where TDbContext : DbContext
     {
+        
     }
 }

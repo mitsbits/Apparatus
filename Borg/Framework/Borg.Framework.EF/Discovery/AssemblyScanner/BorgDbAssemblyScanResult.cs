@@ -22,7 +22,7 @@ namespace Borg.Framework.EF.Discovery.AssemblyScanner
             _maps = new List<Type>();
             _dbs.AddRange(Preconditions.NotEmpty(dbs, nameof(dbs)));
             _states.AddRange(Preconditions.NotEmpty(states, nameof(states)));
-            _states.AddRange(Preconditions.NotEmpty(maps, nameof(maps)));
+            _maps.AddRange(Preconditions.NotEmpty(maps, nameof(maps)));
         }
 
         public BorgDbAssemblyScanResult(Assembly assembly, string[] errors) : base(assembly, false, errors)
@@ -104,7 +104,7 @@ namespace Borg.Framework.EF.Discovery.AssemblyScanner
         #endregion IDisposable Support
     }
 
-    internal class BorgDbAssemblyExplorer : AssemblyExplorer
+    public class BorgDbAssemblyExplorer : AssemblyExplorer
     {
         private readonly List<AssemblyScanResult> results = new List<AssemblyScanResult>();
         private readonly ILoggerFactory loggerFactory;

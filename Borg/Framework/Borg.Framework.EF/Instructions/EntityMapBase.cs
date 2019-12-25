@@ -24,5 +24,8 @@ namespace Borg.Framework.EF.Instructions
         public Type ContextType { get; }
 
         public abstract void ConfigureDb(ModelBuilder builder);
+        public abstract void Apply(ModelBuilder builder);
+
+ 
     }
 }

@@ -34,18 +34,18 @@ namespace Borg.Framework.EF.System.Domain.Silos
         public bool IsCurrentlyActive { get; protected set; }
     }
 
-    public abstract class Treenode : Siloed, ITreeNode<int>
+    public abstract class Treenode : Siloed, ITreeNode
     {
-        public int ParentId { get; protected set; }
+        public int? ParentId { get; protected set; }
 
         public int Depth { get; protected set; }
 
         public string Hierarchy { get; protected set; }
     }
 
-    public abstract class TreenodeActivatable : SiloedActivatable, ITreeNode<int>
+    public abstract class TreenodeActivatable : SiloedActivatable, ITreeNode
     {
-        public int ParentId { get; protected set; }
+        public int? ParentId { get; protected set; }
 
         public int Depth { get; protected set; }
 

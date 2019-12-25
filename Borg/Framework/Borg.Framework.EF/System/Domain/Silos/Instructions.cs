@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Borg.Framework.EF.System.Domain.Silos
 {
-    public class SiloedInstruction<T, TDbContext> : EntityMap<T, TDbContext> where T : Siloed where TDbContext : DbContext
+    public abstract class SiloedInstruction<T, TDbContext> : EntityMap<T, TDbContext> where T : Siloed where TDbContext : DbContext
     {
         public override void ConfigureDb(ModelBuilder builder)
         {
@@ -22,7 +22,7 @@ namespace Borg.Framework.EF.System.Domain.Silos
         }
     }
 
-    public class SiloedActivatablenstruction<T, TDbContext> : SiloedInstruction<T, TDbContext> where T : SiloedActivatable where TDbContext : DbContext
+    public abstract class SiloedActivatablenstruction<T, TDbContext> : SiloedInstruction<T, TDbContext> where T : SiloedActivatable where TDbContext : DbContext
     {
         public override void ConfigureDb(ModelBuilder builder)
         {
@@ -41,7 +41,7 @@ namespace Borg.Framework.EF.System.Domain.Silos
         }
     }
 
-    public class TreenodeInstruction<T, TDbContext> : SiloedInstruction<T, TDbContext> where T : Treenode where TDbContext : DbContext
+    public abstract class TreenodeInstruction<T, TDbContext> : SiloedInstruction<T, TDbContext> where T : Treenode where TDbContext : DbContext
     {
         public override void ConfigureDb(ModelBuilder builder)
         {
@@ -57,7 +57,7 @@ namespace Borg.Framework.EF.System.Domain.Silos
         }
     }
 
-    public class TreenodeActivatableInstruction<T, TDbContext> : SiloedActivatablenstruction<T, TDbContext> where T : TreenodeActivatable where TDbContext : DbContext
+    public abstract class TreenodeActivatableInstruction<T, TDbContext> : SiloedActivatablenstruction<T, TDbContext> where T : TreenodeActivatable where TDbContext : DbContext
     {
         public override void ConfigureDb(ModelBuilder builder)
         {
@@ -73,7 +73,7 @@ namespace Borg.Framework.EF.System.Domain.Silos
         }
     }
 
-    public class SlugTreenodeActivatableInstruction<T, TDbContext> : TreenodeActivatableInstruction<T, TDbContext> where T : SlugTreenodeActivatable where TDbContext : DbContext
+    public abstract class SlugTreenodeActivatableInstruction<T, TDbContext> : TreenodeActivatableInstruction<T, TDbContext> where T : SlugTreenodeActivatable where TDbContext : DbContext
     {
         public override void ConfigureDb(ModelBuilder builder)
         {

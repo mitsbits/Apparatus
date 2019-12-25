@@ -19,3 +19,4 @@
 [assembly: InternalsVisibleTo("Borg.Infrastructure.Core.Euclidean")]
 [assembly: InternalsVisibleTo("Borg.Platform.Indexing.Lucene")]
 [assembly: InternalsVisibleTo("Borg.Platform.EF")]
+[assembly: InternalsVisibleTo("Borg.Framework.EF")]

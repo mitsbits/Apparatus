@@ -34,6 +34,13 @@ namespace Borg.Framework.EF.Instructions
             return $"{typeof(TEntity).Name}_{property}_seq";
         }
 
+
+        public override void Apply(ModelBuilder builder)
+        {
+            ConfigureDb(builder);
+            ConfigureEntity(builder.Entity<TEntity>());
+        }
+
         #region OnModelCreating
 
         public override void ConfigureDb(ModelBuilder builder)
@@ -49,7 +56,7 @@ namespace Borg.Framework.EF.Instructions
 
         public virtual void ConfigureEntity(EntityTypeBuilder<TEntity> builder)
         {
-            throw new NotImplementedException();
+            //nothing here for now
         }
 
         void IEntityTypeConfiguration<TEntity>.Configure(EntityTypeBuilder<TEntity> builder)
@@ -233,6 +240,8 @@ namespace Borg.Framework.EF.Instructions
                 }
             }
         }
+
+
 
         //private static void HasManyDefinition(ModelBuilder builder)
         //{

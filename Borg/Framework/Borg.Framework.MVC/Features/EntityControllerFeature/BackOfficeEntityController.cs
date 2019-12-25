@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Borg.Framework.MVC.Features.EntityControllerFeature
 {
     [BackOfficeEntityControllerName]
-    public class BackOfficeEntityController<TModel> : Controller where TModel : IIdentifiable
+    public class BackOfficeEntityController<TModel> : Controller where TModel : IIdentifiable, IDataState
     {
         protected readonly IBackOfficeEntityServiceFacade<TModel> facade;
 

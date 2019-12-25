@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Borg.Framework.MVC.Features.EntityControllerFeature
 {
-    public class BackOfficeEntityServiceFacade<TModel> : IBackOfficeEntityServiceFacade<TModel> where TModel : IIdentifiable
+    public class BackOfficeEntityServiceFacade<TModel> : IBackOfficeEntityServiceFacade<TModel> where TModel : IIdentifiable, IDataState
     {
         public BackOfficeEntityServiceFacade(ILoggerFactory loggerFactory, IModelStore<TModel> store)
         {

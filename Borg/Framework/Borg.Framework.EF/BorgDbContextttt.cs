@@ -1,14 +1,11 @@
-﻿using Borg.Framework.DAL;
-using Borg.Framework.EF.Contracts;
+﻿using Borg.Framework.EF.Contracts;
 using Borg.Framework.EF.Instructions;
 using Borg.Framework.Services.Configuration;
 using Borg.Infrastructure.Core;
-using Borg.Infrastructure.Core.DDD.ValueObjects;
 using Borg.Infrastructure.Core.Reflection.Discovery;
 using Borg.Infrastructure.Core.Services.Factory;
 using Borg.Platform.EF.Instructions;
 using Borg.Platform.EF.Instructions.Contracts;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
@@ -24,11 +21,11 @@ namespace Borg.Framework.EF
         {
         }
 
-        protected BorgDbContextttt( DbContextOptions options) : base(options)
+        protected BorgDbContextttt(DbContextOptions options) : base(options)
         {
         }
 
-        protected BorgDbContextttt( DbContextOptions options, IAssemblyExplorerResult explorerResult) : base(options, explorerResult)
+        protected BorgDbContextttt(DbContextOptions options, IAssemblyExplorerResult explorerResult) : base(options, explorerResult)
         {
         }
     }
@@ -53,20 +50,20 @@ namespace Borg.Framework.EF
             Mode = SetUpMode.Configuration;
         }
 
-        protected BorgDbContextttt( DbContextOptions options) : base(options)
+        protected BorgDbContextttt(DbContextOptions options) : base(options)
         {
         }
 
-        protected BorgDbContextttt( DbContextOptions options, Func<BorgDbContextOptions> borgOptionsFactory = null) : base(options)
+        protected BorgDbContextttt(DbContextOptions options, Func<BorgDbContextOptions> borgOptionsFactory = null) : base(options)
         {
         }
 
-        protected BorgDbContextttt( DbContextOptions options, IAssemblyExplorerResult explorerResult) : base(options)
+        protected BorgDbContextttt(DbContextOptions options, IAssemblyExplorerResult explorerResult) : base(options)
         {
             this.ExplorerResult = Preconditions.NotNull(explorerResult, nameof(explorerResult));
         }
 
-        protected BorgDbContextttt( DbContextOptions options, BorgDbContextOptions borgOptions = null) : this(options, () => borgOptions)
+        protected BorgDbContextttt(DbContextOptions options, BorgDbContextOptions borgOptions = null) : this(options, () => borgOptions)
         {
         }
 
@@ -127,14 +124,14 @@ namespace Borg.Framework.EF
                         if (mapdef.IsAssignableTo(mapType))
                         {
                             if (isMapped) continue;
-                            ((IEntityMap)New.Creator(mapdef)).OnModelCreating(builder);
+                            ((IEntityMap)New.Creator(mapdef)).ConfigureDb(builder);
                             isMapped = true;
                         }
                     }
                     if (!isMapped)
                     {
                         var newMapType = typeof(EntityMap<,>).MakeGenericType(entitytype, GetType());
-                        ((IEntityMap)New.Creator(newMapType)).OnModelCreating(builder);
+                        ((IEntityMap)New.Creator(newMapType)).ConfigureDb(builder);
                         result.AddMap(newMapType);
                     }
                 }
@@ -175,7 +172,4 @@ namespace Borg.Framework.EF
         Supress,
         AllowAll
     }
-
-
-
 }

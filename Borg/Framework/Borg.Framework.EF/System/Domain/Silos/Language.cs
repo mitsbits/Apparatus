@@ -3,6 +3,7 @@ using Borg.Infrastructure.Core.DDD.Contracts;
 using Borg.Infrastructure.Core.DDD.ValueObjects;
 using Borg.Platform.EF.Instructions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Borg.Framework.EF.System.Domain.Silos
 {
@@ -16,14 +17,25 @@ namespace Borg.Framework.EF.System.Domain.Silos
 
     public class LanguageInstruction<TDbContext> : EntityMap<Language, TDbContext> where TDbContext : DbContext
     {
-        public override void OnModelCreating(ModelBuilder builder)
+        private readonly string seqName;
+        public LanguageInstruction()
         {
-            base.OnModelCreating(builder);
-            var seqName = GetSequenceName(nameof(Language.Id));
+            seqName = GetSequenceName(nameof(Language.Id));
+        }
+
+        public override void ConfigureDb(ModelBuilder builder)
+        {
+            base.ConfigureDb(builder);
             builder.HasSequence<int>(seqName);
-            builder.Entity<Language>().HasKey(x => x.Id);
-            builder.Entity<Language>().Property(x => x.Id).HasDefaultValueSql($"NEXT VALUE FOR {seqName}");
-            builder.Entity<Language>().Property(x => x.TwoLetterISOCode).HasMaxLength(2).IsUnicode(false).IsRequired();
+           
+        }
+
+        public override void ConfigureEntity(EntityTypeBuilder<Language> builder)
+        {
+            base.ConfigureEntity(builder);
+            builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).HasDefaultValueSql($"NEXT VALUE FOR {seqName}");
+            builder.Property(x => x.TwoLetterISOCode).HasMaxLength(2).IsUnicode(false).IsRequired();
         }
     }
 }

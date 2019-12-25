@@ -26,9 +26,9 @@ namespace Borg.Framework.EF.System.Domain.Silos
 
         public DateTimeOffset? ActiveTo { get; protected set; }
 
-        public string ActivationID { get; protected set; }
+        public string ActivationID { get; protected set; } = string.Empty;
 
-        public string DeActivationID { get; protected set; }
+        public string DeActivationID { get; protected set; } = string.Empty;
 
         public bool IsActive { get; protected set; }
         public bool IsCurrentlyActive { get; protected set; }
@@ -50,5 +50,12 @@ namespace Borg.Framework.EF.System.Domain.Silos
         public int Depth { get; protected set; }
 
         public string Hierarchy { get; protected set; }
+    }
+
+    public abstract class SlugTreenodeActivatable : TreenodeActivatable, IHaveSlug, IHaveFullSlug
+    {
+        public string Slug { get; protected set; }
+
+        public string FullSlug { get; protected set; }
     }
 }

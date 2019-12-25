@@ -1,23 +1,27 @@
 ﻿using Borg.Framework.Cms.BuildingBlocks;
 using Borg.Framework.EF.System.Domain.Silos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Borg.Platform.EF.SystemEntites
 {
-    public class Page : TreenodeActivatable, IPage
+    public class Page : SlugTreenodeActivatable, IPage
     {
         public string Title { get; protected set; }
-
-        public string Slug { get; protected set; }
     }
 
-    public class PageInstruction : TreenodeActivatableInstruction<Page, PlatformDb>
+    public class PageInstruction : SlugTreenodeActivatableInstruction<Page, PlatformDb>
     {
-        public override void OnModelCreating(ModelBuilder builder)
+        public override void ConfigureDb(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
-            builder.Entity<Page>().Property(x => x.Title).IsUnicode(true).HasMaxLength(1024).IsRequired(true).HasDefaultValue(string.Empty);
-            builder.Entity<Page>().Property(x => x.Slug).IsUnicode(true).HasMaxLength(1024).IsRequired(true).HasDefaultValue(string.Empty);
+            base.ConfigureDb(builder);
+            
+        }
+
+        public override void ConfigureEntity(EntityTypeBuilder<Page> builder)
+        {
+            base.ConfigureEntity(builder);
+            builder.Property(x => x.Title).IsUnicode(true).HasMaxLength(1024).IsRequired(true).HasDefaultValue(string.Empty);
         }
     }
 }

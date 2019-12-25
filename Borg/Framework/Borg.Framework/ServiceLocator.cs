@@ -30,7 +30,7 @@ namespace Borg.Framework
             return _currentServiceProvider.CreateScope();
         }
 
-        public static void SetLocatorProvider(ServiceProvider serviceProvider)
+        public static void SetLocatorProvider(IServiceProvider serviceProvider)
         {
             _serviceProvider = Preconditions.NotNull(serviceProvider, nameof(serviceProvider));
         }

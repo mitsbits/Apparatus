@@ -8,6 +8,15 @@ namespace Borg.Platform.EF
 {
     public class PlatformDb : BorgDbContext
     {
+        public PlatformDb() :base()
+        {
+
+        }
+        public PlatformDb(DbContextOptions<PlatformDb> options) : base(options)
+        {
+
+        }
+
         public DbSet<Language> Languages { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<Menu> Menus { get; set; }

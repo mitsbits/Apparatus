@@ -1,6 +1,7 @@
 ﻿using Borg.Framework.EF.System.Domain.Silos;
 using Borg.Infrastructure.Core.DDD.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Collections.Generic;
 
@@ -24,29 +25,42 @@ namespace Borg.Platform.EF.SystemEntites
     {
         _self,
         _blank,
-        _partent
+        _partent,
+        _top
     }
 
     public class MenuInstruction : SiloedActivatablenstruction<Menu, PlatformDb>
     {
-        public override void OnModelCreating(ModelBuilder builder)
+        public override void ConfigureDb(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
+            base.ConfigureDb(builder);
 
-            builder.Entity<Menu>().Property(x => x.Title).HasMaxLength(1024).IsRequired(true);
+        
+        }
+
+        public override void ConfigureEntity(EntityTypeBuilder<Menu> builder)
+        {
+            base.ConfigureEntity(builder);
+            builder.Property(x => x.Title).HasMaxLength(1024).IsRequired(true);
         }
     }
 
     public class MenuItemInstruction : TreenodeActivatableInstruction<MenuItem, PlatformDb>
     {
-        public override void OnModelCreating(ModelBuilder builder)
+        public override void ConfigureDb(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
+            base.ConfigureDb(builder);
 
-            builder.Entity<MenuItem>().Property(e => e.Targets).HasConversion(new EnumToStringConverter<Targets>());
-            builder.Entity<MenuItem>().Property(x => x.MenuId).IsRequired(true);
-            builder.Entity<MenuItem>().HasIndex(x => x.MenuId).HasName("FK_Menu_Id");
-            builder.Entity<MenuItem>().HasOne(x => x.Menu).WithMany(x => x.Items).HasForeignKey(x => x.MenuId);
+
+        }
+
+        public override void ConfigureEntity(EntityTypeBuilder<MenuItem> builder)
+        {
+            base.ConfigureEntity(builder);
+            builder.Property(e => e.Targets).HasConversion(new EnumToStringConverter<Targets>());
+            builder.Property(x => x.MenuId).IsRequired(true);
+            builder.HasIndex(x => x.MenuId).HasName("FK_Menu_Id");
+            builder.HasOne(x => x.Menu).WithMany(x => x.Items).HasForeignKey(x => x.MenuId);
         }
     }
 }

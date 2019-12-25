@@ -4,4 +4,9 @@
     {
         string Slug { get; }
     }
+
+    public interface IHaveFullSlug
+    {
+        string FullSlug { get; }
+    }
 }

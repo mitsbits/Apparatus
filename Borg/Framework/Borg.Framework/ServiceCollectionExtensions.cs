@@ -4,6 +4,7 @@
 using Borg.Framework.Reflection.Discovery;
 using Borg.Infrastructure.Core.Reflection.Discovery;
 using System;
+using System.Diagnostics;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -11,9 +12,11 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceProvider AddServiceLocator(this IServiceCollection services)
         {
-            services.AddSingleton<ServiceLocator>();
+            Debugger.Launch();
+
             var locator = services.BuildServiceProvider();
             ServiceLocator.SetLocatorProvider(locator);
+            services.AddSingleton<ServiceLocator>();
             return locator;
         }
 

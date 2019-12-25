@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
@@ -16,16 +17,16 @@ namespace Borg.Framework.EF
 {
     public abstract partial class BorgDbContext : BaseBorgDbContext
     {
-        protected event EventHandler<CollectionChangedEventArgs> CollectionChangedEventHandler;
+        protected event EventHandler<CollectionChangedEventArgs>? CollectionChangedEventHandler;
 
-        protected event EventHandler<IdentifiableChangedEventArgs> IdentifiableChangedEventHandler;
+        protected event EventHandler<IdentifiableChangedEventArgs>? IdentifiableChangedEventHandler;
 
         protected ReportChangesEnabled ReportChanges { get; set; } = ReportChangesEnabled.All;
 
-        private List<(Type type, EntityState state)> affectedCollections;
-        private List<(Type type, EntityState state, CompositeKey key)> affectedIndentifiables;
+        private List<(Type type, EntityState state)>? affectedCollections;
+        private List<(Type type, EntityState state, IIdentifiable data)>? affectedIndentifiables;
 
-        protected IMediator dispatcher;
+        protected IMediator? dispatcher;
 
         protected BorgDbContext(bool suppressEvents) : base()
         {
@@ -34,17 +35,38 @@ namespace Borg.Framework.EF
 
         protected BorgDbContext() : base()
         {
-            PreSave.Add((a, c) => ThoseWhoAreAboutToCommit(c));
-            PostSave.Add((a, c) => RaiseEventsForAffectedEntities(c));
-            PostSave.Add((a, c) => RaiseNotificationsForAffectedEntities(c));
+            Debugger.Launch();
+            WireUpContext();
         }
 
         protected BorgDbContext([NotNull] DbContextOptions options) : base(options)
         {
+            WireUpContext();
+        }
+
+        private void WireUpContext()
+        {
             PreSave.Add((a, c) => ThoseWhoAreAboutToCommit(c));
+            //PreSave.Add((a, c) => TraverseTreeNodes(c));
             PostSave.Add((a, c) => RaiseEventsForAffectedEntities(c));
             PostSave.Add((a, c) => RaiseNotificationsForAffectedEntities(c));
         }
+
+        //private Task SetAcivatebles(CancellationToken c)
+        //{
+        //   foreach(var ifd in affectedIndentifiables)
+        //    {
+        //       if (ifd.type.IsSubclassOf(typeof(SiloedActivatable)))
+        //        {
+        //            DetermineDelta(ifd.data as SiloedActivatable);
+        //        }
+        //    }
+        //}
+
+        //private void DetermineDelta(SiloedActivatable? siloedActivatable)
+        //{
+        //   var existingValues = db
+        //}
 
         private Task RaiseNotificationsForAffectedEntities(CancellationToken cancellationToken = default)
         {
@@ -57,11 +79,11 @@ namespace Borg.Framework.EF
 
                 tasks.AddRange(affectedCollections.Select(e =>
                     dispatcher.Publish<CollectionChangedEventArgs>(
-                        new CollectionChangedEventArgs(mapState(e.state), e.type))));
+                        new CollectionChangedEventArgs(mapState(e.state), e.type, GetType()))));
 
                 tasks.AddRange(affectedIndentifiables.Select(e =>
                     dispatcher.Publish<IdentifiableChangedEventArgs>(
-                        new IdentifiableChangedEventArgs(mapState(e.state), e.type, e.key))));
+                        new IdentifiableChangedEventArgs(mapState(e.state), e.type, e.data.Keys, GetType()))));
 
                 if (tasks.Count() == 0) return Task.CompletedTask;
 
@@ -75,7 +97,7 @@ namespace Borg.Framework.EF
             cancellationToken.ThrowIfCancellationRequested();
             var affected = ChangeTracker.Entries().Where(x => x.State != EntityState.Unchanged);
             affectedCollections = new List<(Type type, EntityState state)>();
-            affectedIndentifiables = new List<(Type type, EntityState state, CompositeKey key)>();
+            affectedIndentifiables = new List<(Type type, EntityState state, IIdentifiable data)>();
             foreach (var ent in affected)
             {
                 var type = (type: ent.GetType(), state: ent.State);
@@ -83,7 +105,7 @@ namespace Borg.Framework.EF
                 var identifiable = ent as IIdentifiable;
                 if (identifiable != null)
                 {
-                    affectedIndentifiables.Add((type: type.type, state: type.state, key: identifiable.Keys));
+                    affectedIndentifiables.Add((type: type.type, state: type.state, data: identifiable));
                 }
             }
             return Task.CompletedTask;
@@ -92,14 +114,14 @@ namespace Borg.Framework.EF
         private Task RaiseEventsForAffectedEntities(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            foreach (var collectionEvent in affectedCollections)
+            foreach (var collectionEvent in affectedCollections ?? new List<(Type type, EntityState state)>())
             {
                 RaiseCollectionChanged(mapState(collectionEvent.state), collectionEvent.type);
             }
 
-            foreach (var identifiableEvent in affectedIndentifiables)
+            foreach (var identifiableEvent in affectedIndentifiables ?? new List<(Type type, EntityState state, IIdentifiable data)>())
             {
-                RaiseIdentifiableChanged(mapState(identifiableEvent.state), identifiableEvent.type, identifiableEvent.key);
+                RaiseIdentifiableChanged(mapState(identifiableEvent.state), identifiableEvent.type, identifiableEvent.data.Keys);
             }
             return Task.CompletedTask;
         }
@@ -122,7 +144,7 @@ namespace Borg.Framework.EF
             if (ReportChanges == ReportChangesEnabled.None) return;
             if (ReportChanges == ReportChangesEnabled.All || ReportChanges == ReportChangesEnabled.OnlyEvents)
             {
-                CollectionChangedEventHandler?.Invoke(this, new CollectionChangedEventArgs(operation, entityType));
+                CollectionChangedEventHandler?.Invoke(this, new CollectionChangedEventArgs(operation, entityType, GetType()));
             }
         }
 
@@ -131,7 +153,7 @@ namespace Borg.Framework.EF
             if (ReportChanges == ReportChangesEnabled.None) return;
             if (ReportChanges == ReportChangesEnabled.All || ReportChanges == ReportChangesEnabled.OnlyEvents)
             {
-                IdentifiableChangedEventHandler?.Invoke(this, new IdentifiableChangedEventArgs(operation, entityType, keys));
+                IdentifiableChangedEventHandler?.Invoke(this, new IdentifiableChangedEventArgs(operation, entityType, keys, GetType()));
             }
         }
 
@@ -234,26 +256,28 @@ namespace Borg.Framework.EF
 
     public abstract class ChangedEventArgs : EventArgs
     {
-        protected ChangedEventArgs(CRUDOperation operation, Type entityType) : base()
+        protected ChangedEventArgs(CRUDOperation operation, Type entityType, Type dbType) : base()
         {
             Operation = operation;
             EntityType = Preconditions.NotNull(entityType, nameof(entityType));
+            DbType = Preconditions.NotNull(dbType, nameof(dbType));
         }
 
         public CRUDOperation Operation { get; }
         public Type EntityType { get; }
+        public Type DbType { get; }
     }
 
     public class CollectionChangedEventArgs : ChangedEventArgs, INotification
     {
-        public CollectionChangedEventArgs(CRUDOperation operation, Type entityType) : base(operation, entityType)
+        public CollectionChangedEventArgs(CRUDOperation operation, Type entityType, Type dbType) : base(operation, entityType, dbType)
         {
         }
     }
 
     public class IdentifiableChangedEventArgs : ChangedEventArgs, INotification
     {
-        public IdentifiableChangedEventArgs(CRUDOperation operation, Type entityType, CompositeKey keys) : base(operation, entityType)
+        public IdentifiableChangedEventArgs(CRUDOperation operation, Type entityType, CompositeKey keys, Type dbType) : base(operation, entityType, dbType)
         {
             Keys = Preconditions.NotNull(keys, nameof(keys));
         }

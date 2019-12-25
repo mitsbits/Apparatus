@@ -1,16 +1,20 @@
+using Borg.Framework.EF;
 using Borg.Framework.EF.Discovery;
 using Borg.Framework.MVC.Features.EntityControllerFeature;
 using Borg.Framework.Reflection.Services;
 using Borg.Infrastructure.Core.Reflection.Discovery;
+using Borg.Platform.EF;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Apparatus.Application.Server
@@ -24,21 +28,19 @@ namespace Apparatus.Application.Server
 
         public Startup(IWebHostEnvironment hostingEnvironment, IConfiguration configuration)
         {
-
             this.hostingEnvironment = hostingEnvironment;
             this.configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             var providers = new IAssemblyProvider[]
             {
               new DepedencyAssemblyProvider(null),
               new ReferenceAssemblyProvider(null, null, GetType().Assembly)
             };
-
 
             services.BorgDbAssemblyScan(providers);
 
@@ -56,6 +58,16 @@ namespace Apparatus.Application.Server
                 routeOptions.ConstraintMap.Add("backofficeentitycontroller", typeof(BackOfficeEntityControllerConstraint));
             });
             services.AddSession((o) => o.Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" });
+            Debugger.Launch();
+            var config = configuration.GetSection("Borg:Platform:EF:Platform");
+            var typed = config.Get<BorgDbContextConfiguration>();
+            services.AddDbContext<PlatformDb>((o) =>
+            {
+                o.UseSqlServer(typed.ConnectionString, a =>
+                {
+                });
+            });
+            return services.AddServiceLocator();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

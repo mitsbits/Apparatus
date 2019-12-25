@@ -3,6 +3,7 @@ using Borg.Infrastructure.Core.DDD.Contracts;
 using Borg.Infrastructure.Core.DDD.ValueObjects;
 using Borg.Platform.EF.Instructions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Borg.Framework.EF.System.Domain.Silos
 {
@@ -17,15 +18,25 @@ namespace Borg.Framework.EF.System.Domain.Silos
 
     public class TenantInstruction<TDbContext> : EntityMap<Tenant, TDbContext> where TDbContext : DbContext
     {
-        public override void OnModelCreating(ModelBuilder builder)
+        private readonly string seqName;
+        public TenantInstruction()
         {
-            base.OnModelCreating(builder);
-            var seqName = GetSequenceName(nameof(Tenant.Id));
+            seqName = GetSequenceName(nameof(Tenant.Id));
+        }
+        public override void ConfigureDb(ModelBuilder builder)
+        {
+            base.ConfigureDb(builder);
             builder.HasSequence<int>(seqName);
-            builder.Entity<Tenant>().HasKey(x => x.Id);
-            builder.Entity<Tenant>().Property(x => x.Id).HasDefaultValueSql($"NEXT VALUE FOR {seqName}");
-            builder.Entity<Tenant>().Property(x => x.Name).HasMaxLength(50).IsUnicode(false).IsRequired();
-            builder.Entity<Tenant>().Property(x => x.Description).IsUnicode(true).IsRequired(false);
+
+        }
+
+        public override void ConfigureEntity(EntityTypeBuilder<Tenant> builder)
+        {
+            base.ConfigureEntity(builder);
+            builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).HasDefaultValueSql($"NEXT VALUE FOR {seqName}");
+            builder.Property(x => x.Name).HasMaxLength(50).IsUnicode(false).IsRequired();
+            builder.Property(x => x.Description).IsUnicode(true).IsRequired(false);
         }
     }
 }

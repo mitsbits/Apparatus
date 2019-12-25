@@ -18,7 +18,7 @@ namespace Borg.Platform.Web
         protected ILogger Logger { get; }
     }
 
-    public class BackofficeModelController<TModel> : BackofficeController where TModel : IIdentifiable
+    public class BackofficeModelController<TModel> : BackofficeController  where TModel : IIdentifiable, IDataState
     {
         public BackofficeModelController(ILoggerFactory loggerFactory, IModelStore<TModel> modelStore) : base(loggerFactory)
         {

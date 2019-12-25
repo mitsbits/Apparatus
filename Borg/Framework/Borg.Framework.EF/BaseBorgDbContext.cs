@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,11 +34,13 @@ namespace Borg.Framework.EF
 
         protected BaseBorgDbContext() : base()
         {
+            Debugger.Launch();
             setUpMode = SetUpMode.Configuration;
         }
 
         protected BaseBorgDbContext([NotNull] DbContextOptions options) : base(options)
         {
+            Debugger.Launch();
             setUpMode = SetUpMode.Constructor;
         }
 
@@ -78,12 +81,17 @@ namespace Borg.Framework.EF
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            Debugger.Launch();
             base.OnConfiguring(options);
-            var configuration = ServiceLocator.Current.GetInstance<IConfiguration>();
+
             if (setUpMode == SetUpMode.Configuration)
             {
+                var configuration = ServiceLocator.Current.GetInstance<IConfiguration>();
                 SetUpConfig(options, configuration, ConfigKey(GetType()));
             };
+            if (setUpMode == SetUpMode.Constructor)
+            {
+            }
         }
 
         private void SetUpConfig(DbContextOptionsBuilder options, IConfiguration configuration, string key = "")

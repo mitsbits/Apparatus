@@ -7,6 +7,9 @@ using static Borg.Infrastructure.Core.DDD.ValueObjects.CompositeKeyBuilder;
 
 namespace Borg.Infrastructure.Core.DDD.ValueObjects
 {
+    /// <summary>
+    /// A value object that describes the unique key of an object in a collection.
+    /// </summary>
     public class CompositeKey : ValueObject<CompositeKey>, IReadOnlyDictionary<string, object>, IEquatable<CompositeKey>
     {
         [ExcludeValueObjectField]
@@ -101,6 +104,9 @@ namespace Borg.Infrastructure.Core.DDD.ValueObjects
         }
     }
 
+    /// <summary>
+    /// Helper class that build a <see cref="CompositeKey" /> from fileds
+    /// </summary>
     public class CompositeKeyBuilder : ICanAddKey, ICanAddValue, ICanBuildCompositeKey, ICanAddKeyOrBuild
     {
         private readonly IList<(string key, object value)> source;

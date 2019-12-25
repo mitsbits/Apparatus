@@ -6,6 +6,7 @@ namespace Borg.Infrastructure.Core.DDD.Contracts
     {
         double Weight { get; }
     }
+
     public interface IHaveWidth
     {
         int Width { get; }
@@ -21,13 +22,12 @@ namespace Borg.Infrastructure.Core.DDD.Contracts
         TKey Key { get; }
     }
 
-    public interface IHaveValue<out TVal> 
+    public interface IHaveValue<out TVal>
     {
         TVal Value { get; }
     }
 
-    public interface IKeyValuePair<out TKey,out TVal> : IHaveKey< TKey>, IHaveValue<TVal> where TKey: IEquatable<TKey>
+    public interface IKeyValuePair<out TKey, out TVal> : IHaveKey<TKey>, IHaveValue<TVal> where TKey : IEquatable<TKey>
     {
-      
     }
 }

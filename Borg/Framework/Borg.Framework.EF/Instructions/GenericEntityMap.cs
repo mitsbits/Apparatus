@@ -1,10 +1,10 @@
 ﻿using Borg.Framework.EF.Instructions.Attributes.Schema;
-using Borg.Infrastructure.Core;
-using Borg.Infrastructure.Core.Exceptions;
+using Borg.Framework.EF.Instructions.Contracts;
 using Borg.Platform.EF.Instructions.Contracts;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,7 +15,7 @@ using System.Text;
 
 namespace Borg.Framework.EF.Instructions
 {
-    public abstract partial class GenericEntityMap<TEntity, TDbContext> : EntityMapBase, IEntityMap<TEntity, TDbContext> where TEntity : class where TDbContext : DbContext
+    public abstract partial class GenericEntityMap<TEntity, TDbContext> : EntityMapBase, IEntityMap<TEntity, TDbContext>, IEntityTypeConfiguration<TEntity>, IDbTypeConfiguration where TEntity : class where TDbContext : DbContext
     {
         protected bool ProcessAnnotations = true;
 
@@ -36,14 +36,34 @@ namespace Borg.Framework.EF.Instructions
 
         #region OnModelCreating
 
-        public override void OnModelCreating(ModelBuilder builder)
+        public override void ConfigureDb(ModelBuilder builder)
         {
+            SetFieldDefaults(builder);
             if (!ProcessAnnotations) return;
             SequenceDefinition(builder);
             IndexDefinition(builder);
             StringFieldsLenth(builder);
             PrincipalForeignKeyDefinition(builder);
             //HasManyDefinition(builder);
+        }
+
+        public virtual void ConfigureEntity(EntityTypeBuilder<TEntity> builder)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IEntityTypeConfiguration<TEntity>.Configure(EntityTypeBuilder<TEntity> builder)
+        {
+            ConfigureEntity(builder);
+        }
+
+        private void SetFieldDefaults(ModelBuilder builder)
+        {
+            var collection = typeof(TEntity).GetProperties().Where(x => x.PropertyType.Equals(typeof(string)));
+            foreach (var prop in collection)
+            {
+                builder.Entity<TEntity>().Property(prop.Name).HasMaxLength(100).IsUnicode(true).HasDefaultValue("");
+            }
         }
 
         private void PrincipalForeignKeyDefinition(ModelBuilder builder)
@@ -255,26 +275,6 @@ namespace Borg.Framework.EF.Instructions
         //}
 
         #endregion OnModelCreating
-    }
-
-    public abstract class EntityMapBase : IEntityMap
-    {
-        protected EntityMapBase(Type entityType, Type contextType)
-        {
-            EntityType = Preconditions.NotNull(entityType, nameof(entityType));
-            contextType = Preconditions.NotNull(contextType, nameof(contextType));
-            if (!contextType.IsSubclassOf(typeof(DbContext)))
-            {
-                throw new NotSubclassOfException(contextType, typeof(DbContext));
-            }
-            ContextType = contextType;
-        }
-
-        public Type EntityType { get; }
-
-        public Type ContextType { get; }
-
-        public abstract void OnModelCreating(ModelBuilder builder);
     }
 
     internal class InvalidPropertyName : ApplicationException

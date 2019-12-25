@@ -4,11 +4,17 @@ using System.Text;
 
 namespace Borg.Infrastructure.Core.DDD.Contracts
 {
+    /// <summary>
+    /// Defines a class that can be uniquely identified in a collection by providing a <see cref="CompositeKey"/>
+    /// </summary>
     public interface IIdentifiable
     {
         CompositeKey Keys { get; }
     }
 
+    /// <summary>
+    /// Marker interface. Defines a class that persists and reads state.
+    /// </summary>
     public interface IDataState { }
 }
 

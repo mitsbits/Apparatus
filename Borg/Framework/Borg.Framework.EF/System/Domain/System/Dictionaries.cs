@@ -1,22 +1,27 @@
 ﻿using Borg.Framework.EF.System.Domain.Silos;
 using Borg.Infrastructure.Core;
 using Borg.Infrastructure.Core.DDD.Contracts;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Borg.Framework.EF.System.Domain.System
 {
     public abstract class DictionaryBase : Treenode
     {
         internal const string DictionariesTableName = "Dictionaries";
-        EntryType type;
+        private EntryType type;
+
         protected DictionaryBase(EntryType type)
         {
             this.type = type;
         }
+
+        protected DictionaryBase()
+        {
+      
+        }
+
 
         public enum EntryType
         {
@@ -24,9 +29,10 @@ namespace Borg.Framework.EF.System.Domain.System
             KeyValuePair
         }
     }
+
     public class Folder : DictionaryBase, IHaveName
     {
-        public Folder(string name):base(EntryType.Folder)
+        public Folder(string name) : base(EntryType.Folder)
         {
             Name = Preconditions.NotEmpty(name, nameof(name));
         }
@@ -46,36 +52,43 @@ namespace Borg.Framework.EF.System.Domain.System
             Value = value;
         }
 
+        protected Entry():base()
+        {
+
+        }
+
         public string Key { get; protected set; }
 
         public string Value { get; protected set; }
 
-        public virtual Folder? Parent {get; protected set;}
+        public virtual Folder? Parent { get; protected set; }
     }
 
     public class FolderInstruction<TDbContext> : TreenodeInstruction<Folder, TDbContext> where TDbContext : DbContext
     {
-        public override void OnModelCreating(ModelBuilder builder)
+        public override void ConfigureDb(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
-            builder.Entity<Folder>().ToTable(DictionaryBase.DictionariesTableName);
-            builder.Entity<Folder>().Property(x => x.Name).IsRequired().IsUnicode().HasMaxLength(1024);
-            builder.Entity<Folder>().HasMany(x => x.Folders).WithOne(x => x.Parent).HasForeignKey(x => x.ParentId);
-            builder.Entity<Folder>().HasMany(x => x.Entries).WithOne(x => x.Parent).HasForeignKey(x => x.ParentId);
+            base.ConfigureDb(builder);
+
+        }
+
+        public override void ConfigureEntity(EntityTypeBuilder<Folder> builder)
+        {
+            base.ConfigureEntity(builder);
+            builder.ToTable(DictionaryBase.DictionariesTableName);
+            builder.Property(x => x.Name).IsRequired().IsUnicode().HasMaxLength(1024);
+            builder.HasMany(x => x.Folders).WithOne(x => x.Parent).HasForeignKey(x => x.ParentId);
         }
     }
 
     public class EntryInstruction<TDbContext> : TreenodeInstruction<Entry, TDbContext> where TDbContext : DbContext
     {
-        public override void OnModelCreating(ModelBuilder builder)
+        public override void ConfigureDb(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
-            builder.Entity<Entry>().ToTable(DictionaryBase.DictionariesTableName);
-            builder.Entity<Entry>().Property(x => x.Key).IsRequired().IsUnicode().HasMaxLength(1024);
-            builder.Entity<Entry>().Property(x => x.Value).IsRequired().IsUnicode().HasDefaultValue(string.Empty);
-            builder.Entity<Entry>().HasOne(x => x.Parent).WithMany(x => x.Entries).HasForeignKey(x => x.ParentId);
+            base.ConfigureDb(builder);
+           
+
         }
+
     }
 }
-
-

@@ -2,7 +2,7 @@
 
 namespace Borg.Framework.Cms.BuildingBlocks
 {
-    public interface IPage : IActivatable, IHaveTitle, IHaveSlug, ITreeNode
+    public interface IPage : IActivatable, IHaveTitle, IHaveSlug, IHaveFullSlug, ITreeNode
     {
     }
 }

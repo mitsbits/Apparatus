@@ -1,8 +1,6 @@
-﻿using Borg.Infrastructure.Core;
-
-namespace Borg.Platform.EF
+﻿namespace Borg.Platform.EF
 {
-    public class AddOn : ResistanceIsFutile
+    public class ResistanceIsFutile : Borg.Infrastructure.Core.ResistanceIsFutile
     {
     }
 }

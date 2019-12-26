@@ -5,7 +5,7 @@ using Borg.Platform.EF.Instructions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Borg.Framework.EF.System.Domain.Silos
+namespace Borg.Platform.EF.Silos
 {
     public class Language : ILanguage, IIdentifiable, IDataState
     {

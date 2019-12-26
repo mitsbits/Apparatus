@@ -33,7 +33,7 @@ namespace Apparatus.Application.Server
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             var providers = new IAssemblyProvider[]
             {
@@ -66,7 +66,7 @@ namespace Apparatus.Application.Server
                 {
                 });
             });
-            return services.AddServiceLocator();
+            services.AddServiceLocator();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,12 +89,12 @@ namespace Apparatus.Application.Server
                     endpoints.MapAreaControllerRoute(
                         name: "backofficeentity",
                         areaName: "apparatus",
-                        pattern: "apparatus/entity/{controller:backofficeentitycontroller}/{action=Index}/{id?}");
+                        pattern: "{area}/entity/{controller:backofficeentitycontroller}/{action=Index}/{id?}");
 
                     endpoints.MapAreaControllerRoute(
                         name: "apparatus",
                         areaName: "apparatus",
-                        pattern: "apparatus/{controller=Home}/{action=Index}/{id?}");
+                        pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
                     endpoints.MapControllers();
                 });
             });

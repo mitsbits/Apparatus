@@ -39,5 +39,17 @@ namespace Borg.Framework.EF.Discovery
         {
             return type == null || type.IsAbstract || type.IsGenericType ? false : type.ImplementsInterface<IEntityMap>();
         }
+
+        public static bool IsOpenEntityMap(this Type type)
+        {
+            return type.GetTypeInfo().IsOpenEntityMap();
+        }
+
+        public static bool IsOpenEntityMap(this TypeInfo type)
+        {
+            return type.IsInterface
+                ? false
+                : type.IsGenericType && type.ImplementsInterface<IEntityMap>() && type.GenericTypeParameters.Length == 1;
+        }
     }
 }

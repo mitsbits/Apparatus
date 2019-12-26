@@ -5,22 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Migrations\20191225161141_one.cs" />
-    <Compile Remove="Data\Migrations\20191225161141_one.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191225161727_one.cs" />
-    <Compile Remove="Data\Migrations\20191225161727_one.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191225162500_one.cs" />
-    <Compile Remove="Data\Migrations\20191225162500_one.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191225162934_one.cs" />
-    <Compile Remove="Data\Migrations\20191225162934_one.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191225163249_one.cs" />
-    <Compile Remove="Data\Migrations\20191225163249_one.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191225163637_one.cs" />
-    <Compile Remove="Data\Migrations\20191225163637_one.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191225174250_one.cs" />
-    <Compile Remove="Data\Migrations\20191225174250_one.Designer.cs" />
-    <Compile Remove="Data\Migrations\20191225185016_one.cs" />
-    <Compile Remove="Data\Migrations\20191225185016_one.Designer.cs" />
+    <Compile Remove="Data\Migrations\20191226100706_one.cs" />
+    <Compile Remove="Data\Migrations\20191226100706_one.Designer.cs" />
+    <Compile Remove="Data\Migrations\20191226101037_one.cs" />
+    <Compile Remove="Data\Migrations\20191226101037_one.Designer.cs" />
+    <Compile Remove="Data\Migrations\20191226115612_one.cs" />
+    <Compile Remove="Data\Migrations\20191226115612_one.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

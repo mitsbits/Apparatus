@@ -53,6 +53,7 @@ namespace Borg.Framework.EF
 
         protected BaseBorgDbContext([NotNull] DbContextOptions options, [NotNull]IAssemblyExplorerResult explorerResult) : base(options)
         {
+            Debugger.Launch();
             ExplorerResult = Preconditions.NotNull(explorerResult, nameof(explorerResult));
             setUpMode = SetUpMode.AssemblyScan;
         }
@@ -108,15 +109,24 @@ namespace Borg.Framework.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            Debugger.Launch();
             base.OnModelCreating(modelBuilder);
             if (setUpMode == SetUpMode.AssemblyScan)
             {
                 var mapsResult = ExplorerResult.Results<BorgDbAssemblyScanResult>();
-                var maps = mapsResult.SelectMany(x => x.DefinedEntityMaps).Distinct();
+                var ddd = mapsResult.Select(x => x.DbEntities).ToList();
+                var maps = mapsResult.SelectMany(x => x.DefinedEntityMaps).Distinct().ToList();
+                var openmaps = mapsResult.SelectMany(x => x.OpenEntityMaps).Distinct().ToList();
+                var db = mapsResult.SelectMany(x => x.Dbs).FirstOrDefault();
+                foreach (var openMap in mapsResult.SelectMany(x => x.OpenEntityMaps))
+                {
+
+
+                    maps.Add(openMap.MakeGenericType(db));
+                }
                 foreach (var map in maps)
                 {
-                    
+
 
                     var hit = New.Creator(map) as IEntityMap;
                     if (hit != null)

@@ -22,5 +22,6 @@
   <ItemGroup>
     <Folder Include="Cms\BuildingBlocks\Dictionaries\" />
     <Folder Include="Dispatch\Registration\" />
+    <Folder Include="Reflection\Discovery\Results\" />
   </ItemGroup>
 </Project>

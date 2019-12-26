@@ -1,30 +1,31 @@
-﻿using Borg.Framework.EF.System.Domain.Silos;
-using Borg.Infrastructure.Core;
+﻿using Borg.Infrastructure.Core;
 using Borg.Infrastructure.Core.DDD.Contracts;
+using Borg.Platform.EF.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Collections.Generic;
-using static Borg.Framework.EF.System.Domain.System.DictionaryBase;
-using static Borg.Framework.EF.System.Domain.System.DictionaryState;
+using static Borg.Platform.EF.ContentBlocks.DictionaryState;
 
-namespace Borg.Framework.EF.System.Domain.System
+namespace Borg.Platform.EF.ContentBlocks
 {
-
     public class DictionaryState : Treenode, IHaveKey<string>, IHaveValue<string>
     {
         public string Key { get; protected set; } = string.Empty;
         public string Value { get; protected set; } = string.Empty;
         public DictionaryBlock Descriminator { get; protected set; } = DictionaryBlock.Folder;
+
         public enum DictionaryBlock
         {
             Folder = 1,
             Entry = 2
         }
     }
+
     public abstract class DictionaryBase : Treenode
     {
         internal const string DictionariesTableName = "Dictionaries";
+
         protected DictionaryBase(EntryTypes type)
         {
             EntryType = type;
@@ -43,6 +44,7 @@ namespace Borg.Framework.EF.System.Domain.System
             Entry
         }
     }
+
     public class Entry : DictionaryBase, IKeyValuePair<string, string>
     {
         public Entry(string field, string value) : base(EntryTypes.Entry)
@@ -62,7 +64,6 @@ namespace Borg.Framework.EF.System.Domain.System
         public virtual Folder? Parent { get; protected set; }
     }
 
-
     public class Folder : Entry
     {
         public Folder(string name) : base(name, string.Empty)
@@ -79,12 +80,7 @@ namespace Borg.Framework.EF.System.Domain.System
 
         public virtual ICollection<Entry> Entries { get; protected set; } = new HashSet<Entry>();
         public virtual ICollection<Folder> Folders { get; protected set; } = new HashSet<Folder>();
-
     }
-
-
-
-
 
     //public class FolderInstruction<TDbContext> : TreenodeInstruction<Folder, TDbContext> where TDbContext : DbContext
     //{
@@ -96,7 +92,6 @@ namespace Borg.Framework.EF.System.Domain.System
     //    public override void ConfigureEntity(EntityTypeBuilder<Folder> builder)
     //    {
     //        builder.HasBaseType<Entry>();
-
 
     //        //builder.HasMany(x=>x.Folders).WithOne()
     //        //    .HasForeignKey(x => new { x.TenantId, x.LanguageId, x.ParentId })

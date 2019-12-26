@@ -1,11 +1,11 @@
-﻿using Borg.Framework.EF.System.Domain.Silos;
-using Borg.Infrastructure.Core.DDD.Contracts;
+﻿using Borg.Infrastructure.Core.DDD.Contracts;
+using Borg.Platform.EF.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Collections.Generic;
 
-namespace Borg.Platform.EF.SystemEntites
+namespace Borg.Platform.EF.ContentBlocks
 {
     public class Menu : SiloedActivatable, IHaveTitle
     {

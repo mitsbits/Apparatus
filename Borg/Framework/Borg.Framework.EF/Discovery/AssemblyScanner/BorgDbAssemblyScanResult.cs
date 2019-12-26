@@ -1,8 +1,10 @@
 ﻿using Borg.Infrastructure.Core;
 using Borg.Infrastructure.Core.Reflection.Discovery;
+using Borg.Platform.EF.Instructions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -14,15 +16,18 @@ namespace Borg.Framework.EF.Discovery.AssemblyScanner
         private readonly List<Type> _dbs;
         private readonly List<Type> _states;
         private readonly List<Type> _maps;
+        private readonly List<Type> _openMaps;
 
-        public BorgDbAssemblyScanResult(Assembly assembly, IEnumerable<Type> dbs, IEnumerable<Type> states, IEnumerable<Type> maps) : base(assembly, true, new string[0])
+        public BorgDbAssemblyScanResult(Assembly assembly, IEnumerable<Type> dbs, IEnumerable<Type> states, IEnumerable<Type> maps, IEnumerable<Type> openMaps) : base(assembly, true, new string[0])
         {
             _dbs = new List<Type>();
             _states = new List<Type>();
             _maps = new List<Type>();
+            _openMaps = new List<Type>();
             _dbs.AddRange(Preconditions.NotEmpty(dbs, nameof(dbs)));
             _states.AddRange(Preconditions.NotEmpty(states, nameof(states)));
             _maps.AddRange(Preconditions.NotEmpty(maps, nameof(maps)));
+            _openMaps.AddRange(Preconditions.NotEmpty(openMaps, nameof(openMaps)));
         }
 
         public BorgDbAssemblyScanResult(Assembly assembly, string[] errors) : base(assembly, false, errors)
@@ -30,11 +35,32 @@ namespace Borg.Framework.EF.Discovery.AssemblyScanner
             _dbs = null;
             _states = null;
             _maps = null;
+            _openMaps = null;
         }
 
         public IEnumerable<Type> Dbs => _dbs;
         public IEnumerable<Type> DataStates => _states;
         public IEnumerable<Type> DefinedEntityMaps => _maps;
+        public IEnumerable<Type> OpenEntityMaps => _openMaps;
+
+
+
+        public IDictionary<Type, IEnumerable<Type>> DbEntities
+        {
+            get
+            {
+                Debugger.Launch();
+                var generics = new List<Type>();
+                foreach (var map in DefinedEntityMaps)
+                {
+                    generics.Add(map.GetBaseOpenGeneric(2));
+                }
+
+                var dict = generics.GroupBy(x => x.GenericTypeArguments[1]).ToDictionary(x => x.Key, x => x.Select(y => y.GenericTypeArguments[0]));
+
+                return dict;
+            }
+        }
     }
 
     internal class BorgDbAssemblyScanner : AssemblyScanner<BorgDbAssemblyScanResult>, IDisposable
@@ -57,12 +83,13 @@ namespace Borg.Framework.EF.Discovery.AssemblyScanner
             var dbs = types.Where(t => t.IsBorgDb());
             var states = types.Where(t => t.IsDataState());
             var maps = types.Where(t => t.IsEntityMap());
-            if (!dbs.Any() && !states.Any() && !maps.Any())
+            var openMaps = types.Where(t => t.IsOpenEntityMap());
+            if (!dbs.Any() && !states.Any() && !maps.Any() && !openMaps.Any())
             {
                 Result = new BorgDbAssemblyScanResult(Assembly, new string[] { new EmptyBorgDbScanResultException(Assembly).ToString() });
                 return;
             }
-            Result = new BorgDbAssemblyScanResult(Assembly, dbs, states, maps);
+            Result = new BorgDbAssemblyScanResult(Assembly, dbs, states, maps, openMaps);
         }
 
         #region IDisposable Support

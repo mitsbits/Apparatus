@@ -4,6 +4,7 @@ using Borg.Infrastructure.Core.Reflection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -297,6 +298,17 @@ namespace Borg
             }
 
             return memberExpression.Member.DeclaringType.GetProperty(memberExpression.Member.Name);
+        }
+
+        public static Type GetBaseOpenGeneric(this Type type ,int genericArgumentCount = 1)
+        {
+            Debugger.Launch();
+            var current = type;
+            while(!current.Equals(typeof(object)) && !current.IsGenericType && current.GenericTypeArguments.Length < genericArgumentCount) 
+            {
+                current = current.BaseType;
+            }
+            return current.Equals(typeof(object)) ? null : current;
         }
 
         #region Private

@@ -14,8 +14,8 @@ namespace Borg.Framework.MVC.Features.EntityControllerFeature
 
         public BackOfficeEntityControllerConstraint(IAssemblyExplorerResult assemblyExplorerResult)
         {
-            var results = assemblyExplorerResult.Results<ModelStoreAssemblyScanResult>().Where(x => x.Success).ToList();
-            Types.AddRange(results.SelectMany(x => x.ModelStoreTypes).Distinct().Select(x => x.Name));
+            //var results = assemblyExplorerResult.Results<BorgDbAssemblyScanResult>().Where(x => x.Success).ToList();
+            //Types.AddRange(results.SelectMany(x => x.ModelStoreTypes).Distinct().Select(x => x.Name));
         }
 
         public bool Match(HttpContext httpContext,

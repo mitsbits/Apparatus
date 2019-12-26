@@ -1,8 +1,7 @@
 ﻿using Borg.Framework.EF;
-using Borg.Framework.EF.System.Domain.Silos;
-using Borg.Framework.EF.System.Domain.System;
 using Borg.Infrastructure.Core.Reflection.Discovery;
-using Borg.Platform.EF.SystemEntites;
+using Borg.Platform.EF.ContentBlocks;
+using Borg.Platform.EF.Silos;
 using Microsoft.EntityFrameworkCore;
 
 namespace Borg.Platform.EF
@@ -25,6 +24,6 @@ namespace Borg.Platform.EF
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<Page> Pages { get; set; }
-        public DbSet<Folder> Dictionaries { get; set; }
+    
     }
 }

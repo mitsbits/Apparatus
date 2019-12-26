@@ -1,9 +1,9 @@
 ﻿using Borg.Framework.Cms.BuildingBlocks;
-using Borg.Framework.EF.System.Domain.Silos;
+using Borg.Platform.EF.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Borg.Platform.EF.SystemEntites
+namespace Borg.Platform.EF.ContentBlocks
 {
     public class Page : SlugTreenodeActivatable, IPage
     {

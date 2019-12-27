@@ -20,7 +20,7 @@
     <ProjectReference Include="..\..\Infrastructure\Borg.Infrastructure.Core\Borg.Infrastructure.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Cms\BuildingBlocks\Dictionaries\" />
+    <Folder Include="Cms\BackOffice\" />
     <Folder Include="Dispatch\Registration\" />
     <Folder Include="Reflection\Discovery\Results\" />
   </ItemGroup>

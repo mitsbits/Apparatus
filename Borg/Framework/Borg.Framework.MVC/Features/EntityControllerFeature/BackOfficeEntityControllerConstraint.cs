@@ -12,7 +12,7 @@ namespace Borg.Framework.MVC.Features.EntityControllerFeature
     {
         private List<string> Types = new List<string>();
 
-        public BackOfficeEntityControllerConstraint(IAssemblyExplorerResult assemblyExplorerResult)
+        public BackOfficeEntityControllerConstraint()
         {
             //var results = assemblyExplorerResult.Results<BorgDbAssemblyScanResult>().Where(x => x.Success).ToList();
             //Types.AddRange(results.SelectMany(x => x.ModelStoreTypes).Distinct().Select(x => x.Name));

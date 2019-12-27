@@ -53,7 +53,7 @@ namespace Borg.Framework.EF
 
         protected BaseBorgDbContext([NotNull] DbContextOptions options, [NotNull]IAssemblyExplorerResult explorerResult) : base(options)
         {
-            Debugger.Launch();
+            
             ExplorerResult = Preconditions.NotNull(explorerResult, nameof(explorerResult));
             setUpMode = SetUpMode.AssemblyScan;
         }
@@ -109,7 +109,7 @@ namespace Borg.Framework.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            Debugger.Launch();
+            
             base.OnModelCreating(modelBuilder);
             if (setUpMode == SetUpMode.AssemblyScan)
             {

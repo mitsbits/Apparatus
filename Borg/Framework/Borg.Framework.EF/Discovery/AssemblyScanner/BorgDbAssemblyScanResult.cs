@@ -49,8 +49,13 @@ namespace Borg.Framework.EF.Discovery.AssemblyScanner
         {
             get
             {
-                Debugger.Launch();
+                
                 var generics = new List<Type>();
+                foreach (var map in DefinedEntityMaps)
+                {
+                    generics.Add(map.GetBaseOpenGeneric(2));
+                }
+
                 foreach (var map in DefinedEntityMaps)
                 {
                     generics.Add(map.GetBaseOpenGeneric(2));

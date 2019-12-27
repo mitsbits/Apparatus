@@ -10,6 +10,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0" />
   </ItemGroup>
 
 
@@ -19,6 +20,7 @@
     <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework.EF\Borg.Framework.EF.csproj" />
     <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework\Borg.Framework.csproj" />
     <ProjectReference Include="..\..\..\Borg\Platform\Borg.Platform.EF\Borg.Platform.EF.csproj" />
+    <ProjectReference Include="..\..\..\Borg\Platform\Borg.Platform.Hangfire\Borg.Platform.Hangfire.csproj" />
     <ProjectReference Include="..\..\System\Apparatus.System.Backoffice\Apparatus.System.Backoffice.csproj" />
   </ItemGroup>
 

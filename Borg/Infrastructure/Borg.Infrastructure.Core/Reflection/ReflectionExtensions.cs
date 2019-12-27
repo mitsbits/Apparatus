@@ -302,7 +302,7 @@ namespace Borg
 
         public static Type GetBaseOpenGeneric(this Type type ,int genericArgumentCount = 1)
         {
-            Debugger.Launch();
+            
             var current = type;
             while(!current.Equals(typeof(object)) && !current.IsGenericType && current.GenericTypeArguments.Length < genericArgumentCount) 
             {

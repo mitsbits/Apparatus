@@ -17,6 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework.MVC\Borg.Framework.MVC.csproj" />
+    <ProjectReference Include="..\..\..\Borg\Platform\Borg.Platform.EF\Borg.Platform.EF.csproj" />
   </ItemGroup>
 
 

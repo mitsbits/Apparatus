@@ -4,10 +4,13 @@ using Borg.Framework.MVC.Features.EntityControllerFeature;
 using Borg.Framework.Reflection.Services;
 using Borg.Infrastructure.Core.Reflection.Discovery;
 using Borg.Platform.EF;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,15 +51,16 @@ namespace Apparatus.Application.Server
             entitiesExplorerResult = new AssemblyExplorerResult(null, new[] { explorer });
             services.AddSingleton<IAssemblyExplorerResult>(entitiesExplorerResult);
 
-            services.AddControllersWithViews().ConfigureApplicationPartManager(manager =>
+            services.Configure<KestrelServerOptions>(options =>
             {
-                manager.FeatureProviders.Add(new BackOfficeEntityControllerFeatureProvider(entitiesExplorerResult));
+                options.AllowSynchronousIO = true;
             });
-            services.Configure<RouteOptions>(routeOptions =>
+
+            // If using IIS:
+            services.Configure<IISServerOptions>(options =>
             {
-                routeOptions.ConstraintMap.Add("backofficeentitycontroller", typeof(BackOfficeEntityControllerConstraint));
+                options.AllowSynchronousIO = true;
             });
-            services.AddSession((o) => o.Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" });
 
             var config = configuration.GetSection("Borg:Platform:EF:Platform");
             var typed = config.Get<BorgDbContextConfiguration>();
@@ -66,6 +70,31 @@ namespace Apparatus.Application.Server
                 {
                 });
             });
+            var hangfireconn = configuration["ConnectionStrings:HangfireConnection"];
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                  .UseSqlServerStorage(hangfireconn, new SqlServerStorageOptions
+                  {
+                      CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                      SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                      QueuePollInterval = TimeSpan.Zero,
+                      UseRecommendedIsolationLevel = true,
+                      UsePageLocksOnDequeue = true,
+                      DisableGlobalLocks = true
+                  }));
+            services.AddHangfireServer();
+
+            services.AddControllersWithViews().ConfigureApplicationPartManager(manager =>
+            {
+                manager.FeatureProviders.Add(new BackOfficeEntityControllerFeatureProvider(entitiesExplorerResult));
+            });
+            services.Configure<RouteOptions>(routeOptions =>
+            {
+                routeOptions.ConstraintMap.Add("backofficeentitycontroller", typeof(BackOfficeEntityControllerConstraint));
+            });
+            services.AddSession((o) => o.Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" });
             services.AddServiceLocator();
         }
 
@@ -77,10 +106,13 @@ namespace Apparatus.Application.Server
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseStaticFiles();
+            app.UseHangfireDashboard();
+            Hangfire.BackgroundJob.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
+
 
             app.MapWhen(c => c.Request.Path.Value.Contains("/apparatus", StringComparison.InvariantCultureIgnoreCase), app =>
             {
+                app.UseStaticFiles();
                 app.UseHsts();
                 app.UseSession(new SessionOptions() { Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" } });
                 app.UseRouting();
@@ -99,14 +131,29 @@ namespace Apparatus.Application.Server
                 });
             });
 
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
+                //endpoints.MapAreaControllerRoute(
+                //  name: "backofficeentity",
+                //  areaName: "apparatus",
+                //  pattern: "{area}/entity/{controller:backofficeentitycontroller}/{action=Index}/{id?}");
+
+                //endpoints.MapAreaControllerRoute(
+                //    name: "apparatus",
+                //    areaName: "apparatus",
+                //    pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllers();
+
                 endpoints.MapGet("/", context =>
                 {
                     context.Response.Redirect("apparatus");
                     return Task.CompletedTask;
                 });
+
+
             });
         }
     }

@@ -2,7 +2,7 @@
 
 namespace Apparatus.System.Backoffice
 {
-    public class AddOn : ResistanceIsFutile
+    public class ResistanceIsFutile : Borg.Infrastructure.Core.ResistanceIsFutile
     {
     }
 }

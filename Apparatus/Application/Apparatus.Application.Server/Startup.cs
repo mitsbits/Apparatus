@@ -70,21 +70,7 @@ namespace Apparatus.Application.Server
                 {
                 });
             });
-            var hangfireconn = configuration["ConnectionStrings:HangfireConnection"];
-            services.AddHangfire(configuration => configuration
-                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                .UseSimpleAssemblyNameTypeSerializer()
-                .UseRecommendedSerializerSettings()
-                  .UseSqlServerStorage(hangfireconn, new SqlServerStorageOptions
-                  {
-                      CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                      SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                      QueuePollInterval = TimeSpan.Zero,
-                      UseRecommendedIsolationLevel = true,
-                      UsePageLocksOnDequeue = true,
-                      DisableGlobalLocks = true
-                  }));
-            services.AddHangfireServer();
+
 
             services.AddControllersWithViews().ConfigureApplicationPartManager(manager =>
             {
@@ -95,6 +81,11 @@ namespace Apparatus.Application.Server
                 routeOptions.ConstraintMap.Add("backofficeentitycontroller", typeof(BackOfficeEntityControllerConstraint));
             });
             services.AddSession((o) => o.Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" });
+
+
+            services.AddHangfireSQL(configuration);
+            
+            
             services.AddServiceLocator();
         }
 
@@ -106,8 +97,7 @@ namespace Apparatus.Application.Server
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHangfireDashboard();
-            Hangfire.BackgroundJob.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
+            app.UseHangfireServices();
 
 
             app.MapWhen(c => c.Request.Path.Value.Contains("/apparatus", StringComparison.InvariantCultureIgnoreCase), app =>

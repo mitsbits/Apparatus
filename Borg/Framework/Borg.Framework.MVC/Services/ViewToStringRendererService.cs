@@ -20,7 +20,7 @@ namespace Borg.Framework.MVC.Services
 
     public interface IViewToStringRendererService
     {
-        Task<string> RenderViewToString<TModel>(string viewName, TModel model)
+        Task<string> RenderViewToString<TModel>(string viewName, TModel model);
     }
     public class ViewToStringRendererService : ViewExecutor, IViewToStringRendererService
     {
@@ -138,7 +138,7 @@ namespace Borg.Framework.MVC.Services
                     if (result.SearchedLocations.Any())
                     {
                         // Return a new ViewEngineResult listing all searched locations.
-                        var locations = new List(originalResult.SearchedLocations);
+                        var locations = new List<string>(originalResult.SearchedLocations);
                         locations.AddRange(result.SearchedLocations);
                         result = ViewEngineResult.NotFound(viewName, locations);
                     }

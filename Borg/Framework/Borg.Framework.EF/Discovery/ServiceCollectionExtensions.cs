@@ -7,11 +7,11 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static partial class ServiceCollectionExtensions
     {
-        public static IServiceCollection BorgDbAssemblyScan(this IServiceCollection services, IEnumerable<IAssemblyProvider> providers)
+        public static IServiceCollection BorgDbAssemblyScan(this IServiceCollection services, IEnumerable<IAssemblyProvider> providers, out AssemblyExplorerResult explorerResult)
         {
             var explorer = new BorgDbAssemblyExplorer(null, Preconditions.NotEmpty(providers, nameof(providers)));
-            var result = new AssemblyExplorerResult(null, new[] { explorer });
-            return services.AddSingleton<IAssemblyExplorerResult>(result);
+            explorerResult = new AssemblyExplorerResult(null, new[] { explorer });
+            return services.AddSingleton<IAssemblyExplorerResult>(explorerResult);
         }
     }
 }

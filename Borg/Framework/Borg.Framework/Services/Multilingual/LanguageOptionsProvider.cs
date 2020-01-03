@@ -65,6 +65,3 @@ namespace Borg.Framework.Services.Multilingual
     }
 }
 
-namespace Borg
-{
-}

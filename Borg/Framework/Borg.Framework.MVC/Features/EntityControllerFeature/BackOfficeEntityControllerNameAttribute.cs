@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using System;
+using Borg;
 
 namespace Borg.Framework.MVC.Features.EntityControllerFeature
 {
@@ -8,7 +9,7 @@ namespace Borg.Framework.MVC.Features.EntityControllerFeature
     {
         public void Apply(ControllerModel controller)
         {
-            if (controller.ControllerType.GetGenericTypeDefinition().Equals(typeof(BackOfficeEntityController<>)))
+            if (controller.ControllerType.IsSubclassOfRawGeneric(typeof(BackOfficeEntityController<>)))
             {
                 var entityType = controller.ControllerType.GenericTypeArguments[0];
                 controller.ControllerName = entityType.Name;

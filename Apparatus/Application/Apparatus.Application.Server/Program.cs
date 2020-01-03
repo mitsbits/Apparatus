@@ -1,3 +1,4 @@
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,7 +14,9 @@ namespace Apparatus.Application.Server
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            return Host.CreateDefaultBuilder(args).ConfigureServices(s =>
+            return Host.CreateDefaultBuilder(args)
+                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureServices(s =>
             {
             })
                 .ConfigureLogging(f => f.AddConsole())

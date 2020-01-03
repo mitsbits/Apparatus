@@ -13,7 +13,7 @@ namespace Borg.Platform.EF.Silos
         public string Name { get; protected set; }
         public string Description { get; protected set; }
 
-        public virtual CompositeKey Keys => CompositeKeyBuilder.CreateWithFieldName(nameof(Id)).AddValue(Id).Build();
+        public virtual CompositeKey Keys => CompositeKeyBuilder.CreateWithNameOfId().AddValue(Id).Build();
     }
 
     public class TenantInstruction<TDbContext> : EntityMap<Tenant, TDbContext> where TDbContext : DbContext

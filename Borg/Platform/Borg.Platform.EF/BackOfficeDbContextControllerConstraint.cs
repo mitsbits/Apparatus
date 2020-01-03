@@ -1,4 +1,4 @@
-﻿using Borg.Framework.Cms.Contracts;
+﻿using Borg.Framework.EF.Discovery.AssemblyScanner;
 using Borg.Infrastructure.Core.Reflection.Discovery;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -6,16 +6,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Borg.Framework.MVC.Features.EntityControllerFeature
+namespace Borg.Platform.EF
 {
-    public class BackOfficeEntityControllerConstraint : IRouteConstraint
+    public class BackOfficeDbContextControllerConstraint : IRouteConstraint
     {
         private List<string> Types = new List<string>();
 
-        public BackOfficeEntityControllerConstraint()
+        public BackOfficeDbContextControllerConstraint(IEnumerable<IAssemblyExplorerResult> result)
         {
-            //var results = assemblyExplorerResult.Results<BorgDbAssemblyScanResult>().Where(x => x.Success).ToList();
-            //Types.AddRange(results.SelectMany(x => x.ModelStoreTypes).Distinct().Select(x => x.Name));
+            var results = result.SelectMany(x => x.Results<BorgDbAssemblyScanResult>()).Distinct().SelectMany(x => x.DbEntities).Distinct();
+
+            foreach (var kv in results)
+            {
+            
+                    if (!Types.Contains(kv.Key.Name))
+                    {
+                        Types.Add(kv.Key.Name);
+                    }
+             
+            }
         }
 
         public bool Match(HttpContext httpContext,
@@ -34,6 +43,10 @@ namespace Borg.Framework.MVC.Features.EntityControllerFeature
             }
             else
             {
+                if (values.TryGetValue(routeKey, out routeValue))
+                {
+                    return Types.Any(x => x.Equals(routeValue.ToString(), StringComparison.InvariantCultureIgnoreCase));
+                }
             }
 
             return false;

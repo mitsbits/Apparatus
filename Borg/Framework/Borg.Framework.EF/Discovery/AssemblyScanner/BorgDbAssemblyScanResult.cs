@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Borg.Framework.EF.Discovery.AssemblyScanner
 {
-    internal class BorgDbAssemblyScanResult : AssemblyScanResult
+    public class BorgDbAssemblyScanResult : AssemblyScanResult
     {
         private readonly List<Type> _dbs;
         private readonly List<Type> _states;
@@ -28,6 +28,7 @@ namespace Borg.Framework.EF.Discovery.AssemblyScanner
             _states.AddRange(Preconditions.NotEmpty(states, nameof(states)));
             _maps.AddRange(Preconditions.NotEmpty(maps, nameof(maps)));
             _openMaps.AddRange(Preconditions.NotEmpty(openMaps, nameof(openMaps)));
+
         }
 
         public BorgDbAssemblyScanResult(Assembly assembly, string[] errors) : base(assembly, false, errors)
@@ -49,17 +50,18 @@ namespace Borg.Framework.EF.Discovery.AssemblyScanner
         {
             get
             {
-                
+                //var db = _dbs.FirstOrDefault();
+                //foreach (var openMap in _openMaps)
+                //{
+                //    _maps.Add(openMap.MakeGenericType(db));
+                //}
                 var generics = new List<Type>();
                 foreach (var map in DefinedEntityMaps)
                 {
                     generics.Add(map.GetBaseOpenGeneric(2));
                 }
 
-                foreach (var map in DefinedEntityMaps)
-                {
-                    generics.Add(map.GetBaseOpenGeneric(2));
-                }
+
 
                 var dict = generics.GroupBy(x => x.GenericTypeArguments[1]).ToDictionary(x => x.Key, x => x.Select(y => y.GenericTypeArguments[0]));
 

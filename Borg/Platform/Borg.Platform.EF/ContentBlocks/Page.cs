@@ -8,6 +8,7 @@ namespace Borg.Platform.EF.ContentBlocks
     public class Page : SlugTreenodeActivatable, IPage
     {
         public string Title { get; protected set; }
+        public string Content { get; protected set; }
     }
 
     public class PageInstruction : SlugTreenodeActivatableInstruction<Page, PlatformDb>
@@ -21,6 +22,7 @@ namespace Borg.Platform.EF.ContentBlocks
         {
             base.ConfigureEntity(builder);
             builder.Property(x => x.Title).IsUnicode(true).HasMaxLength(1024).IsRequired(true).HasDefaultValue(string.Empty);
+            builder.Property(x => x.Content).IsUnicode(true).HasMaxLength(int.MaxValue).IsRequired(true).HasDefaultValue(string.Empty);
         }
     }
 }

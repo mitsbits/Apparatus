@@ -1,0 +1,7 @@
+﻿@model Apparatus.System.Backoffice.ul
+<ul class="nav flex-column">
+    @foreach(var li in Model.lis)
+    {
+        @Html.Partial("~/Areas/Apparatus/Views/Shared/Components/MainNavigation/li.cshtml", li)
+    }
+</ul>

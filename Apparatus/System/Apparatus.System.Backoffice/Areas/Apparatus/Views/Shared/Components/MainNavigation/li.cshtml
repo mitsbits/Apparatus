@@ -1,0 +1,39 @@
+﻿@model Apparatus.System.Backoffice.li
+@{
+    var header = Model as Apparatus.System.Backoffice.header;
+    var label = Model as Apparatus.System.Backoffice.label;
+    var anchor = Model as Apparatus.System.Backoffice.anchor;
+}
+
+@if (Model.liType == Apparatus.System.Backoffice.LiType.Header)
+{
+    <li class="nav-item"><h3>@header.display</h3>
+    @if (Model.ul!= null)
+    {
+        @Html.Partial("~/Areas/Apparatus/Views/Shared/Components/MainNavigation/ul.cshtml", Model.ul)
+    }
+    </li>
+}
+
+@if (Model.liType == Apparatus.System.Backoffice.LiType.Label)
+{
+<li class="nav-item">
+    @label.display
+    @if (Model.ul != null)
+    {
+        @Html.Partial("~/Areas/Apparatus/Views/Shared/Components/MainNavigation/ul.cshtml", Model.ul)
+    }
+</li>
+}
+
+
+@if (Model.liType == Apparatus.System.Backoffice.LiType.Href)
+{
+<li class="nav-item">
+    <a href="@anchor.href" target="@anchor._target"  class="nav-link">@anchor.display</a>
+    @if (Model.ul != null)
+    {
+        @Html.Partial("~/Areas/Apparatus/Views/Shared/Components/MainNavigation/ul.cshtml", Model.ul)
+    }
+</li>
+}

@@ -1,3 +1,6 @@
+using Apparatus.System.Backoffice.Areas.Apparatus;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Borg.Framework.EF;
 using Borg.Framework.EF.Discovery;
 using Borg.Framework.MVC.Features.EntityControllerFeature;
@@ -33,7 +36,7 @@ namespace Apparatus.Application.Server
             this.hostingEnvironment = hostingEnvironment;
             this.configuration = configuration;
         }
-
+        public ILifetimeScope AutofacContainer { get; private set; }
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -44,7 +47,7 @@ namespace Apparatus.Application.Server
               new ReferenceAssemblyProvider(null, null, GetType().Assembly)
             };
 
-            services.BorgDbAssemblyScan(providers);
+            services.BorgDbAssemblyScan(providers, out var explorerResult);
 
             var explorer = new EntitiesExplorer(null, providers);
 
@@ -68,40 +71,63 @@ namespace Apparatus.Application.Server
             {
                 o.UseSqlServer(typed.ConnectionString, a =>
                 {
+
                 });
+
             });
 
 
             services.AddControllersWithViews().ConfigureApplicationPartManager(manager =>
             {
-                manager.FeatureProviders.Add(new BackOfficeEntityControllerFeatureProvider(entitiesExplorerResult));
+                manager.FeatureProviders.Add(new EntityControllerFeatureProvider(new[] { explorerResult, entitiesExplorerResult }));
             });
             services.Configure<RouteOptions>(routeOptions =>
             {
                 routeOptions.ConstraintMap.Add("backofficeentitycontroller", typeof(BackOfficeEntityControllerConstraint));
+                routeOptions.ConstraintMap.Add("backofficedbconextcontroller", typeof(BackOfficeDbContextControllerConstraint));
             });
             services.AddSession((o) => o.Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" });
 
 
             services.AddHangfireSQL(configuration);
-            
-            
+
+
             services.AddServiceLocator();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+
+            this.AutofacContainer = app.ApplicationServices.GetAutofacRoot();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseHangfireServices();
+            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
 
+
+                endpoints.MapDefaultControllerRoute();
+
+
+
+            });
 
             app.MapWhen(c => c.Request.Path.Value.Contains("/apparatus", StringComparison.InvariantCultureIgnoreCase), app =>
             {
+                if (env.IsDevelopment())
+                {
+                    app.UseDeveloperExceptionPage();
+                }
+
+                app.UseHangfireServices();
                 app.UseStaticFiles();
                 app.UseHsts();
                 app.UseSession(new SessionOptions() { Cookie = new CookieBuilder() { IsEssential = true, Name = "apparatus_session", Path = "apparatus/" } });
@@ -111,7 +137,7 @@ namespace Apparatus.Application.Server
                     endpoints.MapAreaControllerRoute(
                         name: "backofficeentity",
                         areaName: "apparatus",
-                        pattern: "{area}/entity/{controller:backofficeentitycontroller}/{action=Index}/{id?}");
+                  pattern: "{area}/{dbcontext:backofficedbconextcontroller}/entity/{controller:backofficeentitycontroller}/{action=Index}/{id?}");
 
                     endpoints.MapAreaControllerRoute(
                         name: "apparatus",
@@ -119,31 +145,6 @@ namespace Apparatus.Application.Server
                         pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
                     endpoints.MapControllers();
                 });
-            });
-
-            app.UseStaticFiles();
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                //endpoints.MapAreaControllerRoute(
-                //  name: "backofficeentity",
-                //  areaName: "apparatus",
-                //  pattern: "{area}/entity/{controller:backofficeentitycontroller}/{action=Index}/{id?}");
-
-                //endpoints.MapAreaControllerRoute(
-                //    name: "apparatus",
-                //    areaName: "apparatus",
-                //    pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
-
-                endpoints.MapControllers();
-
-                endpoints.MapGet("/", context =>
-                {
-                    context.Response.Redirect("apparatus");
-                    return Task.CompletedTask;
-                });
-
-
             });
         }
     }

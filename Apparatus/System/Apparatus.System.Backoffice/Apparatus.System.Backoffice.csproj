@@ -16,7 +16,9 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework.EF\Borg.Framework.EF.csproj" />
     <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework.MVC\Borg.Framework.MVC.csproj" />
+    <ProjectReference Include="..\..\..\Borg\Infrastructure\Borg.Infrastructure.Core\Borg.Infrastructure.Core.csproj" />
     <ProjectReference Include="..\..\..\Borg\Platform\Borg.Platform.EF\Borg.Platform.EF.csproj" />
   </ItemGroup>
 

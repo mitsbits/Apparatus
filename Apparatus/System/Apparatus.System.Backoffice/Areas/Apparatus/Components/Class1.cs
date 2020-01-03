@@ -4,29 +4,26 @@ namespace Apparatus.System.Backoffice
 {
     public sealed class menu
     {
-        public List<header> headers { get; set; }
-        public List<section> sections { get; set; }
+        public List<section> sections { get; set; } = new List<section>();
     }
 
-    public sealed class header : displayer { }
+
 
     public sealed class section
     {
-        public List<ul> uls { get; set; }
+        public List<ul> uls { get; set; } = new List<ul>();
     }
 
     public class ul
     {
-        public List<li> lis { get; set; }
+        public List<li> lis { get; set; } = new List<li>();
     }
 
-    public class li : displayer
+    public class li 
     {
         public LiType liType { get; set; }
-        public string area { get; set; }
-        public string controler { get; set; }
-        public string action { get; set; }
-        public header header { get; set; }
+        public ul ul { get; set; } = null;
+
     }
 
     public enum LiType
@@ -34,13 +31,40 @@ namespace Apparatus.System.Backoffice
         Href,
         RouteData,
         Header,
+        Label,
         ScriptTrigger
     }
 
-    public abstract class displayer
+    public sealed class header : label 
     {
+
+        public header()
+        {
+            liType = LiType.Header;
+        }
+    
+    }
+
+    public  class label : li
+    {
+        public label()
+        {
+            liType = LiType.Label;
+        }
+
         public string display { get; set; }
         public string tooltip { get; set; }
+
+    }
+
+    public  class anchor : label
+    {
+        public anchor()
+        {
+            liType = LiType.Href;
+        }
+
+        public string href { get; set; }
         public string _target { get; set; }
     }
 }

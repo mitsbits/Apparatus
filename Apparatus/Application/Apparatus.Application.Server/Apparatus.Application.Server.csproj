@@ -17,6 +17,7 @@
 
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework.Autofac\Borg.Framework.Autofac.csproj" />
     <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework.EF\Borg.Framework.EF.csproj" />
     <ProjectReference Include="..\..\..\Borg\Framework\Borg.Framework\Borg.Framework.csproj" />
     <ProjectReference Include="..\..\..\Borg\Platform\Borg.Platform.EF\Borg.Platform.EF.csproj" />
@@ -28,6 +29,7 @@
 
 
   <ItemGroup>
+    <Folder Include="Areas\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

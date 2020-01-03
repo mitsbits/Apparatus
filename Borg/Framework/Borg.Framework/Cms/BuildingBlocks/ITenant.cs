@@ -1,4 +1,6 @@
 ﻿using Borg.Infrastructure.Core.DDD.Contracts;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Borg.Framework.Cms.BuildingBlocks
 {
@@ -12,5 +14,10 @@ namespace Borg.Framework.Cms.BuildingBlocks
 
     public interface ILanguage : ISilo
     {
+    }
+
+    public interface ITenantProvider
+    {
+        ValueTask<IEnumerable<ITenant>> Tenants();
     }
 }

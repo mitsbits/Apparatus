@@ -1,4 +1,5 @@
-﻿<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+﻿@model Apparatus.System.Backoffice.menu
+<nav class="col-md-2 d-none d-md-block bg-light sidebar">
     <div class="sidebar-sticky">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -78,5 +79,15 @@
                 </a>
             </li>
         </ul>
+
+
+        @foreach(var section in Model.sections)
+        {
+            foreach(var ul in section.uls)
+            {
+                @Html.Partial("~/Areas/Apparatus/Views/Shared/Components/MainNavigation/ul.cshtml", ul)
+            }
+        }
     </div>
 </nav>
+

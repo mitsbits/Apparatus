@@ -2,6 +2,7 @@
 using Borg.Framework.Reflection.Discovery.AssemblyScanner;
 using Borg.Framework.Reflection.ServiceRegistry;
 using Borg.Framework.Reflection.Services;
+using Borg.Infrastructure.Core;
 using Borg.Infrastructure.Core.DI;
 using Borg.Infrastructure.Core.Reflection.Discovery;
 using Microsoft.Extensions.Logging;
@@ -13,22 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static partial class ServiceCollectionExtensions
     {
-        public static IServiceCollection RegisterPlugableServices(this IServiceCollection services, ILoggerFactory loggerFactory, params IAssemblyProvider[] assemblyProviders)
-        {
-            var explorer = new PlugableServicesExplorer(loggerFactory, assemblyProviders);
-            if (!explorer.ScanCompleted) explorer.Scan();
-            var results = explorer.Results().Cast<PlugableServicesAssemblyScanResult>();
-            foreach (var result in results)
-            {
-                if (!result.Success) continue;
-                foreach (var contract in result.Instructions.SelectMany(x => x.ImplementedInterfaces).Distinct())
-                {
-                    var registrations = result.Instructions.Where(x => x.ImplementedInterfaces.Any(i => i == contract));
-                    RegisterServices(contract, registrations.ToArray(), services);
-                }
-            }
-            return services;
-        }
+
 
         private static void RegisterServices(Type contract, IEnumerable<PlugableServicesAssemblyScanResult.Instruction> registrations, IServiceCollection services)
         {
@@ -55,10 +41,22 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
 
-        public static IServiceCollection AddAssmblyScanners(this IServiceCollection services, ILoggerFactory loggerFactory)
+        public static IServiceCollection PlugableServicesAssemblyScan(this IServiceCollection services, IEnumerable<IAssemblyProvider> providers, out AssemblyExplorerResult explorerResult)
         {
-            var asmblProvider = new DepedencyAssemblyProvider(loggerFactory);
-            new ServiceDiscovery(asmblProvider.GetAssemblies().ToArray(), services);
+            var explorer = new PlugableServicesExplorer(null, Preconditions.NotEmpty(providers, nameof(providers)));
+            explorerResult = new AssemblyExplorerResult(null, new[] { explorer });
+            if (!explorer.ScanCompleted) explorer.Scan();
+            services.AddSingleton<IAssemblyExplorerResult>(explorerResult);
+            var results = explorer.Results().Cast<PlugableServicesAssemblyScanResult>();
+            foreach (var result in results)
+            {
+                if (!result.Success) continue;
+                foreach (var contract in result.Instructions.SelectMany(x => x.ImplementedInterfaces).Distinct())
+                {
+                    var registrations = result.Instructions.Where(x => x.ImplementedInterfaces.Any(i => i == contract));
+                    RegisterServices(contract, registrations.ToArray(), services);
+                }
+            }
             return services;
         }
     }

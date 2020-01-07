@@ -47,7 +47,8 @@ namespace Apparatus.Application.Server
               new ReferenceAssemblyProvider(null, null, GetType().Assembly)
             };
 
-            services.BorgDbAssemblyScan(providers, out var explorerResult);
+            services.BorgDbAssemblyScan(providers, out var borgDbAssemblyScanResult);
+            services.PlugableServicesAssemblyScan(providers, out var plugableServicesAssemblyScanResult);
 
             var explorer = new EntitiesExplorer(null, providers);
 

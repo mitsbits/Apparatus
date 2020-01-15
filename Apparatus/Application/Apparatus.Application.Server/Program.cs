@@ -15,13 +15,10 @@ namespace Apparatus.Application.Server
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureServices(s =>
-            {
-            })
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())               
                 .ConfigureLogging(f => f.AddConsole())
                 .ConfigureWebHostDefaults(webBuilder =>
-                {
+                {                  
                     webBuilder.UseStartup<Startup>();
                 });
         }

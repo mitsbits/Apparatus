@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace FunWithMvc.Controllers
         public IActionResult Index()
         {
 
-            return View(new Dog());
+            return View(new Dog() { Id = Guid.NewGuid() });
         }
 
         [HttpPost]
@@ -28,6 +29,7 @@ namespace FunWithMvc.Controllers
 
     public class Dog : Animal
     {
+        [Required]
         public string Name { get; set; }
     }
 
@@ -49,6 +51,6 @@ namespace FunWithMvc.Controllers
 
     public class DataRecord
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } 
     }
 }

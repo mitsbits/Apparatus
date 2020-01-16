@@ -80,7 +80,7 @@ namespace Apparatus.Application.Server
 
             services.AddControllersWithViews().ConfigureApplicationPartManager(manager =>
             {
-                manager.FeatureProviders.Add(new EntityControllerFeatureProvider(new[] { explorerResult, entitiesExplorerResult }));
+                manager.FeatureProviders.Add(new EntityControllerFeatureProvider(new[] { borgDbAssemblyScanResult, entitiesExplorerResult }));
             });
             services.Configure<RouteOptions>(routeOptions =>
             {

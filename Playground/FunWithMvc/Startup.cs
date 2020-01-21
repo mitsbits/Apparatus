@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FunWithMvc.Data;
+using FunWithMvc.Models.Zoo;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,6 +40,7 @@ namespace FunWithMvc
                 .AddMvcOptions(m =>
                 {
                     m.ModelMetadataDetailsProviders.Add(new CustomDisplayMetadataProvider());
+                    m.ModelMetadataDetailsProviders.Add(new EnumMetedataProvider());
                 });
         }
 

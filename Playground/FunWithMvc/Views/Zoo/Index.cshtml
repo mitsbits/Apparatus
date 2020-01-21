@@ -5,12 +5,9 @@
 
 <div class="row">
     <form asp-controller="Zoo" asp-action="Index" method="post" class="form-horizontal" role="form">
-        <div class="form-group">
-            <label asp-for="Id" class="form-label"></label>
-            <input asp-for="Id" class="form-control" />
-            <span asp-validation-for="Id" class="text-danger"></span>
-        </div>
-        @Html.EditorFor(m=>m.Name)
+        @Html.EditorFor(m => m.Id)
+        @Html.EditorFor(m => m.Name)
+        @Html.EditorFor(m => m.Spieces)
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>

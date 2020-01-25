@@ -32,7 +32,7 @@ namespace Borg.Framework.SQLServer.Broadcast
             command.Parameters.AddWithValue("@queuename", request.QueueName);
             command.Parameters.AddWithValue("@queuesubscriber", request.SubscriberName);
             if (command.Connection.State == System.Data.ConnectionState.Closed) await command.Connection.OpenAsync();
-            DateTimeOffset createdOn;
+            DateTimeOffset createdOn = DateTimeOffset.MinValue;
             string payloadType = string.Empty;
             string payload = string.Empty;
             using (var reader = await command.ExecuteReaderAsync())

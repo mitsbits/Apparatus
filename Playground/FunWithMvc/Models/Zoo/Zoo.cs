@@ -32,4 +32,14 @@ namespace FunWithMvc.Models.Zoo
     {
         public Guid Id { get; set; }
     }
+
+    public static class ZooExtensions
+    {
+        public static string[] PropertyNames(this object model)
+        {
+            var type = model.GetType();
+            return type.GetProperties().Select(x => x.Name).ToArray();
+
+        }
+    }
 }

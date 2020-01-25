@@ -5,9 +5,10 @@
 
 <div class="row">
     <form asp-controller="Zoo" asp-action="Index" method="post" class="form-horizontal" role="form">
-        @Html.EditorFor(m => m.Id)
-        @Html.EditorFor(m => m.Name)
-        @Html.EditorFor(m => m.Spieces)
+        @Html.Editor("Id")
+        @Html.Editor("Name")
+        @Html.Editor("Spieces")
+        @Html.Editor("BirthDay")
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>

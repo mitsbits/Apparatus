@@ -12,7 +12,7 @@ namespace FunWithMvc.Controllers
         public IActionResult Index()
         {
 
-            return View(new Dog() { Id = Guid.NewGuid() });
+            return View("ViewModel", new Dog() { Id = Guid.NewGuid() });
         }
 
         [HttpPost]
@@ -22,7 +22,7 @@ namespace FunWithMvc.Controllers
             {
                 return View("Success", model);
             }
-            return View( model);
+            return View("ViewModel", model);
         }
     }
 

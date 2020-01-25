@@ -1,0 +1,12 @@
+﻿@model double
+@{ 
+    var controlId = Html.IdForModel();
+}
+
+<div class="form-group">
+    <div class="form-group">
+        @Html.LabelForModel(new { @class = "form-label" })
+        @Html.TextBox("", Model, new { @class = "form-control" })
+        @Html.ValidationMessage("", new { @class = "text-danger" })
+    </div>
+</div>

@@ -27,5 +27,10 @@
                          Value = v.ToString()
                      });
 }
-
-@Html.DropDownList("", values)
+<div class="form-group">
+    <div class="form-group">
+        @Html.LabelForModel(new { @class = "form-label" })
+        @Html.DropDownList("", values, Html.NameForModel(), new { @class = "select2 form-control", style= "width:100%;" })
+        @Html.ValidationMessage("", new { @class = "text-danger" })
+    </div>
+</div>

@@ -75,7 +75,88 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borg.Platform.Hangfire", "B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Playground", "Playground", "{0E1055B3-D45E-4C5D-9404-0C21E79BCEC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunWithMvc", "Playground\FunWithMvc\FunWithMvc.csproj", "{BF081FF6-8622-4C18-B37A-E10076B72211}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunWithMvc", "Playground\FunWithMvc\FunWithMvc.csproj", "{BF081FF6-8622-4C18-B37A-E10076B72211}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tooling", "Tooling", "{8E158E90-4461-435A-A3F6-0F4BCFA24B49}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dockers", "Dockers", "{8CEFD1A9-981B-44B7-8D22-83CC7D1DBC3C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solr", "Solr", "{C9ECDA15-EE7C-4F79-8793-617D3B5134EE}"
+	ProjectSection(SolutionItems) = preProject
+		Tooling\Dockers\Solr\docker-compose.yml = Tooling\Dockers\Solr\docker-compose.yml
+		Tooling\Dockers\Solr\Generate-Certificate.ps1 = Tooling\Dockers\Solr\Generate-Certificate.ps1
+		Tooling\Dockers\Solr\README.md = Tooling\Dockers\Solr\README.md
+		Tooling\Dockers\Solr\Start-Solr.cmd = Tooling\Dockers\Solr\Start-Solr.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "certs", "certs", "{253EA093-91EF-417B-B026-8AC8220D3FBB}"
+	ProjectSection(SolutionItems) = preProject
+		Tooling\Dockers\Solr\certs\README.md = Tooling\Dockers\Solr\certs\README.md
+		Tooling\Dockers\Solr\certs\solr-ssl.keystore.pfx = Tooling\Dockers\Solr\certs\solr-ssl.keystore.pfx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solr_home", "solr_home", "{1051CEF9-79F2-4BB7-8D09-3F5715EE5C52}"
+	ProjectSection(SolutionItems) = preProject
+		Tooling\Dockers\Solr\solr_home\README.txt = Tooling\Dockers\Solr\solr_home\README.txt
+		Tooling\Dockers\Solr\solr_home\solr.xml = Tooling\Dockers\Solr\solr_home\solr.xml
+		Tooling\Dockers\Solr\solr_home\zoo.cfg = Tooling\Dockers\Solr\solr_home\zoo.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configsets", "configsets", "{2E71FE55-EC28-4D1C-8B65-F313295BF11E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configsets", "configsets", "{5A4DC40F-6638-4784-8FF1-E078B0950750}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configsets", "configsets", "{808EF87E-EFF8-4F88-A1E8-98608EBA2CB9}"
+	ProjectSection(SolutionItems) = preProject
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\managed-schema = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\managed-schema
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\params.json = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\params.json
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\protwords.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\protwords.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\solrconfig.xml = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\solrconfig.xml
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\stopwords.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\stopwords.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\synonyms.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\synonyms.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lang", "lang", "{CB5BE141-BF2D-485F-94A9-C029EFA67E04}"
+	ProjectSection(SolutionItems) = preProject
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\contractions_ca.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\contractions_ca.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\contractions_fr.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\contractions_fr.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\contractions_ga.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\contractions_ga.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\contractions_it.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\contractions_it.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\hyphenations_ga.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\hyphenations_ga.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stemdict_nl.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stemdict_nl.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stoptags_ja.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stoptags_ja.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ar.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ar.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_bg.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_bg.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ca.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ca.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_cz.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_cz.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_da.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_da.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_de.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_de.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_el.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_el.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_en.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_en.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_es.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_es.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_eu.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_eu.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_fa.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_fa.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_fi.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_fi.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_fr.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_fr.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ga.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ga.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_gl.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_gl.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_hi.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_hi.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_hu.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_hu.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_hy.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_hy.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_id.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_id.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_it.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_it.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ja.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ja.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_lv.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_lv.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_nl.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_nl.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_no.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_no.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_pt.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_pt.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ro.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ro.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ru.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_ru.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_sv.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_sv.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_th.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_th.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_tr.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\stopwords_tr.txt
+		Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\userdict_ja.txt = Tooling\Dockers\Solr\solr_home\configsets\configsets\configsets\lang\userdict_ja.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -226,6 +307,14 @@ Global
 		{AAA6E347-44A3-4847-B26A-BE0147036603} = {C635DC7A-2EE8-4F61-9B75-4289121C232F}
 		{119DD476-BE4E-44C1-A5DB-45D585FE507E} = {DE065686-2135-4CEB-9B11-995C22E75545}
 		{BF081FF6-8622-4C18-B37A-E10076B72211} = {0E1055B3-D45E-4C5D-9404-0C21E79BCEC4}
+		{8CEFD1A9-981B-44B7-8D22-83CC7D1DBC3C} = {8E158E90-4461-435A-A3F6-0F4BCFA24B49}
+		{C9ECDA15-EE7C-4F79-8793-617D3B5134EE} = {8CEFD1A9-981B-44B7-8D22-83CC7D1DBC3C}
+		{253EA093-91EF-417B-B026-8AC8220D3FBB} = {C9ECDA15-EE7C-4F79-8793-617D3B5134EE}
+		{1051CEF9-79F2-4BB7-8D09-3F5715EE5C52} = {C9ECDA15-EE7C-4F79-8793-617D3B5134EE}
+		{2E71FE55-EC28-4D1C-8B65-F313295BF11E} = {1051CEF9-79F2-4BB7-8D09-3F5715EE5C52}
+		{5A4DC40F-6638-4784-8FF1-E078B0950750} = {2E71FE55-EC28-4D1C-8B65-F313295BF11E}
+		{808EF87E-EFF8-4F88-A1E8-98608EBA2CB9} = {5A4DC40F-6638-4784-8FF1-E078B0950750}
+		{CB5BE141-BF2D-485F-94A9-C029EFA67E04} = {808EF87E-EFF8-4F88-A1E8-98608EBA2CB9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1532DD30-AFF2-46C7-BD8F-86371FD48BFE}

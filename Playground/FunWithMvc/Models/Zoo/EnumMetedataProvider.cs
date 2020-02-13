@@ -10,15 +10,10 @@ namespace FunWithMvc.Models.Zoo
     {
         public void CreateDisplayMetadata(DisplayMetadataProviderContext context)
         {
-            var propertyAttributes = context.Attributes;
-            var modelMetadata = context.DisplayMetadata;
-            var propertyName = context.Key.Name;
-
             if (typeof(Enum).IsAssignableFrom(context.Key.ModelType))
             {
-                modelMetadata.TemplateHint = "Enum";
+                context.DisplayMetadata.TemplateHint = "Enum";
             }
-
         }
     }
 }

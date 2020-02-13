@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace FunWithMvc
+namespace FunWithMvc.Models.Zoo
 {
     public class CustomDisplayMetadataProvider : IDisplayMetadataProvider
     {

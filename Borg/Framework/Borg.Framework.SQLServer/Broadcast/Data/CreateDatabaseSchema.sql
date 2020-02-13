@@ -174,7 +174,7 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-    WITH cte  AS (
+	WITH cte  AS (
 		SELECT TOP 1 * FROM [broadcast].[QueueMessage] m with (rowlock, readpast)  WHERE m.QueueName = @queuename AND m.SubscriberName =  @subscriberName ORDER BY m.CreatedOn, m.Id)
 		  delete from cte
 		  output deleted.CreatedOn, deleted.PayloadType, deleted.Payload;

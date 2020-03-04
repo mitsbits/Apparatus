@@ -5,4 +5,9 @@
         TKey LanguageID { get; }
         TLanguage Language { get; }
     }
+
+    public interface IHAveJsonContent
+    {
+        public string JsonContent { get; }
+    }
 }

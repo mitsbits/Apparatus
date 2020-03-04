@@ -2,7 +2,7 @@
 
 namespace Borg.Framework.ApplicationSettings
 {
-    public interface IApplicationSetting : IHaveTitle, IIdentifiable
+    public interface IApplicationSetting : IHaveTitle, IIdentifiable, IHaveIcon, IHaveOrder, IHAveJsonContent
     {
     }
 }
